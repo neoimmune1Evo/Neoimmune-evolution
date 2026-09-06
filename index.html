@@ -1410,7 +1410,71 @@
         style: [
           {
             selector: "node",
-            style: {
+            style: {:root {
+  --bg: #f4f8fc;
+  --bg2: #e8f1fb;
+  --panel: #ffffff;
+  --panel2: #f7fbff;
+  --text: #152238;
+  --muted: #5b6b80;
+  --line: rgba(39, 84, 134, 0.18);
+  --blue: #1479d1;
+  --purple: #6e45cf;
+  --green: #148a58;
+  --orange: #c96a05;
+  --red: #c92f4a;
+  --yellow: #9a6900;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  color: #152238;
+  background: linear-gradient(135deg, #f8fbff, #eaf3fc 52%, #f5f0ff);
+}
+
+header,
+nav {
+  background: rgba(255, 255, 255, 0.94);
+}
+
+h1 {
+  color: #10233d;
+}
+
+.subtitle,
+.small,
+footer {
+  color: #5b6b80;
+}
+
+.card {
+  background: linear-gradient(145deg, #ffffff, #f7fbff);
+  box-shadow: 0 10px 26px rgba(35, 79, 123, 0.10);
+}
+
+.flow span,
+.clone-card,
+label.option,
+.metric,
+.check,
+.info-box,
+.result-box {
+  background: #f8fbff;
+  color: #24364c;
+}
+
+input,
+select {
+  color: #1d3148;
+  background: #ffffff;
+}
+
+#cy {
+  background: #f7fbff;
+}
               "shape": "round-rectangle",
               "background-color": "#1d3a61",
               "border-width": 2,
