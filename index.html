@@ -3,27 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
   <title>NEOIMMUNE AI Lab | Evolution Simulator</title>
 
-  <!-- Free chart and pathway libraries -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://unpkg.com/cytoscape@3.30.4/dist/cytoscape.min.js"></script>
 
   <style>
     :root {
-      --bg: #06111f;
-      --bg2: #0b1b32;
-      --panel: #0f223d;
-      --panel2: #142a4a;
-      --text: #eff7ff;
-      --muted: #afc0d6;
-      --line: rgba(180, 210, 246, 0.18);
-      --blue: #45a7ff;
-      --purple: #aa7cff;
-      --green: #48da93;
-      --orange: #ffad4e;
-      --red: #ff5d78;
-      --yellow: #ffe070;
+      --bg: #f4f8fc;
+      --bg2: #e8f1fb;
+      --panel: #ffffff;
+      --panel2: #f7fbff;
+      --text: #152238;
+      --muted: #5b6b80;
+      --line: rgba(39, 84, 134, 0.18);
+
+      --blue: #1479d1;
+      --purple: #6e45cf;
+      --green: #148a58;
+      --orange: #c96a05;
+      --red: #c92f4a;
+      --yellow: #9a6900;
     }
 
     * {
@@ -32,6 +33,7 @@
 
     html {
       scroll-behavior: smooth;
+      color-scheme: light;
     }
 
     body {
@@ -40,9 +42,9 @@
       font-family: Arial, Helvetica, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 15% 0%, rgba(69, 167, 255, 0.14), transparent 28%),
-        radial-gradient(circle at 90% 10%, rgba(170, 124, 255, 0.14), transparent 30%),
-        linear-gradient(135deg, var(--bg), var(--bg2) 52%, #11102e);
+        radial-gradient(circle at 15% 0%, rgba(20, 121, 209, 0.15), transparent 28%),
+        radial-gradient(circle at 90% 10%, rgba(110, 69, 207, 0.11), transparent 30%),
+        linear-gradient(135deg, #f9fcff, #eaf3fc 52%, #f6f1ff);
       line-height: 1.55;
     }
 
@@ -50,11 +52,12 @@
       padding: 38px 18px 28px;
       text-align: center;
       border-bottom: 1px solid var(--line);
-      background: rgba(2, 10, 21, 0.75);
+      background: rgba(255, 255, 255, 0.90);
     }
 
     h1 {
       margin: 0;
+      color: #10233d;
       font-size: clamp(2rem, 5vw, 3.9rem);
       letter-spacing: 1px;
     }
@@ -62,7 +65,7 @@
     .subtitle {
       max-width: 900px;
       margin: 10px auto 0;
-      color: #c7dcfb;
+      color: #49617c;
       font-size: 1.05rem;
     }
 
@@ -70,10 +73,14 @@
       max-width: 1040px;
       margin: 18px auto 0;
       padding: 13px 18px;
-      border: 1px solid rgba(170, 124, 255, 0.42);
+      border: 1px solid rgba(110, 69, 207, 0.28);
       border-radius: 14px;
-      background: linear-gradient(90deg, rgba(69,167,255,.16), rgba(170,124,255,.20));
-      color: #fff;
+      background: linear-gradient(
+        90deg,
+        rgba(20, 121, 209, 0.10),
+        rgba(110, 69, 207, 0.10)
+      );
+      color: #243851;
       font-weight: bold;
       font-size: 1rem;
     }
@@ -82,10 +89,10 @@
       max-width: 1200px;
       margin: 22px auto 0;
       padding: 14px 16px;
-      border-left: 5px solid var(--yellow);
+      border-left: 5px solid #d59500;
       border-radius: 10px;
-      background: rgba(255, 224, 112, 0.12);
-      color: #fff1ab;
+      background: #fff8dd;
+      color: #684c00;
       text-align: left;
       font-size: 0.93rem;
     }
@@ -100,24 +107,25 @@
       gap: 8px;
       padding: 10px;
       border-bottom: 1px solid var(--line);
-      background: rgba(5, 15, 29, 0.93);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(12px);
+      box-shadow: 0 3px 10px rgba(44, 80, 120, 0.05);
     }
 
     nav a {
       padding: 8px 11px;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(39, 84, 134, 0.18);
       border-radius: 999px;
-      color: #d9eaff;
+      color: #36516e;
       text-decoration: none;
-      font-size: .82rem;
+      font-size: 0.82rem;
       font-weight: bold;
     }
 
     nav a:hover {
-      color: white;
+      color: #0c5da5;
       border-color: var(--blue);
-      background: rgba(69, 167, 255, 0.12);
+      background: rgba(20, 121, 209, 0.09);
     }
 
     main {
@@ -136,12 +144,13 @@
 
     .flow span {
       padding: 8px 12px;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(39, 84, 134, 0.17);
       border-radius: 999px;
-      background: rgba(15, 34, 61, .88);
-      color: #d8e9ff;
-      font-size: .8rem;
+      background: rgba(255, 255, 255, 0.90);
+      color: #35506d;
+      font-size: 0.80rem;
       font-weight: bold;
+      box-shadow: 0 3px 9px rgba(23, 70, 120, 0.05);
     }
 
     .grid {
@@ -152,10 +161,10 @@
 
     .card {
       padding: 20px;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(39, 84, 134, 0.16);
       border-radius: 18px;
-      background: linear-gradient(145deg, rgba(15,34,61,.96), rgba(9,23,42,.96));
-      box-shadow: 0 12px 30px rgba(0,0,0,.18);
+      background: linear-gradient(145deg, #ffffff, #f7fbff);
+      box-shadow: 0 10px 26px rgba(35, 79, 123, 0.10);
     }
 
     .span-3 { grid-column: span 3; }
@@ -172,11 +181,6 @@
       font-size: 1.25rem;
     }
 
-    h3 {
-      margin: 15px 0 8px;
-      font-size: 1rem;
-    }
-
     .blue { color: var(--blue); }
     .purple { color: var(--purple); }
     .green { color: var(--green); }
@@ -186,7 +190,7 @@
 
     .small {
       color: var(--muted);
-      font-size: .91rem;
+      font-size: 0.91rem;
     }
 
     .form-row {
@@ -195,20 +199,22 @@
       gap: 12px;
     }
 
-    input, select {
+    input,
+    select {
       width: 100%;
       padding: 12px;
-      border: 1px solid rgba(114, 164, 218, 0.43);
+      border: 1px solid rgba(39, 84, 134, 0.30);
       border-radius: 10px;
       outline: none;
-      color: white;
-      background: #071322;
-      font-size: .95rem;
+      color: #1d3148;
+      background: #ffffff;
+      font-size: 0.95rem;
     }
 
-    input:focus, select:focus {
+    input:focus,
+    select:focus {
       border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(69, 167, 255, .14);
+      box-shadow: 0 0 0 3px rgba(20, 121, 209, 0.13);
     }
 
     button {
@@ -217,37 +223,50 @@
       margin-top: 12px;
       border: 0;
       border-radius: 10px;
-      color: #fff;
-      background: linear-gradient(90deg, #317edc, #8051e7);
+      color: #ffffff;
+      background: linear-gradient(90deg, #1479d1, #7145d0);
       cursor: pointer;
-      font-size: .94rem;
+      font-size: 0.94rem;
       font-weight: bold;
+      box-shadow: 0 5px 12px rgba(58, 94, 180, 0.18);
     }
 
     button:hover {
-      filter: brightness(1.12);
+      filter: brightness(1.06);
     }
 
     button.secondary {
-      background: linear-gradient(90deg, #1d6975, #357f76);
+      background: linear-gradient(90deg, #168075, #258b70);
     }
 
     button.warning {
-      background: linear-gradient(90deg, #8d3d42, #b3465b);
+      background: linear-gradient(90deg, #b63d47, #d15862);
     }
 
     .info-box,
     .result-box {
       margin-top: 14px;
       padding: 13px;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(39, 84, 134, 0.16);
       border-radius: 12px;
-      background: rgba(5, 16, 31, .60);
+      background: #f8fbff;
+      color: #24364c;
     }
 
-    .result-box.green { border-left: 5px solid var(--green); }
-    .result-box.yellow { border-left: 5px solid var(--yellow); }
-    .result-box.red { border-left: 5px solid var(--red); }
+    .result-box.green {
+      border-left: 5px solid #148a58;
+      background: #effbf5;
+    }
+
+    .result-box.yellow {
+      border-left: 5px solid #d59500;
+      background: #fff9e7;
+    }
+
+    .result-box.red {
+      border-left: 5px solid #c92f4a;
+      background: #fff1f4;
+    }
 
     .status {
       display: block;
@@ -263,10 +282,11 @@
 
     .clone-card {
       padding: 12px;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(39, 84, 134, 0.16);
       border-left: 5px solid var(--blue);
       border-radius: 11px;
-      background: rgba(5,16,31,.56);
+      background: #f8fbff;
+      color: #24364c;
     }
 
     .clone-card.b { border-left-color: var(--purple); }
@@ -291,14 +311,16 @@
       gap: 9px;
       align-items: flex-start;
       padding: 11px;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(39, 84, 134, 0.16);
       border-radius: 11px;
-      background: rgba(5,16,31,.55);
+      background: #f8fbff;
+      color: #24364c;
       cursor: pointer;
     }
 
     label.option:hover {
-      border-color: rgba(69,167,255,.65);
+      border-color: rgba(20, 121, 209, 0.62);
+      background: #f1f8ff;
     }
 
     input[type="checkbox"] {
@@ -317,53 +339,65 @@
 
     .metric {
       padding: 12px 8px;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(39, 84, 134, 0.16);
       border-radius: 12px;
-      background: rgba(5,16,31,.56);
+      background: #f8fbff;
       text-align: center;
     }
 
     .metric b {
       display: block;
-      color: white;
+      color: #1d3148;
       font-size: 1.2rem;
     }
 
     .metric span {
-      color: var(--muted);
-      font-size: .77rem;
+      color: #5b6b80;
+      font-size: 0.77rem;
     }
 
     table {
       width: 100%;
       margin-top: 12px;
       border-collapse: collapse;
-      font-size: .88rem;
+      font-size: 0.88rem;
     }
 
-    th, td {
+    th,
+    td {
       padding: 10px;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid rgba(39, 84, 134, 0.14);
       text-align: left;
       vertical-align: top;
     }
 
     th {
-      color: #c7e4ff;
-      background: rgba(69,167,255,.08);
+      color: #1b5f9e;
+      background: #edf7ff;
     }
 
     .pill {
       display: inline-block;
       padding: 4px 8px;
       border-radius: 999px;
-      font-size: .76rem;
+      font-size: 0.76rem;
       font-weight: bold;
     }
 
-    .pill.green { background: rgba(72,218,147,.14); color: #8cf4bf; }
-    .pill.yellow { background: rgba(255,224,112,.14); color: #ffea8a; }
-    .pill.red { background: rgba(255,93,120,.14); color: #ffa2b3; }
+    .pill.green {
+      background: #e6f8ef;
+      color: #0e7b4c;
+    }
+
+    .pill.yellow {
+      background: #fff5cf;
+      color: #8b6100;
+    }
+
+    .pill.red {
+      background: #ffe5eb;
+      color: #b62640;
+    }
 
     .chart-wrap {
       height: 385px;
@@ -374,9 +408,9 @@
       width: 100%;
       height: 430px;
       margin-top: 10px;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(39, 84, 134, 0.18);
       border-radius: 13px;
-      background: #071321;
+      background: #f7fbff;
     }
 
     .checklist {
@@ -387,9 +421,10 @@
 
     .check {
       padding: 10px;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(39, 84, 134, 0.16);
       border-radius: 10px;
-      background: rgba(5,16,31,.55);
+      background: #f8fbff;
+      color: #24364c;
     }
 
     footer {
@@ -397,8 +432,8 @@
       margin: auto;
       padding: 4px 18px 26px;
       text-align: center;
-      color: #a7bad2;
-      font-size: .85rem;
+      color: #5b6b80;
+      font-size: 0.85rem;
     }
 
     @media (max-width: 1000px) {
@@ -424,16 +459,21 @@
 <body>
   <header>
     <h1>NEOIMMUNE AI Lab</h1>
+
     <p class="subtitle">
       Evolution-Aware, Safety-Validated, Closed-Loop Personalized Cancer Therapy
     </p>
+
     <div class="tagline">
       PREDICT → CHALLENGE → VALIDATE → REVIEW → TREAT → MONITOR → ADAPT
     </div>
 
     <div class="disclaimer">
       <strong>Research and educational prototype only.</strong>
-      This website uses simulated, cohort-inspired demo data. It does not diagnose cancer, predict an individual patient’s cancer evolution, prescribe treatment, identify clinically valid neoantigens, or replace doctors, laboratory validation, clinical trials, ethics approval, regulatory review, or informed consent.
+      This website uses simulated, cohort-inspired demo data. It does not diagnose cancer,
+      predict individual patient outcomes, prescribe treatment, identify clinically valid neoantigens,
+      or replace doctors, laboratory validation, clinical trials, ethics approval, regulatory review,
+      or informed consent.
     </div>
   </header>
 
@@ -462,17 +502,22 @@
 
     <section class="grid">
 
-      <!-- CANCER EXPLORER -->
       <div class="card span-12" id="explorer">
         <h2 class="blue">1. Cancer Explorer</h2>
+
         <p class="small">
-          Search and select a cancer type. The prototype loads a fictional, cohort-inspired tumor-clone example for education. It does not load or analyze patient records.
+          Search and select a cancer type. The website loads a fictional, cohort-inspired tumor-clone model for demonstration.
         </p>
 
         <div class="form-row">
           <div>
             <label class="small">Search cancer type</label>
-            <input id="cancerSearch" type="text" placeholder="Type melanoma, lung, breast, leukemia..." oninput="filterCancerList()" />
+            <input
+              id="cancerSearch"
+              type="text"
+              placeholder="Type melanoma, lung, breast, leukemia..."
+              oninput="filterCancerList()"
+            />
           </div>
 
           <div>
@@ -487,11 +532,12 @@
         </div>
       </div>
 
-      <!-- TUMOR MAPPER -->
       <div class="card span-5" id="twin">
         <h2 class="blue">2. Tumor Mapper and Digital Twin</h2>
+
         <p class="small">
-          The Digital Twin is a simplified computational representation of available tumor features. Here, all data are simulated.
+          The Digital Twin is a simplified computational representation of available tumor features.
+          In this version, all clone data are simulated.
         </p>
 
         <div id="cloneContainer" class="clone-grid"></div>
@@ -504,11 +550,11 @@
         </div>
       </div>
 
-      <!-- NEOANTIGEN / SAFETY -->
       <div class="card span-7">
         <h2 class="green">3. Candidate Target and Safety Filter</h2>
+
         <p class="small">
-          These fictional N1–N6 targets are used only to demonstrate prioritization logic. Commonly altered cancer genes are not automatically valid neoantigens.
+          Fictional N1–N6 targets demonstrate prioritization logic. A frequently altered cancer gene is not automatically a safe or valid neoantigen.
         </p>
 
         <div style="overflow-x:auto;">
@@ -522,6 +568,7 @@
                 <th>Prototype decision</th>
               </tr>
             </thead>
+
             <tbody id="targetTableBody"></tbody>
           </table>
         </div>
@@ -530,17 +577,17 @@
           <strong class="green">Conceptual priority score:</strong><br>
           <span class="small">
             Sᵢ = wₘMᵢ + wₑEᵢ + wₕHᵢ + w𝚌Cᵢ + wₚPᵢ − wᵣRᵢ − wᵤUᵢ
-            <br>
-            This is a learning model only. It is not clinically validated.
+            <br />
+            This is an educational scoring example only. It is not clinically validated.
           </span>
         </div>
       </div>
 
-      <!-- STRATEGY BUILDER -->
       <div class="card span-5" id="strategy">
         <h2 class="purple">4. Multi-Target Strategy Builder</h2>
+
         <p class="small">
-          Choose simulated targets. The simulator compares how much of the modeled tumor is covered at baseline.
+          Choose simulated targets and compare initial tumor-clone coverage.
         </p>
 
         <div id="targetOptions" class="target-grid"></div>
@@ -553,14 +600,17 @@
             <b id="coverage">0%</b>
             <span>Baseline coverage</span>
           </div>
+
           <div class="metric">
             <b id="selectedCount">0</b>
             <span>Targets selected</span>
           </div>
+
           <div class="metric">
             <b id="uncovered">0%</b>
             <span>Uncovered baseline</span>
           </div>
+
           <div class="metric">
             <b id="dominantClone">--</b>
             <span>Final modeled clone</span>
@@ -568,42 +618,61 @@
         </div>
       </div>
 
-      <!-- RED TEAM -->
       <div class="card span-7" id="redteam">
         <h2 class="red">5. Therapeutic Red Team</h2>
+
         <p class="small">
-          The Red Team deliberately tests possible escape mechanisms under selected assumptions. These events are illustrative and do not predict a real patient outcome.
+          The Red Team deliberately tests possible cancer escape mechanisms under selected assumptions.
+          It does not predict an individual patient’s future cancer behavior.
         </p>
 
         <div class="toggle-grid">
           <label class="option">
-            <input type="checkbox" id="targetLoss" checked>
-            <span><strong>Target loss</strong><br><small>Simulate loss of a selected target after several cycles.</small></span>
+            <input type="checkbox" id="targetLoss" checked />
+            <span>
+              <strong>Target loss</strong><br />
+              <small>Simulate loss of a selected target after several time points.</small>
+            </span>
           </label>
 
           <label class="option">
-            <input type="checkbox" id="resistantExpansion" checked>
-            <span><strong>Resistant-clone expansion</strong><br><small>Untargeted clones gain a survival advantage.</small></span>
+            <input type="checkbox" id="resistantExpansion" checked />
+            <span>
+              <strong>Resistant-clone expansion</strong><br />
+              <small>Untargeted clones gain a simulated survival advantage.</small>
+            </span>
           </label>
 
           <label class="option">
-            <input type="checkbox" id="hlaLoss">
-            <span><strong>Reduced antigen presentation</strong><br><small>Modeled immune recognition becomes weaker.</small></span>
+            <input type="checkbox" id="hlaLoss" />
+            <span>
+              <strong>Reduced antigen presentation</strong><br />
+              <small>Simulated immune recognition becomes weaker.</small>
+            </span>
           </label>
 
           <label class="option">
-            <input type="checkbox" id="newMutation">
-            <span><strong>New mutation event</strong><br><small>Simulate a later resistance-related change.</small></span>
+            <input type="checkbox" id="newMutation" />
+            <span>
+              <strong>New mutation event</strong><br />
+              <small>Simulate a later resistance-associated molecular change.</small>
+            </span>
           </label>
 
           <label class="option">
-            <input type="checkbox" id="compensatory">
-            <span><strong>Compensatory pathway</strong><br><small>One clone receives a survival-signal advantage.</small></span>
+            <input type="checkbox" id="compensatory" />
+            <span>
+              <strong>Compensatory pathway</strong><br />
+              <small>A clone receives a simulated survival-signaling advantage.</small>
+            </span>
           </label>
 
           <label class="option">
-            <input type="checkbox" id="highHeterogeneity">
-            <span><strong>High heterogeneity</strong><br><small>Add a small fourth clone with incomplete coverage.</small></span>
+            <input type="checkbox" id="highHeterogeneity" />
+            <span>
+              <strong>High heterogeneity</strong><br />
+              <small>Add a small fourth clone with incomplete coverage.</small>
+            </span>
           </label>
         </div>
 
@@ -613,11 +682,11 @@
         </div>
       </div>
 
-      <!-- EVOLUTION CHART -->
       <div class="card span-7" id="evolution">
         <h2 class="orange">6. Simulated Tumor Evolution Timeline</h2>
+
         <p class="small">
-          Clone proportions are shown over ten simulated time points. The values are generated from transparent demonstration rules, not real clinical probabilities.
+          Clone proportions over ten simulated time points. These values are generated using transparent illustration rules, not real clinical probabilities.
         </p>
 
         <div class="chart-wrap">
@@ -625,61 +694,63 @@
         </div>
       </div>
 
-      <!-- CYTOSCAPE PATHWAYS -->
       <div class="card span-5">
         <h2 class="blue">7. Modeled Evolution Pathways</h2>
+
         <p class="small">
-          The network shows baseline clones, selected strategy, activated Red-Team events, possible escape, and the final dominant modeled clone.
+          This pathway graph shows baseline clones, selected targets, activated Red-Team events, potential escape, and the final dominant clone in the simulation.
         </p>
 
         <div id="cy"></div>
       </div>
 
-      <!-- MONITORING -->
       <div class="card span-6">
         <h2 class="purple">8. Closed-Loop Monitoring</h2>
+
         <p class="small">
-          NEOIMMUNE AI treats treatment as a repeating process rather than a one-time prediction.
+          NEOIMMUNE AI treats treatment as a repeated learning and validation process, not a one-time prediction.
         </p>
 
         <div class="checklist">
-          <div class="check">1. Baseline tumor and normal-tissue information are mapped.</div>
-          <div class="check">2. Candidate targets and safety risks are prioritized.</div>
-          <div class="check">3. The Red Team tests modeled escape routes.</div>
-          <div class="check">4. Laboratory and preclinical validation are required.</div>
-          <div class="check">5. Follow-up data may include clinical assessment, imaging, molecular testing, or ctDNA where appropriate.</div>
-          <div class="check">6. If recurrence or molecular evolution is suspected, the Digital Twin is updated and the framework is repeated.</div>
+          <div class="check">1. Map baseline tumor and normal-tissue information.</div>
+          <div class="check">2. Rank candidate targets and potential safety risks.</div>
+          <div class="check">3. Use the Red Team to test possible escape routes.</div>
+          <div class="check">4. Require laboratory and preclinical validation.</div>
+          <div class="check">5. Monitor through clinically appropriate assessment, imaging, molecular testing, or ctDNA where appropriate.</div>
+          <div class="check">6. Update the Digital Twin if recurrence, resistance, or evolution is suspected.</div>
         </div>
       </div>
 
-      <!-- EVIDENCE GATE -->
       <div class="card span-6" id="evidence">
         <h2 class="green">9. Safety and Evidence Gate</h2>
+
         <p class="small">
-          Passing a computer simulation does not establish safety or clinical efficacy.
+          A computer result is not sufficient evidence for patient treatment.
         </p>
 
         <div class="checklist">
-          <div class="check">🔬 Target presence and expression must be confirmed.</div>
-          <div class="check">🧪 Immune recognition must be investigated when relevant.</div>
-          <div class="check">🛡️ Appropriate normal-cell safety testing is required.</div>
-          <div class="check">🚚 RNA cargo and nanocarrier delivery require validation.</div>
-          <div class="check">🐁 Appropriate preclinical studies are required.</div>
-          <div class="check">👩‍⚕️ Clinical, ethical, regulatory, and patient-consent processes are required.</div>
+          <div class="check">🔬 Confirm target presence and expression.</div>
+          <div class="check">🧪 Investigate immune recognition where relevant.</div>
+          <div class="check">🛡️ Test appropriate normal-cell safety.</div>
+          <div class="check">🚚 Validate RNA cargo and nanocarrier delivery.</div>
+          <div class="check">🐁 Conduct appropriate preclinical studies.</div>
+          <div class="check">👩‍⚕️ Require clinical, ethical, regulatory, and consent review.</div>
         </div>
 
-        <button class="warning" onclick="downloadReport()">Download Simulated Scenario Report (JSON)</button>
+        <button class="warning" onclick="downloadReport()">
+          Download Simulated Scenario Report (JSON)
+        </button>
       </div>
 
-      <!-- PRESENTATION -->
       <div class="card span-12">
         <h2 class="yellow">Suggested Presentation Statement</h2>
+
         <p>
           “NEOIMMUNE AI Lab is a cancer-type–agnostic research visualization prototype.
           A user can select a cancer context, load a simulated heterogeneous tumor model,
-          test target combinations, activate possible cancer-escape mechanisms, and visualize
-          plausible tumor-evolution pathways under defined assumptions. The platform generates
-          hypotheses for research and education; it does not provide patient-specific treatment recommendations.”
+          test target combinations, activate plausible cancer-escape mechanisms, and visualize
+          possible tumor-evolution pathways under defined assumptions. It is intended for research
+          education and hypothesis generation, not patient-specific treatment recommendation.”
         </p>
       </div>
     </section>
@@ -690,10 +761,11 @@
   </footer>
 
   <script>
-    /* ==========================================================
-       NEOIMMUNE AI LAB
-       All values below are simulated educational demo values.
-       ========================================================== */
+    /*
+      NEOIMMUNE AI LAB
+      All cancer examples, clone structures, target names, evidence labels,
+      fitness values, and evolution results are simulated for education.
+    */
 
     const cancerTypes = [
       {
@@ -702,7 +774,6 @@
         shortName: "Melanoma",
         category: "Skin cancer",
         genes: ["BRAF", "NRAS", "NF1", "TP53", "CDKN2A"],
-        targets: ["N1", "N2", "N3", "N4", "N5", "N6"],
         clones: [
           { id: "A", percent: 50, mutations: ["BRAF"], targets: ["N1", "N3"] },
           { id: "B", percent: 30, mutations: ["NRAS"], targets: ["N2", "N3"] },
@@ -715,7 +786,6 @@
         shortName: "Lung Adenocarcinoma",
         category: "Lung cancer",
         genes: ["TP53", "KRAS", "EGFR", "STK11", "KEAP1"],
-        targets: ["N1", "N2", "N3", "N4", "N5"],
         clones: [
           { id: "A", percent: 55, mutations: ["KRAS", "TP53"], targets: ["N1", "N2"] },
           { id: "B", percent: 25, mutations: ["STK11"], targets: ["N3"] },
@@ -728,7 +798,6 @@
         shortName: "Lung Squamous Cancer",
         category: "Lung cancer",
         genes: ["TP53", "CDKN2A", "PIK3CA", "NFE2L2", "SOX2"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 48, mutations: ["TP53"], targets: ["N1", "N3"] },
           { id: "B", percent: 32, mutations: ["PIK3CA"], targets: ["N2"] },
@@ -741,7 +810,6 @@
         shortName: "Breast Cancer",
         category: "Breast cancer",
         genes: ["PIK3CA", "TP53", "GATA3", "CDH1", "MAP3K1"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 60, mutations: ["PIK3CA"], targets: ["N1"] },
           { id: "B", percent: 25, mutations: ["TP53"], targets: ["N2", "N3"] },
@@ -754,7 +822,6 @@
         shortName: "Colon Cancer",
         category: "Colorectal cancer",
         genes: ["APC", "TP53", "KRAS", "PIK3CA", "SMAD4"],
-        targets: ["N1", "N2", "N3", "N4", "N5"],
         clones: [
           { id: "A", percent: 50, mutations: ["APC", "KRAS"], targets: ["N1", "N3"] },
           { id: "B", percent: 30, mutations: ["TP53"], targets: ["N2"] },
@@ -767,7 +834,6 @@
         shortName: "Rectal Cancer",
         category: "Colorectal cancer",
         genes: ["APC", "TP53", "KRAS", "PIK3CA", "SMAD4"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 52, mutations: ["APC"], targets: ["N1", "N2"] },
           { id: "B", percent: 28, mutations: ["KRAS"], targets: ["N3"] },
@@ -780,7 +846,6 @@
         shortName: "Bladder Cancer",
         category: "Urinary cancer",
         genes: ["TP53", "FGFR3", "KDM6A", "PIK3CA", "RB1"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 45, mutations: ["FGFR3"], targets: ["N1"] },
           { id: "B", percent: 35, mutations: ["TP53"], targets: ["N2", "N3"] },
@@ -793,7 +858,6 @@
         shortName: "Glioblastoma",
         category: "Brain cancer",
         genes: ["TP53", "PTEN", "EGFR", "NF1", "PIK3R1"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 50, mutations: ["EGFR"], targets: ["N1"] },
           { id: "B", percent: 30, mutations: ["PTEN"], targets: ["N2", "N3"] },
@@ -806,7 +870,6 @@
         shortName: "Ovarian Cancer",
         category: "Gynecological cancer",
         genes: ["TP53", "BRCA1", "BRCA2", "NF1", "RB1"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 55, mutations: ["TP53"], targets: ["N1", "N2"] },
           { id: "B", percent: 25, mutations: ["BRCA1"], targets: ["N3"] },
@@ -819,7 +882,6 @@
         shortName: "Kidney Cancer",
         category: "Kidney cancer",
         genes: ["VHL", "PBRM1", "SETD2", "BAP1", "MTOR"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 55, mutations: ["VHL"], targets: ["N1"] },
           { id: "B", percent: 25, mutations: ["PBRM1"], targets: ["N2", "N3"] },
@@ -832,7 +894,6 @@
         shortName: "Papillary Kidney Cancer",
         category: "Kidney cancer",
         genes: ["MET", "CDKN2A", "SETD2", "NF2", "BAP1"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 50, mutations: ["MET"], targets: ["N1", "N2"] },
           { id: "B", percent: 30, mutations: ["SETD2"], targets: ["N3"] },
@@ -845,7 +906,6 @@
         shortName: "Liver Cancer",
         category: "Liver cancer",
         genes: ["TP53", "CTNNB1", "AXIN1", "ARID1A", "NFE2L2"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 50, mutations: ["CTNNB1"], targets: ["N1"] },
           { id: "B", percent: 30, mutations: ["TP53"], targets: ["N2", "N3"] },
@@ -858,7 +918,6 @@
         shortName: "Pancreatic Cancer",
         category: "Pancreatic cancer",
         genes: ["KRAS", "TP53", "CDKN2A", "SMAD4", "ARID1A"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 58, mutations: ["KRAS"], targets: ["N1"] },
           { id: "B", percent: 25, mutations: ["TP53"], targets: ["N2", "N3"] },
@@ -871,7 +930,6 @@
         shortName: "Prostate Cancer",
         category: "Prostate cancer",
         genes: ["SPOP", "TP53", "PTEN", "FOXA1", "ATM"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 55, mutations: ["SPOP"], targets: ["N1"] },
           { id: "B", percent: 25, mutations: ["PTEN"], targets: ["N2", "N3"] },
@@ -884,7 +942,6 @@
         shortName: "Thyroid Cancer",
         category: "Thyroid cancer",
         genes: ["BRAF", "NRAS", "HRAS", "TERT", "TP53"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 60, mutations: ["BRAF"], targets: ["N1", "N3"] },
           { id: "B", percent: 25, mutations: ["NRAS"], targets: ["N2"] },
@@ -897,7 +954,6 @@
         shortName: "Endometrial Cancer",
         category: "Gynecological cancer",
         genes: ["PTEN", "PIK3CA", "ARID1A", "TP53", "POLE"],
-        targets: ["N1", "N2", "N3", "N4", "N5"],
         clones: [
           { id: "A", percent: 50, mutations: ["PTEN", "PIK3CA"], targets: ["N1", "N3"] },
           { id: "B", percent: 30, mutations: ["ARID1A"], targets: ["N2"] },
@@ -910,7 +966,6 @@
         shortName: "Stomach Cancer",
         category: "Gastrointestinal cancer",
         genes: ["TP53", "ARID1A", "PIK3CA", "ERBB2", "CDH1"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 48, mutations: ["TP53"], targets: ["N1", "N2"] },
           { id: "B", percent: 32, mutations: ["ARID1A"], targets: ["N3"] },
@@ -923,7 +978,6 @@
         shortName: "Head and Neck Cancer",
         category: "Head and neck cancer",
         genes: ["TP53", "CDKN2A", "PIK3CA", "NOTCH1", "FAT1"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 50, mutations: ["TP53"], targets: ["N1", "N3"] },
           { id: "B", percent: 30, mutations: ["PIK3CA"], targets: ["N2"] },
@@ -934,9 +988,8 @@
         id: "SARC",
         name: "Sarcoma",
         shortName: "Sarcoma",
-        category: "Soft-tissue / bone cancer",
+        category: "Soft-tissue and bone cancer",
         genes: ["TP53", "ATRX", "RB1", "PIK3CA", "NF1"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 50, mutations: ["TP53"], targets: ["N1"] },
           { id: "B", percent: 30, mutations: ["ATRX"], targets: ["N2", "N3"] },
@@ -949,7 +1002,6 @@
         shortName: "Acute Myeloid Leukemia",
         category: "Blood cancer",
         genes: ["FLT3", "NPM1", "DNMT3A", "IDH1", "IDH2"],
-        targets: ["N1", "N2", "N3", "N4"],
         clones: [
           { id: "A", percent: 55, mutations: ["NPM1", "FLT3"], targets: ["N1", "N2"] },
           { id: "B", percent: 25, mutations: ["DNMT3A"], targets: ["N3"] },
@@ -965,13 +1017,13 @@
     let latestReport = null;
 
     const cloneColors = {
-      A: "#45a7ff",
-      B: "#aa7cff",
-      C: "#ffad4e",
-      D: "#48da93"
+      A: "#1479d1",
+      B: "#6e45cf",
+      C: "#d97706",
+      D: "#148a58"
     };
 
-    function deepCopy(value) {
+    function copyData(value) {
       return JSON.parse(JSON.stringify(value));
     }
 
@@ -983,13 +1035,18 @@
         const option = document.createElement("option");
         option.value = cancer.id;
         option.textContent = `${cancer.shortName} (${cancer.id})`;
-        if (selectedId && cancer.id === selectedId) option.selected = true;
+
+        if (selectedId && cancer.id === selectedId) {
+          option.selected = true;
+        }
+
         select.appendChild(option);
       });
     }
 
     function filterCancerList() {
       const query = document.getElementById("cancerSearch").value.trim().toLowerCase();
+
       const filtered = cancerTypes.filter(cancer =>
         cancer.id.toLowerCase().includes(query) ||
         cancer.name.toLowerCase().includes(query) ||
@@ -1002,9 +1059,13 @@
     }
 
     function loadCancerModel() {
-      const id = document.getElementById("cancerSelect").value;
-      currentCancer = cancerTypes.find(cancer => cancer.id === id) || cancerTypes[0];
-      currentClones = deepCopy(currentCancer.clones);
+      const selectedId = document.getElementById("cancerSelect").value;
+
+      currentCancer =
+        cancerTypes.find(cancer => cancer.id === selectedId) ||
+        cancerTypes[0];
+
+      currentClones = copyData(currentCancer.clones);
 
       renderCancerInfo();
       renderClones();
@@ -1014,22 +1075,21 @@
     }
 
     function renderCancerInfo() {
-      const info = document.getElementById("cancerInfo");
-
-      info.innerHTML = `
+      document.getElementById("cancerInfo").innerHTML = `
         <span class="status">LOADED DEMO CANCER CONTEXT: ${currentCancer.shortName}</span>
         <strong>Category:</strong> ${currentCancer.category}<br>
         <strong>Commonly altered genes shown for learning:</strong> ${currentCancer.genes.join(", ")}<br>
-        <strong>Demo clone model:</strong> ${currentClones.map(c => `Clone ${c.id} (${c.percent}%)`).join(" • ")}<br>
+        <strong>Demo clone model:</strong> ${currentClones.map(clone => `Clone ${clone.id} (${clone.percent}%)`).join(" • ")}<br>
         <small>
-          This model is fictional and cohort-inspired. The listed genes are not automatically validated therapeutic targets or neoantigens.
+          This model is fictional and cohort-inspired. The listed genes are not automatically validated neoantigens or approved treatment targets.
         </small>
       `;
 
       document.getElementById("digitalTwinText").innerHTML = `
         Cancer context: <strong>${currentCancer.shortName} (${currentCancer.id})</strong><br>
         Baseline clone count: <strong>${currentClones.length}</strong><br>
-        Feature examples: mutations, estimated clone proportions, fictional target expression, selected stressors, and simulation time points.<br>
+        Features represented: simulated mutations, clone proportions, fictional target availability,
+        selected Red-Team stressors, and evolution time points.<br>
         Status: <strong>Simulated demo only.</strong>
       `;
     }
@@ -1051,11 +1111,10 @@
 
     function renderTargetOptions() {
       const container = document.getElementById("targetOptions");
-      const targetSet = new Set(currentClones.flatMap(clone => clone.targets));
-      const targets = [...targetSet].sort();
+      const targets = [...new Set(currentClones.flatMap(clone => clone.targets))].sort();
 
       container.innerHTML = targets.map((target, index) => {
-        const matchingClones = currentClones
+        const cloneNames = currentClones
           .filter(clone => clone.targets.includes(target))
           .map(clone => `Clone ${clone.id}`)
           .join(", ");
@@ -1067,7 +1126,7 @@
             <input class="target-check" type="checkbox" value="${target}" ${checked}>
             <span>
               <strong>${target}</strong><br>
-              <small>Modeled coverage: ${matchingClones}</small>
+              <small>Modeled coverage: ${cloneNames}</small>
             </span>
           </label>
         `;
@@ -1079,22 +1138,35 @@
       const body = document.getElementById("targetTableBody");
 
       body.innerHTML = allTargets.map((target, index) => {
-        const covered = currentClones
+        const coveredClones = currentClones
           .filter(clone => clone.targets.includes(target))
           .map(clone => `Clone ${clone.id}`)
           .join(", ");
 
-        const risk = index % 4 === 0 ? "Low" : index % 4 === 1 ? "Moderate" : "Uncertain";
-        const evidence = index % 3 === 0 ? "Higher" : index % 3 === 1 ? "Moderate" : "Preliminary";
+        const evidence =
+          index % 3 === 0 ? "Higher" :
+          index % 3 === 1 ? "Moderate" :
+          "Preliminary";
+
+        const risk =
+          index % 4 === 0 ? "Low" :
+          index % 4 === 1 ? "Moderate" :
+          "Uncertain";
 
         let status = `<span class="pill green">Further study</span>`;
-        if (risk === "Moderate") status = `<span class="pill yellow">Needs checking</span>`;
-        if (risk === "Uncertain") status = `<span class="pill yellow">Needs validation</span>`;
+
+        if (risk === "Moderate") {
+          status = `<span class="pill yellow">Needs checking</span>`;
+        }
+
+        if (risk === "Uncertain") {
+          status = `<span class="pill yellow">Needs validation</span>`;
+        }
 
         return `
           <tr>
             <td><strong>${target}</strong></td>
-            <td>${covered}</td>
+            <td>${coveredClones}</td>
             <td>${evidence}</td>
             <td>${risk}</td>
             <td>${status}</td>
@@ -1114,7 +1186,8 @@
     }
 
     function getSelectedTargets() {
-      return [...document.querySelectorAll(".target-check:checked")].map(input => input.value);
+      return [...document.querySelectorAll(".target-check:checked")]
+        .map(input => input.value);
     }
 
     function getSimulationOptions() {
@@ -1128,28 +1201,34 @@
       };
     }
 
+    function normalizeClones(clones) {
+      const total = clones.reduce((sum, clone) => sum + clone.percent, 0);
+
+      return clones.map(clone => ({
+        ...clone,
+        percent: (clone.percent / total) * 100
+      }));
+    }
+
     function addFourthCloneIfNeeded(clones, options) {
-      if (!options.highHeterogeneity) return clones;
+      if (!options.highHeterogeneity) {
+        return clones;
+      }
 
-      const newClones = deepCopy(clones);
-      newClones.forEach(clone => clone.percent = Number((clone.percent * 0.92).toFixed(1)));
+      const expanded = copyData(clones);
 
-      newClones.push({
+      expanded.forEach(clone => {
+        clone.percent = clone.percent * 0.92;
+      });
+
+      expanded.push({
         id: "D",
         percent: 8,
         mutations: ["Minor resistant feature"],
         targets: ["N6"]
       });
 
-      return normalizeClones(newClones);
-    }
-
-    function normalizeClones(clones) {
-      const total = clones.reduce((sum, clone) => sum + clone.percent, 0);
-      return clones.map(clone => ({
-        ...clone,
-        percent: (clone.percent / total) * 100
-      }));
+      return normalizeClones(expanded);
     }
 
     function calculateCoverage(clones, selectedTargets) {
@@ -1158,23 +1237,26 @@
         .reduce((sum, clone) => sum + clone.percent, 0);
     }
 
-    function fitnessForClone(clone, selectedTargets, options, step, index) {
-      const targeted = clone.targets.some(target => selectedTargets.includes(target));
-      let fitness = targeted ? 0.43 : 1.18;
+    function calculateFitness(clone, selectedTargets, options, step, index) {
+      const isTargeted = clone.targets.some(target =>
+        selectedTargets.includes(target)
+      );
 
-      if (options.targetLoss && step >= 4 && targeted && index === 0) {
+      let fitness = isTargeted ? 0.43 : 1.18;
+
+      if (options.targetLoss && step >= 4 && isTargeted && index === 0) {
         fitness += 0.28;
       }
 
-      if (options.resistantExpansion && !targeted) {
+      if (options.resistantExpansion && !isTargeted) {
         fitness += 0.25;
       }
 
-      if (options.hlaLoss && targeted) {
+      if (options.hlaLoss && isTargeted) {
         fitness += 0.22;
       }
 
-      if (options.newMutation && step >= 6 && index === clone.id.length % 3) {
+      if (options.newMutation && step >= 6 && index === 2) {
         fitness += 0.18;
       }
 
@@ -1190,11 +1272,15 @@
     }
 
     function runSimulation() {
-      if (!currentCancer) return;
+      if (!currentCancer) {
+        return;
+      }
 
       const selectedTargets = getSelectedTargets();
       const options = getSimulationOptions();
-      let clones = addFourthCloneIfNeeded(deepCopy(currentClones), options);
+
+      let clones = addFourthCloneIfNeeded(copyData(currentClones), options);
+
       const coverage = calculateCoverage(clones, selectedTargets);
       const timeline = {};
 
@@ -1203,12 +1289,18 @@
       });
 
       for (let step = 1; step <= 10; step++) {
-        const weighted = clones.map((clone, index) => ({
+        const weightedClones = clones.map((clone, index) => ({
           ...clone,
-          percent: clone.percent * fitnessForClone(clone, selectedTargets, options, step, index)
+          percent: clone.percent * calculateFitness(
+            clone,
+            selectedTargets,
+            options,
+            step,
+            index
+          )
         }));
 
-        clones = normalizeClones(weighted);
+        clones = normalizeClones(weightedClones);
 
         clones.forEach(clone => {
           timeline[clone.id].push(Number(clone.percent.toFixed(1)));
@@ -1225,28 +1317,29 @@
 
       updateRiskBox(coverage, finalClone, selectedTargets, options);
       updateChart(timeline);
-      updatePathwayGraph(clones, selectedTargets, options, finalClone);
+      updatePathwayGraph(selectedTargets, options, finalClone);
 
       latestReport = {
         generatedAt: new Date().toISOString(),
-        warning: "Simulated educational scenario only. Not patient data, medical advice, or a clinical prediction.",
+        disclaimer:
+          "Simulated educational scenario only. This is not patient data, medical advice, a diagnosis, a real neoantigen prediction, or a clinical outcome prediction.",
         cancer: {
           id: currentCancer.id,
           name: currentCancer.name,
           category: currentCancer.category,
-          demoGenes: currentCancer.genes
+          exampleGenes: currentCancer.genes
         },
-        selectedTargets,
+        selectedTargets: selectedTargets,
         redTeamOptions: options,
         baselineCoveragePercent: Number(coverage.toFixed(1)),
-        baselineClones: addFourthCloneIfNeeded(deepCopy(currentClones), options),
+        baselineClones: addFourthCloneIfNeeded(copyData(currentClones), options),
         finalModeledClones: clones.map(clone => ({
           id: clone.id,
           proportionPercent: Number(clone.percent.toFixed(1)),
-          fictionalMutations: clone.mutations,
+          fictionalMolecularFeatures: clone.mutations,
           modeledTargets: clone.targets
         })),
-        timeline,
+        timeline: timeline,
         finalDominantModeledClone: {
           id: finalClone.id,
           proportionPercent: Number(finalClone.percent.toFixed(1))
@@ -1254,49 +1347,55 @@
       };
     }
 
-    function updateRiskBox(coverage, finalClone, targets, options) {
-      const box = document.getElementById("riskBox");
+    function updateRiskBox(coverage, finalClone, selectedTargets, options) {
+      const riskBox = document.getElementById("riskBox");
+
       const activeEvents = Object.values(options).filter(Boolean).length;
 
-      let level = "LOW";
-      let boxClass = "green";
+      let riskLevel = "LOW";
+      let riskClass = "green";
       let message = "";
 
       if (coverage < 100 || finalClone.percent > 50 || activeEvents >= 2) {
-        level = "MODERATE";
-        boxClass = "yellow";
+        riskLevel = "MODERATE";
+        riskClass = "yellow";
       }
 
-      if (coverage < 70 || finalClone.percent > 68 || targets.length === 0) {
-        level = "HIGH";
-        boxClass = "red";
+      if (coverage < 70 || finalClone.percent > 68 || selectedTargets.length === 0) {
+        riskLevel = "HIGH";
+        riskClass = "red";
       }
 
-      if (level === "LOW") {
-        message = "No major escape pattern was detected in this simplified demo scenario. Independent target, safety, laboratory, preclinical, and clinical validation would still be required.";
-      } else if (level === "MODERATE") {
-        message = `A plausible escape vulnerability was modeled. Clone ${finalClone.id} becomes relatively dominant at ${finalClone.percent.toFixed(1)}% under the selected assumptions. Re-check coverage, target stability, antigen presentation, and validation evidence.`;
+      if (riskLevel === "LOW") {
+        message =
+          "No major escape pattern was detected in this simplified demonstration scenario. Independent target, safety, laboratory, preclinical, and clinical validation would still be required.";
+      } else if (riskLevel === "MODERATE") {
+        message =
+          `A plausible escape vulnerability was modeled. Clone ${finalClone.id} becomes relatively dominant at ${finalClone.percent.toFixed(1)}% under the selected assumptions. Re-check target coverage, target stability, antigen presentation, and validation evidence.`;
       } else {
-        message = `Major modeled vulnerability detected. Clone ${finalClone.id} becomes dominant at ${finalClone.percent.toFixed(1)}%, or baseline clone coverage is low. The prototype response is: redesign → stress-test again → validate experimentally.`;
+        message =
+          `Major modeled vulnerability detected. Clone ${finalClone.id} becomes dominant at ${finalClone.percent.toFixed(1)}%, or baseline coverage is low. The suggested research action is: redesign → stress-test again → validate experimentally.`;
       }
 
-      box.className = "result-box " + boxClass;
-      box.innerHTML = `
-        <span class="status">MODELED RISK: ${level}</span>
+      riskBox.className = "result-box " + riskClass;
+      riskBox.innerHTML = `
+        <span class="status">MODELED RISK: ${riskLevel}</span>
         ${message}
       `;
     }
 
     function updateChart(timeline) {
-      if (chart) chart.destroy();
+      if (chart) {
+        chart.destroy();
+      }
 
-      const ids = Object.keys(timeline);
-      const labels = ["Baseline", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10"];
-      const datasets = ids.map(id => ({
+      const cloneIds = Object.keys(timeline);
+
+      const datasets = cloneIds.map(id => ({
         label: "Clone " + id,
         data: timeline[id],
-        borderColor: cloneColors[id] || "#ffffff",
-        backgroundColor: (cloneColors[id] || "#ffffff") + "22",
+        borderColor: cloneColors[id] || "#152238",
+        backgroundColor: (cloneColors[id] || "#152238") + "22",
         tension: 0.28,
         fill: false,
         borderWidth: 3,
@@ -1305,182 +1404,212 @@
 
       chart = new Chart(document.getElementById("evolutionChart"), {
         type: "line",
-        data: { labels, datasets },
+        data: {
+          labels: [
+            "Baseline", "T1", "T2", "T3", "T4",
+            "T5", "T6", "T7", "T8", "T9", "T10"
+          ],
+          datasets: datasets
+        },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          interaction: { mode: "index", intersect: false },
+          interaction: {
+            mode: "index",
+            intersect: false
+          },
           plugins: {
             legend: {
-              labels: { color: "#eef7ff" }
+              labels: {
+                color: "#24364c"
+              }
             },
             title: {
               display: true,
               text: "Simulated clone proportions under selected assumptions",
-              color: "#eef7ff"
+              color: "#24364c"
             },
             tooltip: {
               callbacks: {
-                label: context => `${context.dataset.label}: ${context.parsed.y}%`
+                label: context =>
+                  `${context.dataset.label}: ${context.parsed.y}%`
               }
             }
           },
           scales: {
             x: {
-              ticks: { color: "#b8c9df" },
-              grid: { color: "rgba(184,201,223,.10)" }
+              ticks: {
+                color: "#5b6b80"
+              },
+              grid: {
+                color: "rgba(39, 84, 134, 0.10)"
+              }
             },
             y: {
               min: 0,
               max: 100,
               ticks: {
-                color: "#b8c9df",
+                color: "#5b6b80",
                 callback: value => value + "%"
               },
               title: {
                 display: true,
                 text: "Modeled clone proportion",
-                color: "#b8c9df"
+                color: "#5b6b80"
               },
-              grid: { color: "rgba(184,201,223,.10)" }
+              grid: {
+                color: "rgba(39, 84, 134, 0.10)"
+              }
             }
           }
         }
       });
     }
 
-    function updatePathwayGraph(finalClones, selectedTargets, options, finalClone) {
-      if (cy) cy.destroy();
+    function updatePathwayGraph(selectedTargets, options, finalClone) {
+      if (cy) {
+        cy.destroy();
+      }
+
+      const initialClones = addFourthCloneIfNeeded(
+        copyData(currentClones),
+        options
+      );
 
       const events = [];
-      if (options.targetLoss) events.push("Target loss");
-      if (options.resistantExpansion) events.push("Resistant clone expansion");
-      if (options.hlaLoss) events.push("Reduced antigen presentation");
-      if (options.newMutation) events.push("New mutation event");
-      if (options.compensatory) events.push("Compensatory pathway");
-      if (options.highHeterogeneity) events.push("High heterogeneity / minor clone");
 
-      const baselineClones = addFourthCloneIfNeeded(deepCopy(currentClones), options);
+      if (options.targetLoss) {
+        events.push("Target loss");
+      }
+
+      if (options.resistantExpansion) {
+        events.push("Resistant clone expansion");
+      }
+
+      if (options.hlaLoss) {
+        events.push("Reduced antigen presentation");
+      }
+
+      if (options.newMutation) {
+        events.push("New mutation event");
+      }
+
+      if (options.compensatory) {
+        events.push("Compensatory pathway");
+      }
+
+      if (options.highHeterogeneity) {
+        events.push("High heterogeneity / minor clone");
+      }
 
       const elements = [
-        { data: { id: "baseline", label: "Baseline\nTumor" }, classes: "baseline" },
-        { data: { id: "strategy", label: "Selected strategy\n" + (selectedTargets.join(" + ") || "No target") }, classes: "strategy" },
-        { data: { id: "escape", label: "Possible\nEscape" }, classes: "escape" },
-        { data: { id: "final", label: "Final modeled\nClone " + finalClone.id }, classes: "final" },
-        { data: { source: "strategy", target: "escape" } },
-        { data: { source: "escape", target: "final" } }
+        {
+          data: {
+            id: "baseline",
+            label: "Baseline\nTumor"
+          },
+          classes: "baseline"
+        },
+        {
+          data: {
+            id: "strategy",
+            label: "Selected strategy\n" + (selectedTargets.join(" + ") || "No target")
+          },
+          classes: "strategy"
+        },
+        {
+          data: {
+            id: "escape",
+            label: "Possible\nEscape"
+          },
+          classes: "escape"
+        },
+        {
+          data: {
+            id: "final",
+            label: "Final modeled\nClone " + finalClone.id
+          },
+          classes: "final"
+        },
+        {
+          data: {
+            source: "strategy",
+            target: "escape"
+          }
+        },
+        {
+          data: {
+            source: "escape",
+            target: "final"
+          }
+        }
       ];
 
-      baselineClones.forEach(clone => {
+      initialClones.forEach(clone => {
         elements.push({
-          data: { id: "clone" + clone.id, label: `Clone ${clone.id}\n${clone.percent.toFixed(0)}%` },
+          data: {
+            id: "clone" + clone.id,
+            label: `Clone ${clone.id}\n${clone.percent.toFixed(0)}%`
+          },
           classes: "clone" + clone.id
         });
 
         elements.push({
-          data: { source: "baseline", target: "clone" + clone.id }
+          data: {
+            source: "baseline",
+            target: "clone" + clone.id
+          }
         });
 
         elements.push({
-          data: { source: "clone" + clone.id, target: "strategy" }
+          data: {
+            source: "clone" + clone.id,
+            target: "strategy"
+          }
         });
       });
 
       events.forEach((event, index) => {
         const eventId = "event" + index;
+
         elements.push({
-          data: { id: eventId, label: event },
+          data: {
+            id: eventId,
+            label: event
+          },
           classes: "event"
         });
 
         elements.push({
-          data: { source: "strategy", target: eventId },
+          data: {
+            source: "strategy",
+            target: eventId
+          },
           classes: "eventEdge"
         });
 
         elements.push({
-          data: { source: eventId, target: "escape" },
+          data: {
+            source: eventId,
+            target: "escape"
+          },
           classes: "eventEdge"
         });
       });
 
       cy = cytoscape({
         container: document.getElementById("cy"),
-        elements,
+        elements: elements,
         style: [
           {
             selector: "node",
-            style: {:root {
-  --bg: #f4f8fc;
-  --bg2: #e8f1fb;
-  --panel: #ffffff;
-  --panel2: #f7fbff;
-  --text: #152238;
-  --muted: #5b6b80;
-  --line: rgba(39, 84, 134, 0.18);
-  --blue: #1479d1;
-  --purple: #6e45cf;
-  --green: #148a58;
-  --orange: #c96a05;
-  --red: #c92f4a;
-  --yellow: #9a6900;
-}
-
-html {
-  color-scheme: light;
-}
-
-body {
-  color: #152238;
-  background: linear-gradient(135deg, #f8fbff, #eaf3fc 52%, #f5f0ff);
-}
-
-header,
-nav {
-  background: rgba(255, 255, 255, 0.94);
-}
-
-h1 {
-  color: #10233d;
-}
-
-.subtitle,
-.small,
-footer {
-  color: #5b6b80;
-}
-
-.card {
-  background: linear-gradient(145deg, #ffffff, #f7fbff);
-  box-shadow: 0 10px 26px rgba(35, 79, 123, 0.10);
-}
-
-.flow span,
-.clone-card,
-label.option,
-.metric,
-.check,
-.info-box,
-.result-box {
-  background: #f8fbff;
-  color: #24364c;
-}
-
-input,
-select {
-  color: #1d3148;
-  background: #ffffff;
-}
-
-#cy {
-  background: #f7fbff;
-}
+            style: {
               "shape": "round-rectangle",
-              "background-color": "#1d3a61",
+              "background-color": "#e7f3ff",
               "border-width": 2,
-              "border-color": "#7dbfff",
+              "border-color": "#1479d1",
               "label": "data(label)",
-              "color": "#ffffff",
+              "color": "#1d3148",
               "font-size": "11px",
               "text-wrap": "wrap",
               "text-max-width": "120px",
@@ -1494,8 +1623,8 @@ select {
             selector: "edge",
             style: {
               "width": 2,
-              "line-color": "#8ca9ca",
-              "target-arrow-color": "#8ca9ca",
+              "line-color": "#7497bd",
+              "target-arrow-color": "#7497bd",
               "target-arrow-shape": "triangle",
               "curve-style": "bezier"
             }
@@ -1503,71 +1632,71 @@ select {
           {
             selector: ".baseline",
             style: {
-              "background-color": "#254c78",
-              "border-color": "#9bcfff"
+              "background-color": "#d8edff",
+              "border-color": "#1479d1"
             }
           },
           {
             selector: ".strategy",
             style: {
-              "background-color": "#60449d",
-              "border-color": "#c7a7ff"
+              "background-color": "#eee6ff",
+              "border-color": "#7145d0"
             }
           },
           {
             selector: ".cloneA",
             style: {
-              "background-color": "#1e679e",
-              "border-color": "#45a7ff"
+              "background-color": "#d9efff",
+              "border-color": "#1479d1"
             }
           },
           {
             selector: ".cloneB",
             style: {
-              "background-color": "#6544a0",
-              "border-color": "#aa7cff"
+              "background-color": "#eee5ff",
+              "border-color": "#7145d0"
             }
           },
           {
             selector: ".cloneC",
             style: {
-              "background-color": "#875421",
-              "border-color": "#ffad4e"
+              "background-color": "#fff0d9",
+              "border-color": "#d97706"
             }
           },
           {
             selector: ".cloneD",
             style: {
-              "background-color": "#216d51",
-              "border-color": "#48da93"
+              "background-color": "#ddf8eb",
+              "border-color": "#148a58"
             }
           },
           {
             selector: ".event",
             style: {
-              "background-color": "#8b2d45",
-              "border-color": "#ff7790"
+              "background-color": "#ffe1e7",
+              "border-color": "#c92f4a"
             }
           },
           {
             selector: ".eventEdge",
             style: {
-              "line-color": "#ff5d78",
-              "target-arrow-color": "#ff5d78"
+              "line-color": "#c92f4a",
+              "target-arrow-color": "#c92f4a"
             }
           },
           {
             selector: ".escape",
             style: {
-              "background-color": "#9b334c",
-              "border-color": "#ff9aac"
+              "background-color": "#ffe7ec",
+              "border-color": "#d34159"
             }
           },
           {
             selector: ".final",
             style: {
-              "background-color": "#87601d",
-              "border-color": "#ffe070"
+              "background-color": "#fff5cc",
+              "border-color": "#b77d00"
             }
           }
         ],
@@ -1588,7 +1717,8 @@ select {
       document.getElementById("compensatory").checked = false;
       document.getElementById("highHeterogeneity").checked = false;
 
-      currentClones = deepCopy(currentCancer.clones);
+      currentClones = copyData(currentCancer.clones);
+
       renderCancerInfo();
       renderClones();
       renderTargetOptions();
@@ -1598,20 +1728,25 @@ select {
 
     function downloadReport() {
       if (!latestReport) {
-        alert("Run the simulation first.");
+        alert("Please run the simulation first.");
         return;
       }
 
       const json = JSON.stringify(latestReport, null, 2);
-      const blob = new Blob([json], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
+      const blob = new Blob([json], {
+        type: "application/json"
+      });
 
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
+
       link.href = url;
       link.download = `neoimmune-ai-${currentCancer.id}-simulated-report.json`;
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+
       URL.revokeObjectURL(url);
     }
 
