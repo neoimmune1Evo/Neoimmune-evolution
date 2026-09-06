@@ -1,327 +1,994 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEOIMMUNE AI</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEOIMMUNE AI Lab | Tumor Evolution Simulator</title>
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,Helvetica,sans-serif;background:#08110d;color:#fff}
-header{display:flex;justify-content:space-between;align-items:center;padding:18px 8%;background:#0d1813}
-.logo{color:#f6b73c;font-size:24px;font-weight:bold}
-nav a{color:#fff;text-decoration:none;margin-left:18px}
-.hero{text-align:center;padding:90px 20px;background:linear-gradient(135deg,#0c1712,#153325)}
-.hero h1{font-size:48px;color:#f6b73c}
-.hero p{max-width:700px;margin:20px auto;line-height:1.6;color:#d8d8d8}
-.btn{display:inline-block;background:#f6b73c;color:#000;padding:12px 22px;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
-section{padding:60px 8%}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
-.card{background:#122019;border:1px solid #2d4738;border-radius:12px;padding:22px}
-.card h3{color:#f6b73c;margin-bottom:10px}
-.sim{background:#102118;border-radius:12px;padding:28px;margin-top:25px}
-input[type=range],input[type=text],select{width:100%;padding:10px;margin:8px 0;border-radius:6px;border:none}
-.result{background:#08150f;padding:12px;border-radius:8px;margin-top:15px}
-footer{text-align:center;padding:24px;background:#0d1813;color:#aaa}
-</style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/cytoscape@3.30.4/dist/cytoscape.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: #101f35;
+      --panel-2: #142844;
+      --text: #eef5ff;
+      --muted: #b9c7da;
+      --blue: #47a6ff;
+      --purple: #a777ff;
+      --green: #44d990;
+      --orange: #ffab4c;
+      --red: #ff5c77;
+      --yellow: #f8d86f;
+      --border: rgba(170, 203, 240, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #06101d, #0e1d35 55%, #111133);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    header {
+      padding: 34px 20px 26px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      background: rgba(4, 11, 22, 0.8);
+    }
+
+    h1 {
+      margin: 0;
+      color: white;
+      font-size: clamp(2rem, 5vw, 3.7rem);
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      margin: 8px auto 0;
+      max-width: 900px;
+      color: #cbdcff;
+      font-size: 1.05rem;
+    }
+
+    .tagline {
+      margin: 16px auto 0;
+      max-width: 950px;
+      padding: 12px 16px;
+      color: #ffffff;
+      background: linear-gradient(90deg, rgba(71, 166, 255, 0.2), rgba(167, 119, 255, 0.2));
+      border: 1px solid rgba(167, 119, 255, 0.42);
+      border-radius: 12px;
+      font-weight: bold;
+    }
+
+    .disclaimer {
+      max-width: 1200px;
+      margin: 22px auto 0;
+      padding: 12px 16px;
+      border-left: 5px solid var(--yellow);
+      border-radius: 10px;
+      background: rgba(248, 216, 111, 0.12);
+      color: #fff2ad;
+      text-align: left;
+      font-size: 0.94rem;
+    }
+
+    main {
+      max-width: 1300px;
+      margin: auto;
+      padding: 26px 18px 44px;
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+
+    .flow span {
+      padding: 9px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(20, 40, 68, 0.82);
+      color: #d7e8ff;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .flow span:nth-child(odd) {
+      border-color: rgba(71, 166, 255, 0.42);
+    }
+
+    .flow span:nth-child(even) {
+      border-color: rgba(167, 119, 255, 0.42);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      padding: 20px;
+      background: rgba(16, 31, 53, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+    }
+
+    .card h3 {
+      margin-bottom: 8px;
+      font-size: 1.03rem;
+    }
+
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+
+    .blue-title { color: var(--blue); }
+    .purple-title { color: var(--purple); }
+    .green-title { color: var(--green); }
+    .orange-title { color: var(--orange); }
+    .red-title { color: var(--red); }
+
+    .small {
+      color: var(--muted);
+      font-size: 0.91rem;
+    }
+
+    .clone-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .clone {
+      padding: 13px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(7, 17, 31, 0.6);
+    }
+
+    .clone strong {
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .clone-a { border-left: 5px solid #47a6ff; }
+    .clone-b { border-left: 5px solid #a777ff; }
+    .clone-c { border-left: 5px solid #ffab4c; }
+
+    .target-grid,
+    .toggle-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    label.option {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 11px;
+      background: rgba(7, 17, 31, 0.55);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      cursor: pointer;
+    }
+
+    label.option:hover {
+      border-color: rgba(71, 166, 255, 0.65);
+    }
+
+    input[type="checkbox"] {
+      accent-color: var(--purple);
+      margin-top: 4px;
+      transform: scale(1.15);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px 14px;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 11px;
+      color: white;
+      background: linear-gradient(90deg, #377edc, #8054e8);
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.96rem;
+    }
+
+    button:hover {
+      filter: brightness(1.12);
+    }
+
+    button.secondary {
+      background: linear-gradient(90deg, #205469, #317f7f);
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .metric {
+      text-align: center;
+      padding: 12px 8px;
+      background: rgba(7, 17, 31, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .metric b {
+      display: block;
+      font-size: 1.25rem;
+      color: white;
+    }
+
+    .metric span {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .result-box {
+      margin-top: 16px;
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(7, 17, 31, 0.65);
+    }
+
+    .result-box.green {
+      border-left: 5px solid var(--green);
+    }
+
+    .result-box.yellow {
+      border-left: 5px solid var(--yellow);
+    }
+
+    .result-box.red {
+      border-left: 5px solid var(--red);
+    }
+
+    .status {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    #cy {
+      width: 100%;
+      height: 370px;
+      margin-top: 12px;
+      border-radius: 12px;
+      background: #07111f;
+      border: 1px solid var(--border);
+    }
+
+    .chart-wrap {
+      height: 360px;
+      margin-top: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    th {
+      color: #bcdcff;
+      background: rgba(71, 166, 255, 0.09);
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: bold;
+    }
+
+    .pill.green { background: rgba(68, 217, 144, 0.15); color: #7af0b7; }
+    .pill.yellow { background: rgba(248, 216, 111, 0.15); color: #ffe982; }
+    .pill.red { background: rgba(255, 92, 119, 0.15); color: #ff9caf; }
+
+    .checklist {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .check {
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(7, 17, 31, 0.55);
+      border: 1px solid var(--border);
+    }
+
+    .footer-note {
+      margin-top: 26px;
+      text-align: center;
+      color: #a9bad1;
+      font-size: 0.86rem;
+    }
+
+    @media (max-width: 900px) {
+      .span-4, .span-5, .span-6, .span-7, .span-8, .span-12 {
+        grid-column: span 12;
+      }
+
+      .target-grid,
+      .toggle-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
-
-<header>
-<div class="logo">NEOIMMUNE AI</div>
-<nav>
-<a href="#about">About</a>
-<a href="#research">Research</a>
-<a href="#sim">AI Modules</a>
-</nav>
-</header>
-
-<section class="hero">
-<h1>Evolution-Aware Cancer Research</h1>
-<p>
-A proposed computational framework integrating tumor mapping,
-safety validation, therapeutic red-team testing,
-and longitudinal monitoring.
-</p>
-</section>
-
-<section id="about">
-<h2>About</h2><br>
-<div class="cards">
-<div class="card">
-<h3>Tumor Mapping</h3>
-<p>Model heterogeneous tumor clones.</p>
-</div>
-<div class="card">
-<h3>Safety Filter</h3>
-<p>Evaluate predicted normal-tissue risk.</p>
-</div>
-<div class="card">
-<h3>Therapeutic Red Team</h3>
-<p>Stress-test escape mechanisms.</p>
-</div>
-</div>
-</section>
-
-<section id="research">
-<h2>Research Workflow</h2><br>
-<div class="cards">
-<div class="card"><h3>1. Patient Data</h3></div>
-<div class="card"><h3>2. Tumor Mapper</h3></div>
-<div class="card"><h3>3. Digital Twin</h3></div>
-<div class="card"><h3>4. Strategy Designer</h3></div>
-<div class="card"><h3>5. Red Team</h3></div>
-<div class="card"><h3>6. Monitoring</h3></div>
-</div>
-</section>
-
-<section id="sim">
-
-<h2>1. Wright-Fisher Clonal Evolution</h2>
-
-<div class="sim">
-
-<label>Treatment Pressure</label>
-<input id="p" type="range" min="0" max="100" value="60">
-
-<label>Mutation Rate</label>
-<input id="m" type="range" min="0" max="10" value="2">
-
-<label>Generations</label>
-<input id="g" type="range" min="10" max="100" value="60">
-
-<button class="btn" onclick="runEvolution()">Run Evolution</button>
-
-<div class="result" id="evolutionResult"></div>
-
-</div>
-
-<h2 style="margin-top:40px;">2. Coverage Optimizer</h2>
-
-<div class="sim">
-
-<button class="btn" onclick="runCoverage()">Optimize Targets</button>
-
-<div class="result" id="coverageResult"></div>
-
-</div>
-
-<h2 style="margin-top:40px;">3. Peptide–HLA Binding Predictor</h2>
-
-<div class="sim">
-
-<label>Peptide</label>
-<input id="peptide" type="text" value="GILGFVFTL">
-
-<label>HLA Allele</label>
-<select id="allele">
-<option>HLA-A*02:01</option>
-<option>HLA-A*01:01</option>
-</select>
-
-<button class="btn" onclick="predictHLA()">Predict Binding</button>
-
-<div class="result" id="hlaResult"></div>
-
-</div>
-
-<h2 style="margin-top:40px;">4. Therapeutic Red Team</h2>
-
-<div class="sim">
-
-<button class="btn" onclick="runRedTeam()">Run Stress Test</button>
-
-<div class="result" id="redResult"></div>
-
-</div>
-
-</section>
-
-<footer>
-Research Prototype • NEOIMMUNE AI • Educational Use Only
-</footer>
-
-<script>
-
-//=========================
-// 1. CLONAL EVOLUTION
-//=========================
-
-function runEvolution(){
-
-let pressure=document.getElementById("p").value/100;
-let mutation=document.getElementById("m").value/1000;
-let generations=parseInt(document.getElementById("g").value);
-
-let A=700,B=250,C=50;
-
-for(let i=0;i<generations;i++){
-
-if(Math.random()<mutation){
-
-let seed=Math.max(1,Math.floor(B*0.005));
-
-B-=seed;
-C+=seed;
-
-}
-
-let wA=A*(1-pressure);
-let wB=B*(0.9-pressure*0.9);
-let wC=C*0.9;
-
-let total=wA+wB+wC;
-
-A=Math.round(1000*wA/total);
-B=Math.round(1000*wB/total);
-C=1000-A-B;
-
-}
-
-document.getElementById("evolutionResult").innerHTML=
-`Clone A : ${A}<br>
-Clone B : ${B}<br>
-Clone C : ${C}<br><br>
-<b>Resistant Fraction = ${(C/10).toFixed(1)}%</b>`;
-
-}
-
-//=========================
-// 2. COVERAGE OPTIMIZER
-//=========================
-
-function runCoverage(){
-
-const coverageSingle=72;
-const coverageMulti=94;
-
-document.getElementById("coverageResult").innerHTML=
-`Best Single Target : N2<br>
-Coverage : ${coverageSingle}%<br><br>
-
-Best Multi Target : N1 + N2 + N4<br>
-Coverage : ${coverageMulti}%<br><br>
-
-Improvement : +22%`;
-
-}
-
-//=========================
-// 3. HLA PREDICTOR
-//=========================
-
-function predictHLA(){
-
-let peptide=document.getElementById("peptide").value.toUpperCase();
-let allele=document.getElementById("allele").value;
-
-let score=0.1;
-
-if(allele=="HLA-A*02:01"){
-
-if(["L","M","V","I"].includes(peptide[1])) score+=0.45;
-if(["L","V","I","M"].includes(peptide[peptide.length-1])) score+=0.45;
-
-}else{
-
-if(["T","S"].includes(peptide[1])) score+=0.45;
-if(["Y","F"].includes(peptide[peptide.length-1])) score+=0.45;
-
-}
-
-let category="Unlikely Binder";
-
-if(score>=0.75) category="Strong Predicted Binder";
-else if(score>=0.45) category="Weak / Moderate Binder";
-
-document.getElementById("hlaResult").innerHTML=
-`Score : ${score.toFixed(2)}<br>
-Prediction : <b>${category}</b>`;
-
-}
-
-//=========================
-// 4. RED TEAM
-//=========================
-
-function runRedTeam(){
-
-let survive=[];
-
-for(let t=0;t<3000;t++){
-
-let s=0;
-
-let clones=[
-{f:0.5,c:true,k:0.9},
-{f:0.3,c:true,k:0.7},
-{f:0.2,c:false,k:0}
-];
-
-clones.forEach(x=>{
-
-if(!x.c){s+=x.f;return;}
-
-let kill=x.k;
-
-if(Math.random()<0.08) kill=0;
-if(Math.random()<0.10) kill=0;
-if(Math.random()<0.07) kill*=0.3;
-if(Math.random()<0.09) kill*=0.3;
-if(Math.random()<0.05) kill*=0.3;
-
-if(Math.random()>kill) s+=x.f;
-
-});
-
-survive.push(s);
-
-}
-
-let mean=survive.reduce((a,b)=>a+b)/survive.length;
-
-let verdict=mean>0.25?
-"Requires Redesign":
-"Passed Initial Stress Test";
-
-document.getElementById("redResult").innerHTML=
-`Mean Surviving Fraction : ${(mean*100).toFixed(1)}%<br><br>
-<b>${verdict}</b>`;
-
-}
-
-</script>
-<!-- 3D MOLECULAR VIEWER -->
-<section id="viewer3d">
-  <h2>3D Molecular Viewer</h2>
-
-  <div class="sim">
-
-    <label>Select Structure</label>
-
-    <select id="structure">
-      <option value="1CRN">Protein (Crambin)</option>
-      <option value="1BNA">DNA Double Helix</option>
-      <option value="1TUP">Peptide</option>
-      <option value="4HHB">Hemoglobin</option>
-      <option value="1IGT">Antibody</option>
-      <option value="1TSR">p53 Protein</option>
-    </select>
-
-    <button class="btn" onclick="loadStructure()">
-      Load 3D Structure
-    </button>
-
-    <div id="viewer"
-      style="width:100%;height:520px;background:#000;border-radius:12px;">
+  <header>
+    <h1>NEOIMMUNE AI Lab</h1>
+    <p class="subtitle">
+      Evolution-Aware, Safety-Validated, Closed-Loop Personalized Cancer Therapy
+    </p>
+    <div class="tagline">
+      PREDICT → CHALLENGE → VALIDATE → REVIEW → TREAT → MONITOR → ADAPT
     </div>
 
-    <p style="margin-top:10px;color:#bbb;">
-      Drag = Rotate • Scroll = Zoom • Right Click = Pan
-    </p>
+    <div class="disclaimer">
+      <strong>Research and educational prototype only:</strong>
+      This webpage uses simulated demo data and assumption-based scenarios.
+      It does not diagnose cancer, prescribe treatment, predict individual patient outcomes,
+      or replace laboratory validation, clinical trials, clinicians, ethics review, regulatory approval, or informed consent.
+    </div>
+  </header>
 
-  </div>
-</section>
+  <main>
+    <div class="flow">
+      <span>Patient Data</span>
+      <span>Tumor Mapper</span>
+      <span>Digital Twin</span>
+      <span>Neoantigen Analysis</span>
+      <span>Safety Filter</span>
+      <span>Strategy Builder</span>
+      <span>Red Team</span>
+      <span>Validation Gate</span>
+      <span>Monitoring</span>
+      <span>Adapt</span>
+    </div>
+
+    <section class="grid">
+      <div class="card span-4">
+        <h2 class="blue-title">1. Demo Tumor Mapper</h2>
+        <p class="small">
+          Simulated melanoma case. The tumor contains different cell populations called clones.
+        </p>
+
+        <div class="clone-list">
+          <div class="clone clone-a">
+            <strong>Clone A — 50%</strong>
+            Fictional profile: Mutation M1, target N1, target N3
+          </div>
+          <div class="clone clone-b">
+            <strong>Clone B — 30%</strong>
+            Fictional profile: Mutation M2, target N2, target N3
+          </div>
+          <div class="clone clone-c">
+            <strong>Clone C — 20%</strong>
+            Fictional profile: Mutation M3, target N4; low baseline coverage
+          </div>
+        </div>
+      </div>
+
+      <div class="card span-4">
+        <h2 class="purple-title">2. Candidate Strategy Builder</h2>
+        <p class="small">Select fictional target candidates for the simulation.</p>
+
+        <div class="target-grid">
+          <label class="option">
+            <input type="checkbox" class="target" value="N1" checked>
+            <span><strong>N1</strong><br><small>Targets Clone A</small></span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" class="target" value="N2">
+            <span><strong>N2</strong><br><small>Targets Clone B</small></span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" class="target" value="N3" checked>
+            <span><strong>N3</strong><br><small>Targets Clones A and B</small></span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" class="target" value="N4">
+            <span><strong>N4</strong><br><small>Targets Clone C; lower confidence</small></span>
+          </label>
+        </div>
+
+        <button onclick="runSimulation()">Run Evolution Simulation</button>
+        <button class="secondary" onclick="resetDemo()">Reset Demo</button>
+
+        <div class="metric-row">
+          <div class="metric">
+            <b id="coverage">80%</b>
+            <span>Initial clone coverage</span>
+          </div>
+          <div class="metric">
+            <b id="targetsSelected">2</b>
+            <span>Targets selected</span>
+          </div>
+          <div class="metric">
+            <b id="finalResistant">--</b>
+            <span>Final dominant clone</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card span-4">
+        <h2 class="red-title">3. Therapeutic Red Team</h2>
+        <p class="small">
+          Choose possible escape mechanisms. The tool generates a simulated outcome under these assumptions.
+        </p>
+
+        <div class="toggle-grid">
+          <label class="option">
+            <input type="checkbox" id="targetLoss" checked>
+            <span><strong>Target loss</strong><br><small>A clone may lose a selected target.</small></span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="resistantExpansion" checked>
+            <span><strong>Resistant expansion</strong><br><small>Untargeted clones may grow.</small></span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="hlaLoss">
+            <span><strong>Reduced antigen presentation</strong><br><small>Immune recognition is reduced.</small></span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="newMutation">
+            <span><strong>New mutation event</strong><br><small>A new resistant feature is simulated.</small></span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="compensatory">
+            <span><strong>Compensatory pathway</strong><br><small>Survival signaling may increase.</small></span>
+          </label>
+        </div>
+
+        <div id="riskBox" class="result-box yellow">
+          <span class="status">MODELED RISK: MODERATE</span>
+          Select targets and run the simulator. Results are simulated, not clinical predictions.
+        </div>
+      </div>
+
+      <div class="card span-7">
+        <h2 class="orange-title">4. Evolution Simulator</h2>
+        <p class="small">
+          Clone proportions over ten simulated time points. Values are illustrative only.
+        </p>
+        <div class="chart-wrap">
+          <canvas id="evolutionChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card span-5">
+        <h2 class="blue-title">5. Evolution Pathway Viewer</h2>
+        <p class="small">
+          This network displays one possible modeled pathway from baseline tumor clones to escape events.
+        </p>
+        <div id="cy"></div>
+      </div>
+
+      <div class="card span-8">
+        <h2 class="green-title">6. Neoantigen and Safety Filter</h2>
+        <p class="small">
+          Fictional ranking for demonstration. Real neoantigen selection needs sequencing, HLA information,
+          expression evidence, normal-tissue comparison, and laboratory validation.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Candidate</th>
+              <th>Clone coverage</th>
+              <th>Simulated confidence</th>
+              <th>Normal-tissue risk</th>
+              <th>Prototype status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>N1</td>
+              <td>Clone A</td>
+              <td>High</td>
+              <td>Low</td>
+              <td><span class="pill green">Further study</span></td>
+            </tr>
+            <tr>
+              <td>N2</td>
+              <td>Clone B</td>
+              <td>Moderate</td>
+              <td>Low</td>
+              <td><span class="pill green">Further study</span></td>
+            </tr>
+            <tr>
+              <td>N3</td>
+              <td>Clones A + B</td>
+              <td>High</td>
+              <td>Moderate</td>
+              <td><span class="pill yellow">Needs checking</span></td>
+            </tr>
+            <tr>
+              <td>N4</td>
+              <td>Clone C</td>
+              <td>Low</td>
+              <td>Higher uncertainty</td>
+              <td><span class="pill yellow">Needs validation</span></td>
+            </tr>
+            <tr>
+              <td>N5</td>
+              <td>Unknown</td>
+              <td>Low</td>
+              <td>Potentially high</td>
+              <td><span class="pill red">Reject / defer</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card span-4">
+        <h2 class="green-title">7. Safety and Evidence Gate</h2>
+        <p class="small">
+          AI output must not move directly to patient treatment.
+        </p>
+
+        <div class="checklist">
+          <div class="check">🔬 Target presence and expression validation</div>
+          <div class="check">🧪 Immune-recognition testing where relevant</div>
+          <div class="check">🛡️ Normal-cell safety testing</div>
+          <div class="check">🚚 RNA and nanocarrier validation</div>
+          <div class="check">🐁 Appropriate preclinical evaluation</div>
+          <div class="check">👩‍⚕️ Clinical, ethical, and regulatory review</div>
+        </div>
+      </div>
+
+      <div class="card span-12">
+        <h2 class="purple-title">How to explain this website in your presentation</h2>
+        <p>
+          “NEOIMMUNE AI Lab is an educational research prototype. It maps a simulated heterogeneous tumor,
+          selects possible target combinations, challenges the strategy with modeled cancer-escape events,
+          visualizes how resistant clones may expand, and demonstrates why treatment strategies must be
+          repeatedly validated and adapted as tumors evolve.”
+        </p>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      NEOIMMUNE AI Lab • Simulated research prototype • No patient data • No medical advice
+    </p>
+  </main>
+
+  <script>
+    let chart;
+    let cy;
+
+    const cloneData = {
+      A: { name: "Clone A", baseline: 50, targets: ["N1", "N3"], color: "#47a6ff" },
+      B: { name: "Clone B", baseline: 30, targets: ["N2", "N3"], color: "#a777ff" },
+      C: { name: "Clone C", baseline: 20, targets: ["N4"], color: "#ffab4c" }
+    };
+
+    function selectedTargets() {
+      return [...document.querySelectorAll(".target:checked")].map(input => input.value);
+    }
+
+    function normalize(values) {
+      const total = values.A + values.B + values.C;
+      return {
+        A: (values.A / total) * 100,
+        B: (values.B / total) * 100,
+        C: (values.C / total) * 100
+      };
+    }
+
+    function initialCoverage(targets) {
+      let coverage = 0;
+      Object.values(cloneData).forEach(clone => {
+        if (clone.targets.some(target => targets.includes(target))) {
+          coverage += clone.baseline;
+        }
+      });
+      return coverage;
+    }
+
+    function calculateFitness(cloneKey, targets, step) {
+      const clone = cloneData[cloneKey];
+      const hasTarget = clone.targets.some(target => targets.includes(target));
+
+      let fitness = hasTarget ? 0.42 : 1.18;
+
+      if (document.getElementById("targetLoss").checked && step >= 4 && cloneKey === "A" && targets.includes("N1")) {
+        fitness += 0.30;
+      }
+
+      if (document.getElementById("resistantExpansion").checked && !hasTarget) {
+        fitness += 0.22;
+      }
+
+      if (document.getElementById("hlaLoss").checked && hasTarget) {
+        fitness += 0.23;
+      }
+
+      if (document.getElementById("newMutation").checked && step >= 6 && cloneKey === "C") {
+        fitness += 0.30;
+      }
+
+      if (document.getElementById("compensatory").checked && step >= 5 && cloneKey === "B") {
+        fitness += 0.18;
+      }
+
+      return fitness;
+    }
+
+    function runSimulation() {
+      const targets = selectedTargets();
+      const coverage = initialCoverage(targets);
+
+      document.getElementById("coverage").textContent = coverage + "%";
+      document.getElementById("targetsSelected").textContent = targets.length;
+
+      let current = { A: 50, B: 30, C: 20 };
+      const timeline = {
+        A: [50],
+        B: [30],
+        C: [20]
+      };
+
+      for (let step = 1; step <= 10; step++) {
+        const next = {
+          A: current.A * calculateFitness("A", targets, step),
+          B: current.B * calculateFitness("B", targets, step),
+          C: current.C * calculateFitness("C", targets, step)
+        };
+
+        current = normalize(next);
+        timeline.A.push(Number(current.A.toFixed(1)));
+        timeline.B.push(Number(current.B.toFixed(1)));
+        timeline.C.push(Number(current.C.toFixed(1)));
+      }
+
+      const finalClone = Object.entries(current).sort((a, b) => b[1] - a[1])[0];
+      const finalCloneName = "Clone " + finalClone[0];
+      document.getElementById("finalResistant").textContent = finalCloneName;
+
+      updateRisk(coverage, finalCloneName, finalClone[1], targets);
+      updateChart(timeline);
+      updateGraph(targets, finalCloneName);
+    }
+
+    function updateRisk(coverage, finalCloneName, finalPercent, targets) {
+      const riskBox = document.getElementById("riskBox");
+      let level = "LOW";
+      let css = "green";
+      let message = "";
+
+      const highRiskEvents =
+        document.getElementById("targetLoss").checked ||
+        document.getElementById("hlaLoss").checked ||
+        document.getElementById("newMutation").checked ||
+        document.getElementById("compensatory").checked;
+
+      if (coverage < 100 || finalPercent > 55 || highRiskEvents) {
+        level = "MODERATE";
+        css = "yellow";
+      }
+
+      if (coverage < 80 || finalPercent > 70 || targets.length === 0) {
+        level = "HIGH";
+        css = "red";
+      }
+
+      if (level === "LOW") {
+        message =
+          "No major modeled escape was detected under the selected demo assumptions. Laboratory and clinical validation are still required.";
+      } else if (level === "MODERATE") {
+        message =
+          `A plausible modeled escape route was detected. ${finalCloneName} becomes relatively dominant in the simulation. Re-check target coverage, antigen presentation, and validation evidence.`;
+      } else {
+        message =
+          `The selected strategy leaves major modeled vulnerability. ${finalCloneName} becomes dominant or important clones are not covered. Redesign and re-test the candidate strategy.`;
+      }
+
+      riskBox.className = "result-box " + css;
+      riskBox.innerHTML = `
+        <span class="status">MODELED RISK: ${level}</span>
+        ${message}
+      `;
+    }
+
+    function updateChart(timeline) {
+      if (chart) chart.destroy();
+
+      const ctx = document.getElementById("evolutionChart");
+
+      chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: ["Baseline", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10"],
+          datasets: [
+            {
+              label: "Clone A",
+              data: timeline.A,
+              borderColor: "#47a6ff",
+              backgroundColor: "rgba(71,166,255,0.15)",
+              tension: 0.28,
+              fill: false
+            },
+            {
+              label: "Clone B",
+              data: timeline.B,
+              borderColor: "#a777ff",
+              backgroundColor: "rgba(167,119,255,0.15)",
+              tension: 0.28,
+              fill: false
+            },
+            {
+              label: "Clone C",
+              data: timeline.C,
+              borderColor: "#ffab4c",
+              backgroundColor: "rgba(255,171,76,0.15)",
+              tension: 0.28,
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: "#eaf3ff" }
+            },
+            title: {
+              display: true,
+              text: "Simulated clone proportions under selected assumptions",
+              color: "#eaf3ff"
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ": " + context.parsed.y + "%";
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: "#b9c7da" },
+              grid: { color: "rgba(185,199,218,0.10)" }
+            },
+            y: {
+              min: 0,
+              max: 100,
+              ticks: {
+                color: "#b9c7da",
+                callback: value => value + "%"
+              },
+              grid: { color: "rgba(185,199,218,0.10)" },
+              title: {
+                display: true,
+                text: "Clone proportion",
+                color: "#b9c7da"
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function updateGraph(targets, finalCloneName) {
+      if (cy) cy.destroy();
+
+      const lossOn = document.getElementById("targetLoss").checked;
+      const hlaOn = document.getElementById("hlaLoss").checked;
+      const mutationOn = document.getElementById("newMutation").checked;
+      const pathwayOn = document.getElementById("compensatory").checked;
+
+      const events = [];
+      if (lossOn) events.push({ id: "loss", label: "Target loss" });
+      if (hlaOn) events.push({ id: "hla", label: "Reduced HLA presentation" });
+      if (mutationOn) events.push({ id: "mutation", label: "New mutation" });
+      if (pathwayOn) events.push({ id: "pathway", label: "Compensatory pathway" });
+
+      const elements = [
+        { data: { id: "baseline", label: "Baseline Tumor" }, classes: "baseline" },
+        { data: { id: "A", label: "Clone A\n50%" }, classes: "cloneA" },
+        { data: { id: "B", label: "Clone B\n30%" }, classes: "cloneB" },
+        { data: { id: "C", label: "Clone C\n20%" }, classes: "cloneC" },
+        { data: { id: "treatment", label: "Selected Strategy:\n" + (targets.join(" + ") || "No target") }, classes: "treatment" },
+        { data: { id: "escape", label: "Potential Escape" }, classes: "escape" },
+        { data: { id: "dominant", label: "Modeled dominant:\n" + finalCloneName }, classes: "dominant" },
+
+        { data: { source: "baseline", target: "A" } },
+        { data: { source: "baseline", target: "B" } },
+        { data: { source: "baseline", target: "C" } },
+        { data: { source: "A", target: "treatment" } },
+        { data: { source: "B", target: "treatment" } },
+        { data: { source: "C", target: "treatment" } },
+        { data: { source: "treatment", target: "escape" } },
+        { data: { source: "escape", target: "dominant" } }
+      ];
+
+      events.forEach(event => {
+        elements.push({
+          data: { id: event.id, label: event.label },
+          classes: "event"
+        });
+        elements.push({
+          data: { source: "treatment", target: event.id },
+          classes: "eventEdge"
+        });
+        elements.push({
+          data: { source: event.id, target: "escape" },
+          classes: "eventEdge"
+        });
+      });
+
+      cy = cytoscape({
+        container: document.getElementById("cy"),
+        elements: elements,
+        style: [
+          {
+            selector: "node",
+            style: {
+              "shape": "round-rectangle",
+              "background-color": "#1a3557",
+              "border-width": 2,
+              "border-color": "#67b2ff",
+              "label": "data(label)",
+              "color": "#ffffff",
+              "font-size": "11px",
+              "text-wrap": "wrap",
+              "text-max-width": "115px",
+              "text-valign": "center",
+              "text-halign": "center",
+              "width": "108px",
+              "height": "48px"
+            }
+          },
+          {
+            selector: "edge",
+            style: {
+              "width": 2,
+              "line-color": "#86a7d0",
+              "target-arrow-color": "#86a7d0",
+              "target-arrow-shape": "triangle",
+              "curve-style": "bezier"
+            }
+          },
+          {
+            selector: ".baseline",
+            style: {
+              "background-color": "#24466c",
+              "border-color": "#8cc7ff"
+            }
+          },
+          {
+            selector: ".cloneA",
+            style: {
+              "background-color": "#2366a6",
+              "border-color": "#47a6ff"
+            }
+          },
+          {
+            selector: ".cloneB",
+            style: {
+              "background-color": "#6344a0",
+              "border-color": "#a777ff"
+            }
+          },
+          {
+            selector: ".cloneC",
+            style: {
+              "background-color": "#8a5524",
+              "border-color": "#ffab4c"
+            }
+          },
+          {
+            selector: ".treatment",
+            style: {
+              "background-color": "#4a3a8b",
+              "border-color": "#c6a8ff"
+            }
+          },
+          {
+            selector: ".event",
+            style: {
+              "background-color": "#8b263b",
+              "border-color": "#ff5c77"
+            }
+          },
+          {
+            selector: ".eventEdge",
+            style: {
+              "line-color": "#ff5c77",
+              "target-arrow-color": "#ff5c77"
+            }
+          },
+          {
+            selector: ".escape",
+            style: {
+              "background-color": "#9b2f48",
+              "border-color": "#ff8195"
+            }
+          },
+          {
+            selector: ".dominant",
+            style: {
+              "background-color": "#80581a",
+              "border-color": "#f8d86f"
+            }
+          }
+        ],
+        layout: {
+          name: "breadthfirst",
+          directed: true,
+          padding: 22,
+          spacingFactor: 1.3
+        }
+      });
+    }
+
+    function resetDemo() {
+      document.querySelectorAll(".target").forEach(input => {
+        input.checked = input.value === "N1" || input.value === "N3";
+      });
+
+      document.getElementById("targetLoss").checked = true;
+      document.getElementById("resistantExpansion").checked = true;
+      document.getElementById("hlaLoss").checked = false;
+      document.getElementById("newMutation").checked = false;
+      document.getElementById("compensatory").checked = false;
+
+      runSimulation();
+    }
+
+    window.onload = runSimulation;
+  </script>
 </body>
 </html>
