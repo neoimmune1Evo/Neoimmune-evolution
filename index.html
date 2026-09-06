@@ -292,6 +292,36 @@ document.getElementById("redResult").innerHTML=
 }
 
 </script>
+<!-- 3D MOLECULAR VIEWER -->
+<section id="viewer3d">
+  <h2>3D Molecular Viewer</h2>
 
+  <div class="sim">
+
+    <label>Select Structure</label>
+
+    <select id="structure">
+      <option value="1CRN">Protein (Crambin)</option>
+      <option value="1BNA">DNA Double Helix</option>
+      <option value="1TUP">Peptide</option>
+      <option value="4HHB">Hemoglobin</option>
+      <option value="1IGT">Antibody</option>
+      <option value="1TSR">p53 Protein</option>
+    </select>
+
+    <button class="btn" onclick="loadStructure()">
+      Load 3D Structure
+    </button>
+
+    <div id="viewer"
+      style="width:100%;height:520px;background:#000;border-radius:12px;">
+    </div>
+
+    <p style="margin-top:10px;color:#bbb;">
+      Drag = Rotate • Scroll = Zoom • Right Click = Pan
+    </p>
+
+  </div>
+</section>
 </body>
 </html>
