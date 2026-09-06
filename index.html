@@ -1,1295 +1,509 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
   <title>NEOIMMUNE AI Lab | Closed-Loop Cancer Evolution Simulator</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-  <script src="https://unpkg.com/cytoscape@3.30.4/dist/cytoscape.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
 
   <style>
-    :root {
-      --navy: #132a43;
-      --blue: #1479d1;
-      --purple: #6e45cf;
-      --green: #148a58;
-      --orange: #c96a05;
-      --red: #c92f4a;
-      --gold: #8b6400;
-      --text: #152238;
-      --muted: #5b6b80;
-      --background: #f4f8fc;
-      --card: #ffffff;
-      --soft-blue: #edf7ff;
-      --soft-purple: #f1ecff;
-      --soft-green: #effbf5;
-      --soft-orange: #fff5e6;
-      --soft-red: #fff1f4;
-      --soft-gold: #fff8dd;
-      --line: rgba(39, 84, 134, 0.18);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      color-scheme: light;
-    }
-
     body {
       margin: 0;
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.55;
-      background:
-        radial-gradient(circle at 12% 0%, rgba(20, 121, 209, 0.14), transparent 28%),
-        radial-gradient(circle at 90% 8%, rgba(110, 69, 207, 0.11), transparent 32%),
-        linear-gradient(135deg, #fbfdff, #edf5fc 55%, #f8f4ff);
+      font-family: "IBM Plex Sans", Arial, sans-serif;
+      background: linear-gradient(135deg, #f8fbff, #edf5fc 58%, #faf6ff);
+      color: #17304a;
     }
 
-    header {
-      padding: 38px 18px 28px;
-      text-align: center;
-      background: rgba(255, 255, 255, 0.92);
-      border-bottom: 1px solid var(--line);
+    .display-font {
+      font-family: "Space Grotesk", Arial, sans-serif;
     }
 
-    h1 {
-      margin: 0;
-      color: var(--navy);
-      font-size: clamp(2rem, 5vw, 3.7rem);
-      letter-spacing: 1px;
+    .mono {
+      font-family: "IBM Plex Mono", monospace;
     }
 
-    .subtitle {
-      max-width: 900px;
-      margin: 8px auto 0;
-      color: #49617c;
-      font-size: 1.05rem;
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
     }
 
-    .tagline {
-      max-width: 1050px;
-      margin: 18px auto 0;
-      padding: 13px 18px;
-      border: 1px solid rgba(110, 69, 207, 0.28);
-      border-radius: 14px;
-      color: #263d58;
-      font-weight: bold;
-      background: linear-gradient(
-        90deg,
-        rgba(20, 121, 209, 0.10),
-        rgba(110, 69, 207, 0.10)
-      );
-    }
-
-    .disclaimer {
-      max-width: 1200px;
-      margin: 22px auto 0;
-      padding: 14px 16px;
-      text-align: left;
-      color: #684c00;
-      background: var(--soft-gold);
-      border-left: 5px solid #d59500;
-      border-radius: 10px;
-      font-size: 0.92rem;
-    }
-
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 10px;
-      background: rgba(255, 255, 255, 0.96);
-      border-bottom: 1px solid var(--line);
-      box-shadow: 0 3px 10px rgba(44, 80, 120, 0.05);
-    }
-
-    nav a {
-      padding: 8px 11px;
-      color: #36516e;
-      text-decoration: none;
-      font-size: 0.81rem;
-      font-weight: bold;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-    }
-
-    nav a:hover {
-      color: var(--blue);
-      border-color: var(--blue);
-      background: var(--soft-blue);
-    }
-
-    main {
-      max-width: 1450px;
-      margin: auto;
-      padding: 24px 16px 44px;
-    }
-
-    .flow {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 9px;
-      margin-bottom: 23px;
-    }
-
-    .flow span {
-      padding: 8px 12px;
-      color: #35506d;
-      background: rgba(255, 255, 255, 0.92);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      box-shadow: 0 3px 9px rgba(23, 70, 120, 0.05);
-      font-size: 0.78rem;
-      font-weight: bold;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 17px;
-    }
-
-    .card {
-      padding: 20px;
-      border: 1px solid rgba(39, 84, 134, 0.16);
-      border-radius: 18px;
-      background: linear-gradient(145deg, #ffffff, #f7fbff);
-      box-shadow: 0 10px 26px rgba(35, 79, 123, 0.10);
-    }
-
-    .span-4 { grid-column: span 4; }
-    .span-5 { grid-column: span 5; }
-    .span-6 { grid-column: span 6; }
-    .span-7 { grid-column: span 7; }
-    .span-8 { grid-column: span 8; }
-    .span-12 { grid-column: span 12; }
-
-    h2 {
-      margin: 0 0 8px;
-      font-size: 1.25rem;
-    }
-
-    h3 {
-      margin: 16px 0 8px;
-      font-size: 1rem;
-    }
-
-    .blue { color: var(--blue); }
-    .purple { color: var(--purple); }
-    .green { color: var(--green); }
-    .orange { color: var(--orange); }
-    .red { color: var(--red); }
-    .gold { color: var(--gold); }
-
-    .small {
-      color: var(--muted);
-      font-size: 0.91rem;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 4px 9px;
-      border-radius: 999px;
-      color: #0d5e9c;
-      background: #e2f3ff;
-      border: 1px solid #bddff9;
-      font-size: 0.76rem;
-      font-weight: bold;
-    }
-
-    .badge.simulated {
-      color: #7c5700;
-      background: #fff4c8;
-      border-color: #f2d976;
-    }
-
-    .badge.warning {
-      color: #a22740;
-      background: #ffe4ea;
-      border-color: #f7b6c4;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 12px;
-      color: #1d3148;
-      background: #ffffff;
-      border: 1px solid rgba(39, 84, 134, 0.30);
-      border-radius: 10px;
-      outline: none;
-      font-size: 0.95rem;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(20, 121, 209, 0.13);
-    }
-
-    button {
-      width: 100%;
-      margin-top: 12px;
-      padding: 12px 14px;
-      color: white;
-      background: linear-gradient(90deg, #1479d1, #7145d0);
-      border: 0;
-      border-radius: 10px;
-      box-shadow: 0 5px 12px rgba(58, 94, 180, 0.18);
-      cursor: pointer;
-      font-size: 0.94rem;
-      font-weight: bold;
-    }
-
-    button:hover {
-      filter: brightness(1.06);
-    }
-
-    button.green-button {
-      background: linear-gradient(90deg, #168075, #258b70);
-    }
-
-    button.orange-button {
-      background: linear-gradient(90deg, #ba6a0b, #d58a21);
-    }
-
-    button.red-button {
-      background: linear-gradient(90deg, #b63d47, #d15862);
-    }
-
-    .info-box,
-    .result-box,
-    .assumption-box {
-      margin-top: 14px;
-      padding: 13px;
-      color: #24364c;
-      background: #f8fbff;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-    }
-
-    .result-box.green-border {
-      border-left: 5px solid var(--green);
-      background: var(--soft-green);
-    }
-
-    .result-box.yellow-border {
-      border-left: 5px solid #d59500;
-      background: #fff9e7;
-    }
-
-    .result-box.red-border {
-      border-left: 5px solid var(--red);
-      background: var(--soft-red);
-    }
-
-    .status {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-
-    .clone-grid,
-    .checklist {
-      display: grid;
-      gap: 9px;
-      margin-top: 12px;
-    }
-
-    .clone-card,
-    .check {
-      padding: 11px;
-      color: #24364c;
-      background: #f8fbff;
-      border: 1px solid var(--line);
+    ::-webkit-scrollbar-thumb {
+      background: #b9cce0;
       border-radius: 10px;
     }
 
-    .clone-card {
-      border-left: 5px solid var(--blue);
+    .soft-shadow {
+      box-shadow: 0 12px 28px rgba(31, 74, 120, 0.10);
     }
 
-    .clone-card.b { border-left-color: var(--purple); }
-    .clone-card.c { border-left-color: var(--orange); }
-    .clone-card.d { border-left-color: var(--green); }
-
-    .clone-card strong {
-      display: block;
-      margin-bottom: 3px;
+    .blue-glow {
+      box-shadow: 0 0 0 1px rgba(20, 121, 209, 0.18), 0 10px 24px rgba(20, 121, 209, 0.08);
     }
 
-    .target-grid,
-    .toggle-grid,
-    .radio-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 12px;
+    .purple-glow {
+      box-shadow: 0 0 0 1px rgba(110, 69, 207, 0.18), 0 10px 24px rgba(110, 69, 207, 0.08);
     }
 
-    label.option {
-      display: flex;
-      align-items: flex-start;
-      gap: 9px;
-      padding: 11px;
-      color: #24364c;
-      background: #f8fbff;
-      border: 1px solid var(--line);
-      border-radius: 11px;
-      cursor: pointer;
+    .green-glow {
+      box-shadow: 0 0 0 1px rgba(20, 138, 88, 0.18), 0 10px 24px rgba(20, 138, 88, 0.08);
     }
 
-    label.option:hover {
-      background: #f1f8ff;
-      border-color: rgba(20, 121, 209, 0.60);
+    .orange-glow {
+      box-shadow: 0 0 0 1px rgba(201, 106, 5, 0.18), 0 10px 24px rgba(201, 106, 5, 0.08);
     }
 
-    input[type="checkbox"],
-    input[type="radio"] {
-      width: auto;
-      margin-top: 4px;
-      accent-color: var(--purple);
-      transform: scale(1.12);
-    }
-
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .metric {
-      padding: 12px 8px;
-      text-align: center;
-      background: #f8fbff;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-    }
-
-    .metric b {
-      display: block;
-      color: #1d3148;
-      font-size: 1.2rem;
-    }
-
-    .metric span {
-      color: var(--muted);
-      font-size: 0.77rem;
-    }
-
-    table {
-      width: 100%;
-      margin-top: 12px;
-      border-collapse: collapse;
-      font-size: 0.87rem;
-    }
-
-    th,
-    td {
-      padding: 10px;
-      text-align: left;
-      vertical-align: top;
-      border-bottom: 1px solid rgba(39, 84, 134, 0.14);
-    }
-
-    th {
-      color: #1b5f9e;
-      background: #edf7ff;
-    }
-
-    .pill {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 0.76rem;
-      font-weight: bold;
-    }
-
-    .pill.green {
-      color: #0e7b4c;
-      background: #e6f8ef;
-    }
-
-    .pill.yellow {
-      color: #8b6100;
-      background: #fff5cf;
-    }
-
-    .pill.red {
-      color: #b62640;
-      background: #ffe5eb;
-    }
-
-    .chart-wrap {
-      height: 385px;
-      margin-top: 10px;
-    }
-
-    #cy {
-      width: 100%;
-      height: 420px;
-      margin-top: 10px;
-      background: #f7fbff;
-      border: 1px solid var(--line);
-      border-radius: 13px;
-    }
-
-    .source-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .source-links a {
-      padding: 7px 10px;
-      color: #1b5f9e;
-      background: #eef7ff;
-      border: 1px solid #c8e4fa;
-      border-radius: 999px;
-      text-decoration: none;
-      font-size: 0.80rem;
-      font-weight: bold;
-    }
-
-    .source-links a:hover {
-      background: #dff0ff;
-    }
-
-    footer {
-      max-width: 1450px;
-      margin: auto;
-      padding: 4px 18px 26px;
-      color: #5b6b80;
-      text-align: center;
-      font-size: 0.85rem;
-    }
-
-    @media (max-width: 1000px) {
-      .span-4, .span-5, .span-6, .span-7, .span-8, .span-12 {
-        grid-column: span 12;
-      }
-
-      .form-row,
-      .target-grid,
-      .toggle-grid,
-      .radio-grid,
-      .metrics {
-        grid-template-columns: 1fr;
-      }
-
-      #cy {
-        height: 350px;
-      }
+    .red-glow {
+      box-shadow: 0 0 0 1px rgba(201, 47, 74, 0.18), 0 10px 24px rgba(201, 47, 74, 0.08);
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <h1>NEOIMMUNE AI Lab</h1>
-    <p class="subtitle">
-      Evolution-Aware, Safety-Validated, Closed-Loop Personalized Cancer Therapy
-    </p>
-
-    <div class="tagline">
-      PREDICT → CHALLENGE → VALIDATE → REVIEW → TREAT → MONITOR → ADAPT
-    </div>
-
-    <div class="disclaimer">
-      <strong>Research and educational prototype only.</strong>
-      The website uses simulated, cohort-inspired examples. It does not diagnose cancer,
-      predict an individual patient’s tumor evolution, recommend treatment, identify a clinically
-      valid neoantigen, establish nanocarrier safety, or replace laboratory validation, clinical
-      trials, clinicians, ethical review, regulatory approval, or informed consent.
-    </div>
-  </header>
-
-  <nav>
-    <a href="#explorer">Cancer Explorer</a>
-    <a href="#twin">Digital Twin</a>
-    <a href="#neoantigen">Neoantigen</a>
-    <a href="#rna">RNA + Carrier</a>
-    <a href="#redteam">Red Team</a>
-    <a href="#evolution">Evolution</a>
-    <a href="#closedloop">Closed Loop</a>
-  </nav>
-
-  <main>
-    <div class="flow">
-      <span>Data Context</span>
-      <span>Tumor Mapper</span>
-      <span>Digital Twin</span>
-      <span>Neoantigen Evaluation</span>
-      <span>Safety Filter</span>
-      <span>RNA + Nanocarrier</span>
-      <span>Strategy Design</span>
-      <span>Red Team</span>
-      <span>Validation</span>
-      <span>Monitor</span>
-      <span>Adapt</span>
-    </div>
-
-    <section class="grid">
-
-      <div class="card span-12" id="explorer">
-        <h2 class="blue">1. Cancer Database Explorer</h2>
-        <span class="badge simulated">SIMULATED DEMO DATA — NOT PATIENT DATA</span>
-
-        <p class="small">
-          Search a cancer type. The website loads a fictional, cohort-inspired tumor model with
-          example mutations and clones. It does not directly download, process, or interpret real patient records.
-        </p>
-
-        <div class="form-row">
-          <div>
-            <label class="small">Search cancer type</label>
-            <input id="cancerSearch" type="text"
-              placeholder="Example: melanoma, lung, breast, leukemia..."
-              oninput="filterCancerList()">
-          </div>
-
-          <div>
-            <label class="small">Select cancer context</label>
-            <select id="cancerSelect" onchange="loadCancerModel()"></select>
-          </div>
-        </div>
-
-        <div id="cancerInfo" class="result-box green-border">
-          <span class="status">DEMO MODEL READY</span>
-          Select a cancer type to load a simulated tumor profile.
-        </div>
-
-        <div class="source-links">
-          <a href="https://portal.gdc.cancer.gov/" target="_blank">NCI GDC</a>
-          <a href="https://www.cbioportal.org/" target="_blank">cBioPortal</a>
-          <a href="https://cancer.sanger.ac.uk/cosmic" target="_blank">COSMIC</a>
-          <a href="https://gtexportal.org/home/" target="_blank">GTEx</a>
-          <a href="https://www.proteinatlas.org/" target="_blank">Human Protein Atlas</a>
-          <a href="https://www.iedb.org/" target="_blank">IEDB</a>
-          <a href="https://clinicaltrials.gov/" target="_blank">ClinicalTrials.gov</a>
-        </div>
-      </div>
-
-      <div class="card span-5" id="twin">
-        <h2 class="blue">2. Tumor Mapper and Digital Twin</h2>
-        <span class="badge simulated">SIMULATED CLONE MODEL</span>
-
-        <p class="small">
-          The Digital Twin represents the tumor’s currently modeled mutations, clones, targets,
-          and simulated treatment-pressure scenario. It is not a complete virtual patient.
-        </p>
-
-        <div id="cloneContainer" class="clone-grid"></div>
-
-        <div class="info-box">
-          <strong class="purple">Digital Twin status:</strong><br>
-          <span id="digitalTwinText" class="small">Waiting for cancer selection.</span>
-        </div>
-      </div>
-
-      <div class="card span-7" id="neoantigen">
-        <h2 class="green">3. AI-2: Neoantigen Evaluator and Safety Filter</h2>
-        <span class="badge simulated">CANDIDATE PRIORITIZATION — REQUIRES VALIDATION</span>
-
-        <p class="small">
-          A real neoantigen workflow would compare tumor DNA with matched normal DNA, identify
-          protein-changing somatic mutations, confirm RNA expression, consider HLA presentation,
-          assess clone coverage, compare normal-tissue expression, and test immune recognition.
-        </p>
-
-        <div style="overflow-x:auto;">
-          <table>
-            <thead>
-              <tr>
-                <th>Candidate</th>
-                <th>Mutation evidence</th>
-                <th>RNA evidence</th>
-                <th>HLA context</th>
-                <th>Clone coverage</th>
-                <th>Normal risk</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="neoantigenTableBody"></tbody>
-          </table>
-        </div>
-
-        <div class="info-box">
-          <strong class="green">Conceptual priority score:</strong><br>
-          <span class="small">
-            Sᵢ = wₘMᵢ + wₑEᵢ + wₕHᵢ + w𝚌Cᵢ + wₚPᵢ − wᵣRᵢ − wᵤUᵢ
-            <br>
-            M = mutation evidence, E = RNA expression, H = HLA-presentation evidence,
-            C = clone coverage, P = predicted immunogenicity, R = normal-tissue risk,
-            U = uncertainty. This is only a conceptual, non-clinically validated scoring model.
-          </span>
-        </div>
-
-        <div class="result-box yellow-border">
-          <span class="status">WHY VALIDATION IS REQUIRED</span>
-          Predicted neoantigens may not be expressed, presented by HLA, recognized by immune cells,
-          stable across tumor clones, or safe for normal tissues.
-        </div>
-      </div>
-
-      <div class="card span-5">
-        <h2 class="purple">4. AI-4: Multi-Target Strategy Builder</h2>
-        <span class="badge simulated">SIMULATED TARGET COMBINATION</span>
-
-        <p class="small">
-          Select fictional candidates to compare baseline clone coverage. This does not generate
-          a treatment recommendation.
-        </p>
-
-        <div id="targetOptions" class="target-grid"></div>
-
-        <button onclick="runSimulation()">Run Closed-Loop Simulation</button>
-        <button class="green-button" onclick="suggestOptimization()">Suggest Simulated Re-analysis</button>
-        <button class="orange-button" onclick="resetDemo()">Reset Current Demo</button>
-
-        <div class="metrics">
-          <div class="metric">
-            <b id="coverage">0%</b>
-            <span>Baseline coverage</span>
-          </div>
-
-          <div class="metric">
-            <b id="selectedCount">0</b>
-            <span>Targets selected</span>
-          </div>
-
-          <div class="metric">
-            <b id="uncovered">0%</b>
-            <span>Uncovered baseline</span>
-          </div>
-
-          <div class="metric">
-            <b id="dominantClone">--</b>
-            <span>Final modeled clone</span>
-          </div>
-        </div>
-
-        <div id="optimizationBox" class="info-box">
-          <strong class="purple">Strategy re-analysis:</strong><br>
-          <span class="small">Run a simulation to view a fictional rule-based re-analysis suggestion.</span>
-        </div>
-      </div>
-
-      <div class="card span-7" id="rna">
-        <h2 class="orange">5. RNA Cargo and Nanocarrier Feasibility Module</h2>
-        <span class="badge simulated">RESEARCH MECHANISM SELECTION — NOT A PRESCRIPTION</span>
-
-        <p class="small">
-          Target prioritization and RNA treatment design are separate decisions. The chosen RNA
-          approach depends on the intended biological mechanism, delivery feasibility, safety,
-          and experimental evidence.
-        </p>
-
-        <div class="radio-grid">
-          <label class="option">
-            <input type="radio" name="rnaType" value="mRNA vaccine concept" checked onchange="updateRNAInfo()">
-            <span><strong>mRNA cancer-vaccine concept</strong><br><small>Simulated purpose: produce selected antigen sequence(s) for immune-priming research.</small></span>
-          </label>
-
-          <label class="option">
-            <input type="radio" name="rnaType" value="siRNA concept" onchange="updateRNAInfo()">
-            <span><strong>siRNA concept</strong><br><small>Simulated purpose: reduce a selected cancer-associated transcript.</small></span>
-          </label>
-
-          <label class="option">
-            <input type="radio" name="rnaType" value="miRNA modulation concept" onchange="updateRNAInfo()">
-            <span><strong>miRNA-modulation concept</strong><br><small>Simulated purpose: explore gene-regulatory pathway modulation.</small></span>
-          </label>
-
-          <label class="option">
-            <input type="radio" name="rnaType" value="No RNA cargo selected" onchange="updateRNAInfo()">
-            <span><strong>No RNA cargo</strong><br><small>Perform target and evolution analysis only.</small></span>
-          </label>
-        </div>
-
-        <div id="rnaInfo" class="info-box"></div>
-
-        <h3 class="orange">Nanocarrier feasibility checklist</h3>
-
-        <div style="overflow-x:auto;">
-          <table>
-            <thead>
-              <tr>
-                <th>Delivery requirement</th>
-                <th>Prototype status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>RNA loading</td><td><span class="pill green">Simulated acceptable</span></td></tr>
-              <tr><td>RNA protection</td><td><span class="pill green">Simulated acceptable</span></td></tr>
-              <tr><td>Particle stability</td><td><span class="pill yellow">Needs laboratory testing</span></td></tr>
-              <tr><td>Target-cell uptake</td><td><span class="pill yellow">Needs laboratory testing</span></td></tr>
-              <tr><td>Endosomal escape</td><td><span class="pill yellow">Needs laboratory testing</span></td></tr>
-              <tr><td>Cargo release and biological activity</td><td><span class="pill yellow">Needs validation</span></td></tr>
-              <tr><td>Tumor selectivity and biodistribution</td><td><span class="pill red">Not established</span></td></tr>
-              <tr><td>Normal-cell exposure and toxicity</td><td><span class="pill red">Needs safety testing</span></td></tr>
-              <tr><td>Repeated-dose safety</td><td><span class="pill red">Not assessed</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="result-box yellow-border">
-          <span class="status">RNA + NANOCARRIER CAUTION</span>
-          A carrier that delivers RNA effectively in one tissue or model may behave differently in
-          another. Loading, stability, biodistribution, uptake, endosomal escape, release, immune
-          effects, and toxicity require independent experimental evaluation.
-        </div>
-      </div>
-
-      <div class="card span-12" id="redteam">
-        <h2 class="red">6. AI-5: Therapeutic Red Team and Immune-Escape Simulator</h2>
-        <span class="badge warning">MODELED ESCAPE SCENARIOS — NOT CLINICAL PREDICTIONS</span>
-
-        <p class="small">
-          The Red Team tries to make a candidate strategy fail by activating plausible escape
-          mechanisms. It identifies research vulnerabilities for re-analysis and validation.
-        </p>
-
-        <div class="toggle-grid">
-          <label class="option">
-            <input type="checkbox" id="targetLoss" checked onchange="runSimulation()">
-            <span><strong>Target loss</strong><br><small>A selected target may become absent in one modeled clone.</small></span>
-          </label>
-
-          <label class="option">
-            <input type="checkbox" id="resistantExpansion" checked onchange="runSimulation()">
-            <span><strong>Resistant-clone expansion</strong><br><small>Untargeted clones gain a simulated survival advantage.</small></span>
-          </label>
-
-          <label class="option">
-            <input type="checkbox" id="hlaLoss" onchange="runSimulation()">
-            <span><strong>Reduced HLA class I presentation</strong><br><small>Simulated immune recognition becomes weaker.</small></span>
-          </label>
-
-          <label class="option">
-            <input type="checkbox" id="antigenProcessing" onchange="runSimulation()">
-            <span><strong>Antigen-processing defect</strong><br><small>Modeled peptide processing/presentation is reduced.</small></span>
-          </label>
-
-          <label class="option">
-            <input type="checkbox" id="immuneSuppression" onchange="runSimulation()">
-            <span><strong>Inhibitory immune environment</strong><br><small>Modeled immune effect is reduced by suppressive signals.</small></span>
-          </label>
-
-          <label class="option">
-            <input type="checkbox" id="newMutation" onchange="runSimulation()">
-            <span><strong>New mutation event</strong><br><small>A simulated later molecular change affects one clone.</small></span>
-          </label>
-
-          <label class="option">
-            <input type="checkbox" id="compensatory" onchange="runSimulation()">
-            <span><strong>Compensatory survival pathway</strong><br><small>One clone receives simulated pathway-based survival advantage.</small></span>
-          </label>
-
-          <label class="option">
-            <input type="checkbox" id="highHeterogeneity" onchange="runSimulation()">
-            <span><strong>High tumor heterogeneity</strong><br><small>Add a small fourth clone with incomplete target coverage.</small></span>
-          </label>
-        </div>
-
-        <div id="redTeamTable" style="overflow-x:auto;"></div>
-
-        <div id="riskBox" class="result-box yellow-border">
-          <span class="status">MODELED RISK: NOT RUN</span>
-          Select targets and run the simulation. The result is a simplified educational scenario.
-        </div>
-      </div>
-
-      <div class="card span-7" id="evolution">
-        <h2 class="orange">7. Simulated Tumor Evolution Timeline</h2>
-        <span class="badge simulated">T1–T10 = SIMULATED CYCLES, NOT DAYS OR CLINICAL TIME</span>
-
-        <p class="small">
-          The chart shows changing clone proportions under selected fictional treatment pressure
-          and immune-escape assumptions.
-        </p>
-
-        <div class="chart-wrap">
-          <canvas id="evolutionChart"></canvas>
-        </div>
-
-        <div id="whyGrowBox" class="assumption-box">
-          <strong class="orange">Simulation assumptions:</strong><br>
-          <span class="small">
-            Targeted clones receive lower simulated survival fitness. Untargeted clones may gain
-            relative abundance. Activated Red-Team events can reduce modeled immune effectiveness.
-            All values are illustrative, not biological probabilities.
-          </span>
-        </div>
-      </div>
-
-      <div class="card span-5">
-        <h2 class="blue">8. Modeled Evolution Pathway Viewer</h2>
-        <span class="badge simulated">SIMULATED EVOLUTION NETWORK</span>
-
-        <p class="small">
-          The graph connects the baseline tumor, clones, strategy, selected escape events,
-          potential escape, and final dominant modeled clone.
-        </p>
-
-        <div id="cy"></div>
-      </div>
-
-      <div class="card span-6" id="closedloop">
-        <h2 class="purple">9. AI-6: Monitoring and Digital Twin Update</h2>
-        <span class="badge">CLOSED-LOOP RESEARCH WORKFLOW</span>
-
-        <div class="checklist">
-          <div class="check"><strong>Baseline:</strong> Map currently available tumor, normal-tissue, and patient-context information.</div>
-          <div class="check"><strong>Candidate design:</strong> Rank targets, evaluate predicted safety, and create a research candidate strategy.</div>
-          <div class="check"><strong>Challenge:</strong> Run the Therapeutic Red Team to test modeled escape routes.</div>
-          <div class="check"><strong>Validate:</strong> Confirm targets, immune effects, normal-cell safety, RNA delivery, and preclinical activity.</div>
-          <div class="check"><strong>Monitor:</strong> Use clinically appropriate assessment, imaging, ctDNA/liquid biopsy when appropriate, and molecular testing when indicated.</div>
-          <div class="check"><strong>Update:</strong> If recurrence, resistance, or molecular change is suspected, update the Digital Twin and repeat the loop.</div>
-        </div>
-
-        <div class="result-box green-border">
-          <span class="status">CLOSED-LOOP PRINCIPLE</span>
-          Predict → challenge → validate → review → treat under appropriate supervision → monitor → detect change → update → adapt → validate again.
-        </div>
-      </div>
-
-      <div class="card span-6">
-        <h2 class="green">10. Safety and Evidence Gate</h2>
-        <span class="badge warning">AI CANNOT PASS THIS GATE ALONE</span>
-
-        <div class="checklist">
-          <div class="check">🔬 Target presence and RNA expression require experimental confirmation.</div>
-          <div class="check">🧪 HLA presentation and immune recognition require investigation where relevant.</div>
-          <div class="check">🛡️ Normal-tissue and normal-cell risk must be assessed.</div>
-          <div class="check">🚚 RNA loading, protection, uptake, release, and toxicity require validation.</div>
-          <div class="check">🐁 Appropriate preclinical evidence is required before human evaluation.</div>
-          <div class="check">👩‍⚕️ Clinical experts, ethics review, regulatory requirements, and informed consent are essential.</div>
-        </div>
-
-        <button class="red-button" onclick="downloadReport()">
-          Download Simulated NEOIMMUNE AI Report (JSON)
-        </button>
-      </div>
-
-      <div class="card span-12">
-        <h2 class="gold">How to Explain This Website</h2>
-
-        <p>
-          “NEOIMMUNE AI Lab is an educational, hypothesis-generation prototype. It demonstrates
-          how a cancer research framework could combine tumor heterogeneity mapping, neoantigen
-          prioritization, normal-tissue safety evaluation, RNA and nanocarrier feasibility,
-          therapeutic Red-Team testing, immune-escape simulation, validation gates, and longitudinal
-          monitoring. The output is not a clinical decision; it is a transparent simulated scenario
-          that requires independent laboratory, clinical, ethical, and regulatory evaluation.”
-        </p>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    NEOIMMUNE AI Lab • Educational research prototype • Simulated data • No patient data • No medical advice • Independent validation required
-  </footer>
-
-  <script>
-    const cancerTypes = [
-      { id: "SKCM", name: "Skin Cutaneous Melanoma", shortName: "Melanoma", category: "Skin cancer", genes: ["BRAF", "NRAS", "NF1", "TP53", "CDKN2A"], clones: [
-        { id: "A", percent: 50, mutations: ["BRAF"], targets: ["N1", "N3"] },
-        { id: "B", percent: 30, mutations: ["NRAS"], targets: ["N2", "N3"] },
-        { id: "C", percent: 20, mutations: ["TP53"], targets: ["N4"] }
-      ]},
-      { id: "LUAD", name: "Lung Adenocarcinoma", shortName: "Lung Adenocarcinoma", category: "Lung cancer", genes: ["TP53", "KRAS", "EGFR", "STK11", "KEAP1"], clones: [
-        { id: "A", percent: 55, mutations: ["KRAS", "TP53"], targets: ["N1", "N2"] },
-        { id: "B", percent: 25, mutations: ["STK11"], targets: ["N3"] },
-        { id: "C", percent: 20, mutations: ["KEAP1"], targets: ["N4"] }
-      ]},
-      { id: "LUSC", name: "Lung Squamous Cell Carcinoma", shortName: "Lung Squamous Cancer", category: "Lung cancer", genes: ["TP53", "CDKN2A", "PIK3CA", "NFE2L2", "SOX2"], clones: [
-        { id: "A", percent: 48, mutations: ["TP53"], targets: ["N1", "N3"] },
-        { id: "B", percent: 32, mutations: ["PIK3CA"], targets: ["N2"] },
-        { id: "C", percent: 20, mutations: ["NFE2L2"], targets: ["N4"] }
-      ]},
-      { id: "BRCA", name: "Breast Invasive Carcinoma", shortName: "Breast Cancer", category: "Breast cancer", genes: ["PIK3CA", "TP53", "GATA3", "CDH1", "MAP3K1"], clones: [
-        { id: "A", percent: 60, mutations: ["PIK3CA"], targets: ["N1"] },
-        { id: "B", percent: 25, mutations: ["TP53"], targets: ["N2", "N3"] },
-        { id: "C", percent: 15, mutations: ["GATA3"], targets: ["N4"] }
-      ]},
-      { id: "COAD", name: "Colon Adenocarcinoma", shortName: "Colon Cancer", category: "Colorectal cancer", genes: ["APC", "TP53", "KRAS", "PIK3CA", "SMAD4"], clones: [
-        { id: "A", percent: 50, mutations: ["APC", "KRAS"], targets: ["N1", "N3"] },
-        { id: "B", percent: 30, mutations: ["TP53"], targets: ["N2"] },
-        { id: "C", percent: 20, mutations: ["SMAD4"], targets: ["N4"] }
-      ]},
-      { id: "READ", name: "Rectum Adenocarcinoma", shortName: "Rectal Cancer", category: "Colorectal cancer", genes: ["APC", "TP53", "KRAS", "PIK3CA", "SMAD4"], clones: [
-        { id: "A", percent: 52, mutations: ["APC"], targets: ["N1", "N2"] },
-        { id: "B", percent: 28, mutations: ["KRAS"], targets: ["N3"] },
-        { id: "C", percent: 20, mutations: ["TP53"], targets: ["N4"] }
-      ]},
-      { id: "BLCA", name: "Bladder Urothelial Carcinoma", shortName: "Bladder Cancer", category: "Urinary cancer", genes: ["TP53", "FGFR3", "KDM6A", "PIK3CA", "RB1"], clones: [
-        { id: "A", percent: 45, mutations: ["FGFR3"], targets: ["N1"] },
-        { id: "B", percent: 35, mutations: ["TP53"], targets: ["N2", "N3"] },
-        { id: "C", percent: 20, mutations: ["RB1"], targets: ["N4"] }
-      ]},
-      { id: "GBM", name: "Glioblastoma Multiforme", shortName: "Glioblastoma", category: "Brain cancer", genes: ["TP53", "PTEN", "EGFR", "NF1", "PIK3R1"], clones: [
-        { id: "A", percent: 50, mutations: ["EGFR"], targets: ["N1"] },
-        { id: "B", percent: 30, mutations: ["PTEN"], targets: ["N2", "N3"] },
-        { id: "C", percent: 20, mutations: ["NF1"], targets: ["N4"] }
-      ]},
-      { id: "OV", name: "Ovarian Serous Cystadenocarcinoma", shortName: "Ovarian Cancer", category: "Gynecological cancer", genes: ["TP53", "BRCA1", "BRCA2", "NF1", "RB1"], clones: [
-        { id: "A", percent: 55, mutations: ["TP53"], targets: ["N1", "N2"] },
-        { id: "B", percent: 25, mutations: ["BRCA1"], targets: ["N3"] },
-        { id: "C", percent: 20, mutations: ["NF1"], targets: ["N4"] }
-      ]},
-      { id: "KIRC", name: "Kidney Renal Clear Cell Carcinoma", shortName: "Kidney Cancer", category: "Kidney cancer", genes: ["VHL", "PBRM1", "SETD2", "BAP1", "MTOR"], clones: [
-        { id: "A", percent: 55, mutations: ["VHL"], targets: ["N1"] },
-        { id: "B", percent: 25, mutations: ["PBRM1"], targets: ["N2", "N3"] },
-        { id: "C", percent: 20, mutations: ["BAP1"], targets: ["N4"] }
-      ]},
-      { id: "KIRP", name: "Kidney Renal Papillary Cell Carcinoma", shortName: "Papillary Kidney Cancer", category: "Kidney cancer", genes: ["MET", "CDKN2A", "SETD2", "NF2", "BAP1"], clones: [
-        { id: "A", percent: 50, mutations: ["MET"], targets: ["N1", "N2"] },
-        { id: "B", percent: 30, mutations: ["SETD2"], targets: ["N3"] },
-        { id: "C", percent: 20, mutations: ["BAP1"], targets: ["N4"] }
-      ]},
-      { id: "LIHC", name: "Liver Hepatocellular Carcinoma", shortName: "Liver Cancer", category: "Liver cancer", genes: ["TP53", "CTNNB1", "AXIN1", "ARID1A", "NFE2L2"], clones: [
-        { id: "A", percent: 50, mutations: ["CTNNB1"], targets: ["N1"] },
-        { id: "B", percent: 30, mutations: ["TP53"], targets: ["N2", "N3"] },
-        { id: "C", percent: 20, mutations: ["ARID1A"], targets: ["N4"] }
-      ]},
-      { id: "PAAD", name: "Pancreatic Adenocarcinoma", shortName: "Pancreatic Cancer", category: "Pancreatic cancer", genes: ["KRAS", "TP53", "CDKN2A", "SMAD4", "ARID1A"], clones: [
-        { id: "A", percent: 58, mutations: ["KRAS"], targets: ["N1"] },
-        { id: "B", percent: 25, mutations: ["TP53"], targets: ["N2", "N3"] },
-        { id: "C", percent: 17, mutations: ["SMAD4"], targets: ["N4"] }
-      ]},
-      { id: "PRAD", name: "Prostate Adenocarcinoma", shortName: "Prostate Cancer", category: "Prostate cancer", genes: ["SPOP", "TP53", "PTEN", "FOXA1", "ATM"], clones: [
-        { id: "A", percent: 55, mutations: ["SPOP"], targets: ["N1"] },
-        { id: "B", percent: 25, mutations: ["PTEN"], targets: ["N2", "N3"] },
-        { id: "C", percent: 20, mutations: ["TP53"], targets: ["N4"] }
-      ]},
-      { id: "THCA", name: "Thyroid Carcinoma", shortName: "Thyroid Cancer", category: "Thyroid cancer", genes: ["BRAF", "NRAS", "HRAS", "TERT", "TP53"], clones: [
-        { id: "A", percent: 60, mutations: ["BRAF"], targets: ["N1", "N3"] },
-        { id: "B", percent: 25, mutations: ["NRAS"], targets: ["N2"] },
-        { id: "C", percent: 15, mutations: ["TERT"], targets: ["N4"] }
-      ]},
-      { id: "UCEC", name: "Uterine Corpus Endometrial Carcinoma", shortName: "Endometrial Cancer", category: "Gynecological cancer", genes: ["PTEN", "PIK3CA", "ARID1A", "TP53", "POLE"], clones: [
-        { id: "A", percent: 50, mutations: ["PTEN", "PIK3CA"], targets: ["N1", "N3"] },
-        { id: "B", percent: 30, mutations: ["ARID1A"], targets: ["N2"] },
-        { id: "C", percent: 20, mutations: ["TP53"], targets: ["N4"] }
-      ]},
-      { id: "STAD", name: "Stomach Adenocarcinoma", shortName: "Stomach Cancer", category: "Gastrointestinal cancer", genes: ["TP53", "ARID1A", "PIK3CA", "ERBB2", "CDH1"], clones: [
-        { id: "A", percent: 48, mutations: ["TP53"], targets: ["N1", "N2"] },
-        { id: "B", percent: 32, mutations: ["ARID1A"], targets: ["N3"] },
-        { id: "C", percent: 20, mutations: ["ERBB2"], targets: ["N4"] }
-      ]},
-      { id: "HNSC", name: "Head and Neck Squamous Cell Carcinoma", shortName: "Head and Neck Cancer", category: "Head and neck cancer", genes: ["TP53", "CDKN2A", "PIK3CA", "NOTCH1", "FAT1"], clones: [
-        { id: "A", percent: 50, mutations: ["TP53"], targets: ["N1", "N3"] },
-        { id: "B", percent: 30, mutations: ["PIK3CA"], targets: ["N2"] },
-        { id: "C", percent: 20, mutations: ["NOTCH1"], targets: ["N4"] }
-      ]},
-      { id: "SARC", name: "Sarcoma", shortName: "Sarcoma", category: "Soft-tissue and bone cancer", genes: ["TP53", "ATRX", "RB1", "PIK3CA", "NF1"], clones: [
-        { id: "A", percent: 50, mutations: ["TP53"], targets: ["N1"] },
-        { id: "B", percent: 30, mutations: ["ATRX"], targets: ["N2", "N3"] },
-        { id: "C", percent: 20, mutations: ["RB1"], targets: ["N4"] }
-      ]},
-      { id: "LAML", name: "Acute Myeloid Leukemia", shortName: "Acute Myeloid Leukemia", category: "Blood cancer", genes: ["FLT3", "NPM1", "DNMT3A", "IDH1", "IDH2"], clones: [
-        { id: "A", percent: 55, mutations: ["NPM1", "FLT3"], targets: ["N1", "N2"] },
-        { id: "B", percent: 25, mutations: ["DNMT3A"], targets: ["N3"] },
-        { id: "C", percent: 20, mutations: ["IDH1"], targets: ["N4"] }
-      ]}
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useMemo, useState } = React;
+
+    const {
+      ResponsiveContainer,
+      LineChart,
+      Line,
+      XAxis,
+      YAxis,
+      CartesianGrid,
+      Tooltip,
+      Legend,
+      BarChart,
+      Bar,
+      Cell
+    } = Recharts;
+
+    /* =========================================================
+       IMPORTANT:
+       ALL DATA BELOW ARE SIMULATED DEMO VALUES.
+       They are NOT patient data, clinical results, validated
+       neoantigens, docking data, or treatment recommendations.
+       ========================================================= */
+
+    const CANCER_DATABASE = [
+      {
+        id: "SKCM",
+        name: "Skin Cutaneous Melanoma",
+        shortName: "Melanoma",
+        category: "Skin cancer",
+        commonGenes: ["BRAF", "NRAS", "NF1", "TP53", "CDKN2A"],
+        clones: [
+          { id: "A", fraction: 0.50, color: "#1479d1", mutations: ["BRAF V600E (simulated)", "CDKN2A loss (simulated)"], targets: { N1: 0.85, N2: 0.10, N3: 0.60, N4: 0.05, N5: 0.20, N6: 0.70 } },
+          { id: "B", fraction: 0.30, color: "#6e45cf", mutations: ["NRAS Q61K (simulated)", "PTEN loss (simulated)"], targets: { N1: 0.10, N2: 0.80, N3: 0.55, N4: 0.60, N5: 0.15, N6: 0.05 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["MITF-low state (simulated)", "TP53 mutation (simulated)"], targets: { N1: 0.05, N2: 0.05, N3: 0.10, N4: 0.85, N5: 0.75, N6: 0.10 } }
+        ],
+        normalTissue: { N1: 0.05, N2: 0.20, N3: 0.15, N4: 0.10, N5: 0.60, N6: 0.08 }
+      },
+      {
+        id: "LUAD",
+        name: "Lung Adenocarcinoma",
+        shortName: "Lung Adenocarcinoma",
+        category: "Lung cancer",
+        commonGenes: ["TP53", "KRAS", "EGFR", "STK11", "KEAP1"],
+        clones: [
+          { id: "A", fraction: 0.55, color: "#1479d1", mutations: ["KRAS mutation (simulated)", "TP53 mutation (simulated)"], targets: { N1: 0.78, N2: 0.66, N3: 0.12, N4: 0.15, N5: 0.30, N6: 0.60 } },
+          { id: "B", fraction: 0.25, color: "#6e45cf", mutations: ["STK11 loss (simulated)"], targets: { N1: 0.10, N2: 0.15, N3: 0.82, N4: 0.30, N5: 0.10, N6: 0.12 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["KEAP1 alteration (simulated)"], targets: { N1: 0.08, N2: 0.05, N3: 0.15, N4: 0.78, N5: 0.70, N6: 0.05 } }
+        ],
+        normalTissue: { N1: 0.08, N2: 0.16, N3: 0.12, N4: 0.10, N5: 0.58, N6: 0.10 }
+      },
+      {
+        id: "LUSC",
+        name: "Lung Squamous Cell Carcinoma",
+        shortName: "Lung Squamous Cancer",
+        category: "Lung cancer",
+        commonGenes: ["TP53", "CDKN2A", "PIK3CA", "NFE2L2", "SOX2"],
+        clones: [
+          { id: "A", fraction: 0.48, color: "#1479d1", mutations: ["TP53 mutation (simulated)"], targets: { N1: 0.80, N2: 0.15, N3: 0.62, N4: 0.10, N5: 0.25, N6: 0.65 } },
+          { id: "B", fraction: 0.32, color: "#6e45cf", mutations: ["PIK3CA mutation (simulated)"], targets: { N1: 0.12, N2: 0.78, N3: 0.22, N4: 0.58, N5: 0.10, N6: 0.08 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["NFE2L2 mutation (simulated)"], targets: { N1: 0.05, N2: 0.10, N3: 0.12, N4: 0.84, N5: 0.72, N6: 0.10 } }
+        ],
+        normalTissue: { N1: 0.07, N2: 0.18, N3: 0.15, N4: 0.12, N5: 0.62, N6: 0.09 }
+      },
+      {
+        id: "BRCA",
+        name: "Breast Invasive Carcinoma",
+        shortName: "Breast Cancer",
+        category: "Breast cancer",
+        commonGenes: ["PIK3CA", "TP53", "GATA3", "CDH1", "MAP3K1"],
+        clones: [
+          { id: "A", fraction: 0.60, color: "#1479d1", mutations: ["PIK3CA mutation (simulated)"], targets: { N1: 0.85, N2: 0.12, N3: 0.40, N4: 0.10, N5: 0.30, N6: 0.55 } },
+          { id: "B", fraction: 0.25, color: "#6e45cf", mutations: ["TP53 mutation (simulated)"], targets: { N1: 0.08, N2: 0.80, N3: 0.62, N4: 0.35, N5: 0.12, N6: 0.10 } },
+          { id: "C", fraction: 0.15, color: "#d97706", mutations: ["GATA3 change (simulated)"], targets: { N1: 0.08, N2: 0.10, N3: 0.15, N4: 0.78, N5: 0.68, N6: 0.08 } }
+        ],
+        normalTissue: { N1: 0.13, N2: 0.19, N3: 0.17, N4: 0.14, N5: 0.56, N6: 0.11 }
+      },
+      {
+        id: "COAD",
+        name: "Colon Adenocarcinoma",
+        shortName: "Colon Cancer",
+        category: "Colorectal cancer",
+        commonGenes: ["APC", "TP53", "KRAS", "PIK3CA", "SMAD4"],
+        clones: [
+          { id: "A", fraction: 0.50, color: "#1479d1", mutations: ["APC mutation (simulated)", "KRAS mutation (simulated)"], targets: { N1: 0.82, N2: 0.10, N3: 0.65, N4: 0.08, N5: 0.22, N6: 0.62 } },
+          { id: "B", fraction: 0.30, color: "#6e45cf", mutations: ["TP53 mutation (simulated)"], targets: { N1: 0.10, N2: 0.78, N3: 0.40, N4: 0.55, N5: 0.15, N6: 0.10 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["SMAD4 loss (simulated)"], targets: { N1: 0.05, N2: 0.08, N3: 0.15, N4: 0.84, N5: 0.74, N6: 0.05 } }
+        ],
+        normalTissue: { N1: 0.07, N2: 0.18, N3: 0.13, N4: 0.11, N5: 0.60, N6: 0.09 }
+      },
+      {
+        id: "READ",
+        name: "Rectum Adenocarcinoma",
+        shortName: "Rectal Cancer",
+        category: "Colorectal cancer",
+        commonGenes: ["APC", "TP53", "KRAS", "PIK3CA", "SMAD4"],
+        clones: [
+          { id: "A", fraction: 0.52, color: "#1479d1", mutations: ["APC mutation (simulated)"], targets: { N1: 0.80, N2: 0.65, N3: 0.15, N4: 0.10, N5: 0.28, N6: 0.55 } },
+          { id: "B", fraction: 0.28, color: "#6e45cf", mutations: ["KRAS mutation (simulated)"], targets: { N1: 0.10, N2: 0.12, N3: 0.80, N4: 0.35, N5: 0.12, N6: 0.10 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["TP53 mutation (simulated)"], targets: { N1: 0.08, N2: 0.10, N3: 0.18, N4: 0.82, N5: 0.70, N6: 0.06 } }
+        ],
+        normalTissue: { N1: 0.08, N2: 0.16, N3: 0.14, N4: 0.12, N5: 0.57, N6: 0.09 }
+      },
+      {
+        id: "BLCA",
+        name: "Bladder Urothelial Carcinoma",
+        shortName: "Bladder Cancer",
+        category: "Urinary cancer",
+        commonGenes: ["TP53", "FGFR3", "KDM6A", "PIK3CA", "RB1"],
+        clones: [
+          { id: "A", fraction: 0.45, color: "#1479d1", mutations: ["FGFR3 mutation (simulated)"], targets: { N1: 0.84, N2: 0.12, N3: 0.42, N4: 0.10, N5: 0.25, N6: 0.58 } },
+          { id: "B", fraction: 0.35, color: "#6e45cf", mutations: ["TP53 mutation (simulated)"], targets: { N1: 0.10, N2: 0.80, N3: 0.62, N4: 0.42, N5: 0.15, N6: 0.08 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["RB1 loss (simulated)"], targets: { N1: 0.05, N2: 0.08, N3: 0.12, N4: 0.82, N5: 0.74, N6: 0.08 } }
+        ],
+        normalTissue: { N1: 0.06, N2: 0.20, N3: 0.14, N4: 0.10, N5: 0.59, N6: 0.09 }
+      },
+      {
+        id: "GBM",
+        name: "Glioblastoma Multiforme",
+        shortName: "Glioblastoma",
+        category: "Brain cancer",
+        commonGenes: ["TP53", "PTEN", "EGFR", "NF1", "PIK3R1"],
+        clones: [
+          { id: "A", fraction: 0.50, color: "#1479d1", mutations: ["EGFR alteration (simulated)"], targets: { N1: 0.82, N2: 0.15, N3: 0.38, N4: 0.12, N5: 0.30, N6: 0.60 } },
+          { id: "B", fraction: 0.30, color: "#6e45cf", mutations: ["PTEN loss (simulated)"], targets: { N1: 0.08, N2: 0.78, N3: 0.60, N4: 0.35, N5: 0.15, N6: 0.10 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["NF1 alteration (simulated)"], targets: { N1: 0.06, N2: 0.10, N3: 0.12, N4: 0.84, N5: 0.72, N6: 0.07 } }
+        ],
+        normalTissue: { N1: 0.10, N2: 0.18, N3: 0.16, N4: 0.12, N5: 0.55, N6: 0.12 }
+      },
+      {
+        id: "OV",
+        name: "Ovarian Serous Cystadenocarcinoma",
+        shortName: "Ovarian Cancer",
+        category: "Gynecological cancer",
+        commonGenes: ["TP53", "BRCA1", "BRCA2", "NF1", "RB1"],
+        clones: [
+          { id: "A", fraction: 0.55, color: "#1479d1", mutations: ["TP53 mutation (simulated)"], targets: { N1: 0.80, N2: 0.65, N3: 0.15, N4: 0.08, N5: 0.25, N6: 0.56 } },
+          { id: "B", fraction: 0.25, color: "#6e45cf", mutations: ["BRCA1 alteration (simulated)"], targets: { N1: 0.12, N2: 0.10, N3: 0.78, N4: 0.36, N5: 0.12, N6: 0.08 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["NF1 alteration (simulated)"], targets: { N1: 0.08, N2: 0.10, N3: 0.15, N4: 0.84, N5: 0.70, N6: 0.06 } }
+        ],
+        normalTissue: { N1: 0.09, N2: 0.17, N3: 0.14, N4: 0.11, N5: 0.58, N6: 0.10 }
+      },
+      {
+        id: "KIRC",
+        name: "Kidney Renal Clear Cell Carcinoma",
+        shortName: "Kidney Cancer",
+        category: "Kidney cancer",
+        commonGenes: ["VHL", "PBRM1", "SETD2", "BAP1", "MTOR"],
+        clones: [
+          { id: "A", fraction: 0.55, color: "#1479d1", mutations: ["VHL loss (simulated)"], targets: { N1: 0.84, N2: 0.12, N3: 0.42, N4: 0.10, N5: 0.28, N6: 0.60 } },
+          { id: "B", fraction: 0.25, color: "#6e45cf", mutations: ["PBRM1 mutation (simulated)"], targets: { N1: 0.10, N2: 0.78, N3: 0.60, N4: 0.35, N5: 0.15, N6: 0.08 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["BAP1 mutation (simulated)"], targets: { N1: 0.05, N2: 0.10, N3: 0.14, N4: 0.82, N5: 0.72, N6: 0.07 } }
+        ],
+        normalTissue: { N1: 0.08, N2: 0.16, N3: 0.13, N4: 0.10, N5: 0.60, N6: 0.09 }
+      },
+      {
+        id: "KIRP",
+        name: "Kidney Renal Papillary Cell Carcinoma",
+        shortName: "Papillary Kidney Cancer",
+        category: "Kidney cancer",
+        commonGenes: ["MET", "CDKN2A", "SETD2", "NF2", "BAP1"],
+        clones: [
+          { id: "A", fraction: 0.50, color: "#1479d1", mutations: ["MET mutation (simulated)"], targets: { N1: 0.80, N2: 0.65, N3: 0.16, N4: 0.10, N5: 0.25, N6: 0.55 } },
+          { id: "B", fraction: 0.30, color: "#6e45cf", mutations: ["SETD2 change (simulated)"], targets: { N1: 0.10, N2: 0.10, N3: 0.80, N4: 0.38, N5: 0.12, N6: 0.08 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["BAP1 mutation (simulated)"], targets: { N1: 0.06, N2: 0.08, N3: 0.15, N4: 0.83, N5: 0.70, N6: 0.07 } }
+        ],
+        normalTissue: { N1: 0.09, N2: 0.16, N3: 0.14, N4: 0.11, N5: 0.57, N6: 0.09 }
+      },
+      {
+        id: "LIHC",
+        name: "Liver Hepatocellular Carcinoma",
+        shortName: "Liver Cancer",
+        category: "Liver cancer",
+        commonGenes: ["TP53", "CTNNB1", "AXIN1", "ARID1A", "NFE2L2"],
+        clones: [
+          { id: "A", fraction: 0.50, color: "#1479d1", mutations: ["CTNNB1 mutation (simulated)"], targets: { N1: 0.82, N2: 0.12, N3: 0.40, N4: 0.10, N5: 0.30, N6: 0.58 } },
+          { id: "B", fraction: 0.30, color: "#6e45cf", mutations: ["TP53 mutation (simulated)"], targets: { N1: 0.10, N2: 0.80, N3: 0.60, N4: 0.36, N5: 0.13, N6: 0.10 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["ARID1A change (simulated)"], targets: { N1: 0.05, N2: 0.08, N3: 0.14, N4: 0.84, N5: 0.72, N6: 0.08 } }
+        ],
+        normalTissue: { N1: 0.10, N2: 0.18, N3: 0.16, N4: 0.12, N5: 0.59, N6: 0.10 }
+      },
+      {
+        id: "PAAD",
+        name: "Pancreatic Adenocarcinoma",
+        shortName: "Pancreatic Cancer",
+        category: "Pancreatic cancer",
+        commonGenes: ["KRAS", "TP53", "CDKN2A", "SMAD4", "ARID1A"],
+        clones: [
+          { id: "A", fraction: 0.58, color: "#1479d1", mutations: ["KRAS mutation (simulated)"], targets: { N1: 0.84, N2: 0.10, N3: 0.38, N4: 0.08, N5: 0.28, N6: 0.60 } },
+          { id: "B", fraction: 0.25, color: "#6e45cf", mutations: ["TP53 mutation (simulated)"], targets: { N1: 0.10, N2: 0.80, N3: 0.60, N4: 0.35, N5: 0.13, N6: 0.08 } },
+          { id: "C", fraction: 0.17, color: "#d97706", mutations: ["SMAD4 loss (simulated)"], targets: { N1: 0.05, N2: 0.08, N3: 0.15, N4: 0.83, N5: 0.72, N6: 0.06 } }
+        ],
+        normalTissue: { N1: 0.08, N2: 0.17, N3: 0.15, N4: 0.11, N5: 0.60, N6: 0.09 }
+      },
+      {
+        id: "PRAD",
+        name: "Prostate Adenocarcinoma",
+        shortName: "Prostate Cancer",
+        category: "Prostate cancer",
+        commonGenes: ["SPOP", "TP53", "PTEN", "FOXA1", "ATM"],
+        clones: [
+          { id: "A", fraction: 0.55, color: "#1479d1", mutations: ["SPOP mutation (simulated)"], targets: { N1: 0.82, N2: 0.12, N3: 0.40, N4: 0.10, N5: 0.25, N6: 0.58 } },
+          { id: "B", fraction: 0.25, color: "#6e45cf", mutations: ["PTEN loss (simulated)"], targets: { N1: 0.10, N2: 0.78, N3: 0.60, N4: 0.35, N5: 0.15, N6: 0.08 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["TP53 mutation (simulated)"], targets: { N1: 0.05, N2: 0.10, N3: 0.14, N4: 0.82, N5: 0.70, N6: 0.07 } }
+        ],
+        normalTissue: { N1: 0.09, N2: 0.17, N3: 0.14, N4: 0.11, N5: 0.58, N6: 0.10 }
+      },
+      {
+        id: "THCA",
+        name: "Thyroid Carcinoma",
+        shortName: "Thyroid Cancer",
+        category: "Thyroid cancer",
+        commonGenes: ["BRAF", "NRAS", "HRAS", "TERT", "TP53"],
+        clones: [
+          { id: "A", fraction: 0.60, color: "#1479d1", mutations: ["BRAF mutation (simulated)"], targets: { N1: 0.85, N2: 0.10, N3: 0.62, N4: 0.08, N5: 0.25, N6: 0.65 } },
+          { id: "B", fraction: 0.25, color: "#6e45cf", mutations: ["NRAS mutation (simulated)"], targets: { N1: 0.10, N2: 0.80, N3: 0.35, N4: 0.50, N5: 0.15, N6: 0.10 } },
+          { id: "C", fraction: 0.15, color: "#d97706", mutations: ["TERT alteration (simulated)"], targets: { N1: 0.05, N2: 0.08, N3: 0.12, N4: 0.82, N5: 0.70, N6: 0.06 } }
+        ],
+        normalTissue: { N1: 0.10, N2: 0.18, N3: 0.16, N4: 0.12, N5: 0.55, N6: 0.10 }
+      },
+      {
+        id: "UCEC",
+        name: "Uterine Corpus Endometrial Carcinoma",
+        shortName: "Endometrial Cancer",
+        category: "Gynecological cancer",
+        commonGenes: ["PTEN", "PIK3CA", "ARID1A", "TP53", "POLE"],
+        clones: [
+          { id: "A", fraction: 0.50, color: "#1479d1", mutations: ["PTEN mutation (simulated)", "PIK3CA mutation (simulated)"], targets: { N1: 0.82, N2: 0.12, N3: 0.65, N4: 0.10, N5: 0.25, N6: 0.60 } },
+          { id: "B", fraction: 0.30, color: "#6e45cf", mutations: ["ARID1A change (simulated)"], targets: { N1: 0.10, N2: 0.80, N3: 0.40, N4: 0.55, N5: 0.15, N6: 0.08 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["TP53 mutation (simulated)"], targets: { N1: 0.06, N2: 0.08, N3: 0.15, N4: 0.84, N5: 0.72, N6: 0.08 } }
+        ],
+        normalTissue: { N1: 0.08, N2: 0.16, N3: 0.13, N4: 0.11, N5: 0.58, N6: 0.09 }
+      },
+      {
+        id: "STAD",
+        name: "Stomach Adenocarcinoma",
+        shortName: "Stomach Cancer",
+        category: "Gastrointestinal cancer",
+        commonGenes: ["TP53", "ARID1A", "PIK3CA", "ERBB2", "CDH1"],
+        clones: [
+          { id: "A", fraction: 0.48, color: "#1479d1", mutations: ["TP53 mutation (simulated)"], targets: { N1: 0.80, N2: 0.65, N3: 0.15, N4: 0.10, N5: 0.25, N6: 0.58 } },
+          { id: "B", fraction: 0.32, color: "#6e45cf", mutations: ["ARID1A change (simulated)"], targets: { N1: 0.10, N2: 0.12, N3: 0.78, N4: 0.38, N5: 0.14, N6: 0.08 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["ERBB2 alteration (simulated)"], targets: { N1: 0.06, N2: 0.08, N3: 0.14, N4: 0.84, N5: 0.70, N6: 0.06 } }
+        ],
+        normalTissue: { N1: 0.09, N2: 0.17, N3: 0.14, N4: 0.11, N5: 0.58, N6: 0.09 }
+      },
+      {
+        id: "HNSC",
+        name: "Head and Neck Squamous Cell Carcinoma",
+        shortName: "Head and Neck Cancer",
+        category: "Head and neck cancer",
+        commonGenes: ["TP53", "CDKN2A", "PIK3CA", "NOTCH1", "FAT1"],
+        clones: [
+          { id: "A", fraction: 0.50, color: "#1479d1", mutations: ["TP53 mutation (simulated)"], targets: { N1: 0.82, N2: 0.10, N3: 0.62, N4: 0.08, N5: 0.25, N6: 0.60 } },
+          { id: "B", fraction: 0.30, color: "#6e45cf", mutations: ["PIK3CA mutation (simulated)"], targets: { N1: 0.12, N2: 0.78, N3: 0.40, N4: 0.55, N5: 0.13, N6: 0.08 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["NOTCH1 change (simulated)"], targets: { N1: 0.06, N2: 0.10, N3: 0.15, N4: 0.82, N5: 0.72, N6: 0.07 } }
+        ],
+        normalTissue: { N1: 0.08, N2: 0.18, N3: 0.15, N4: 0.12, N5: 0.60, N6: 0.10 }
+      },
+      {
+        id: "SARC",
+        name: "Sarcoma",
+        shortName: "Sarcoma",
+        category: "Soft-tissue and bone cancer",
+        commonGenes: ["TP53", "ATRX", "RB1", "PIK3CA", "NF1"],
+        clones: [
+          { id: "A", fraction: 0.50, color: "#1479d1", mutations: ["TP53 mutation (simulated)"], targets: { N1: 0.80, N2: 0.12, N3: 0.38, N4: 0.10, N5: 0.26, N6: 0.55 } },
+          { id: "B", fraction: 0.30, color: "#6e45cf", mutations: ["ATRX change (simulated)"], targets: { N1: 0.10, N2: 0.78, N3: 0.60, N4: 0.35, N5: 0.15, N6: 0.10 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["RB1 loss (simulated)"], targets: { N1: 0.06, N2: 0.08, N3: 0.14, N4: 0.82, N5: 0.70, N6: 0.07 } }
+        ],
+        normalTissue: { N1: 0.09, N2: 0.17, N3: 0.14, N4: 0.11, N5: 0.58, N6: 0.10 }
+      },
+      {
+        id: "LAML",
+        name: "Acute Myeloid Leukemia",
+        shortName: "Acute Myeloid Leukemia",
+        category: "Blood cancer",
+        commonGenes: ["FLT3", "NPM1", "DNMT3A", "IDH1", "IDH2"],
+        clones: [
+          { id: "A", fraction: 0.55, color: "#1479d1", mutations: ["NPM1 mutation (simulated)", "FLT3 mutation (simulated)"], targets: { N1: 0.82, N2: 0.65, N3: 0.12, N4: 0.10, N5: 0.25, N6: 0.60 } },
+          { id: "B", fraction: 0.25, color: "#6e45cf", mutations: ["DNMT3A mutation (simulated)"], targets: { N1: 0.10, N2: 0.10, N3: 0.80, N4: 0.38, N5: 0.15, N6: 0.08 } },
+          { id: "C", fraction: 0.20, color: "#d97706", mutations: ["IDH1 mutation (simulated)"], targets: { N1: 0.06, N2: 0.08, N3: 0.14, N4: 0.82, N5: 0.72, N6: 0.06 } }
+        ],
+        normalTissue: { N1: 0.10, N2: 0.18, N3: 0.15, N4: 0.12, N5: 0.57, N6: 0.10 }
+      }
     ];
 
-    let currentCancer = null;
-    let currentClones = [];
-    let chart = null;
-    let cy = null;
-    let latestReport = null;
-    let lastFinalClones = [];
+    const TARGET_IDS = ["N1", "N2", "N3", "N4", "N5", "N6"];
 
-    const cloneColors = {
-      A: "#1479d1",
-      B: "#6e45cf",
-      C: "#d97706",
-      D: "#148a58"
+    const TARGET_BASE = {
+      N1: { mutation: 0.85, rna: 0.72, hla: 0.75, immune: 0.65, uncertainty: 0.20 },
+      N2: { mutation: 0.65, rna: 0.78, hla: 0.58, immune: 0.52, uncertainty: 0.30 },
+      N3: { mutation: 0.55, rna: 0.63, hla: 0.48, immune: 0.42, uncertainty: 0.35 },
+      N4: { mutation: 0.72, rna: 0.58, hla: 0.66, immune: 0.60, uncertainty: 0.25 },
+      N5: { mutation: 0.32, rna: 0.42, hla: 0.36, immune: 0.30, uncertainty: 0.50 },
+      N6: { mutation: 0.76, rna: 0.66, hla: 0.80, immune: 0.70, uncertainty: 0.16 }
     };
 
-    function copyData(data) {
-      return JSON.parse(JSON.stringify(data));
+    const DEFAULT_RED_TEAM = {
+      targetLoss: true,
+      resistantExpansion: true,
+      reducedHLA: false,
+      antigenProcessing: false,
+      immuneSuppression: false,
+      newMutation: false,
+      compensatoryPathway: false,
+      highHeterogeneity: false
+    };
+
+    function clamp(value, min = 0, max = 1) {
+      return Math.max(min, Math.min(max, value));
     }
 
-    function populateCancerSelect(list = cancerTypes, selectedId = null) {
-      const select = document.getElementById("cancerSelect");
-      select.innerHTML = "";
-
-      list.forEach(cancer => {
-        const option = document.createElement("option");
-        option.value = cancer.id;
-        option.textContent = `${cancer.shortName} (${cancer.id})`;
-
-        if (selectedId && cancer.id === selectedId) {
-          option.selected = true;
-        }
-
-        select.appendChild(option);
-      });
-    }
-
-    function filterCancerList() {
-      const query = document.getElementById("cancerSearch").value.trim().toLowerCase();
-
-      const filtered = cancerTypes.filter(cancer =>
-        cancer.id.toLowerCase().includes(query) ||
-        cancer.name.toLowerCase().includes(query) ||
-        cancer.shortName.toLowerCase().includes(query) ||
-        cancer.category.toLowerCase().includes(query)
+    function weightedTumorExpression(cancer, target) {
+      return cancer.clones.reduce(
+        (sum, clone) => sum + clone.fraction * (clone.targets[target] || 0),
+        0
       );
-
-      const oldValue = document.getElementById("cancerSelect").value;
-      populateCancerSelect(filtered.length ? filtered : cancerTypes, oldValue);
     }
 
-    function loadCancerModel() {
-      const selectedId = document.getElementById("cancerSelect").value;
+    function cloneCoverage(clone, selectedTargets) {
+      let missed = 1;
 
-      currentCancer =
-        cancerTypes.find(cancer => cancer.id === selectedId) ||
-        cancerTypes[0];
+      selectedTargets.forEach(target => {
+        missed *= 1 - (clone.targets[target] || 0);
+      });
 
-      currentClones = copyData(currentCancer.clones);
-
-      renderCancerInfo();
-      renderCloneCards();
-      renderTargetOptions();
-      renderNeoantigenTable();
-      updateRNAInfo();
-      runSimulation();
+      return 1 - missed;
     }
 
-    function renderCancerInfo() {
-      document.getElementById("cancerInfo").innerHTML = `
-        <span class="status">LOADED SIMULATED CANCER CONTEXT: ${currentCancer.shortName}</span>
-        <strong>Category:</strong> ${currentCancer.category}<br>
-        <strong>Example commonly altered genes:</strong> ${currentCancer.genes.join(", ")}<br>
-        <strong>Modeled baseline clones:</strong> ${currentClones.map(clone => `Clone ${clone.id} (${clone.percent}%)`).join(" • ")}<br>
-        <small>
-          This is a fictional demo model. The genes listed are not automatically neoantigens,
-          drug targets, or treatment recommendations.
-        </small>
-      `;
+    function overallCoverage(cancer, selectedTargets) {
+      if (!selectedTargets.length) return 0;
 
-      document.getElementById("digitalTwinText").innerHTML = `
-        Cancer context: <strong>${currentCancer.shortName} (${currentCancer.id})</strong><br>
-        Current modeled clones: <strong>${currentClones.length}</strong><br>
-        Data represented: fictional mutation context, clone proportions, candidate target availability,
-        RNA/nanocarrier concept, Red-Team stressors, and evolution time points.<br>
-        Status: <strong>Educational simulation only.</strong>
-      `;
+      return cancer.clones.reduce(
+        (sum, clone) => sum + clone.fraction * cloneCoverage(clone, selectedTargets),
+        0
+      );
     }
 
-    function renderCloneCards() {
-      const container = document.getElementById("cloneContainer");
-      const classes = ["", "b", "c", "d"];
+    function safetyStatus(cancer, target) {
+      const tumor = weightedTumorExpression(cancer, target);
+      const normal = cancer.normalTissue[target] || 0;
+      const ratio = tumor / Math.max(normal, 0.01);
 
-      container.innerHTML = currentClones.map((clone, index) => `
-        <div class="clone-card ${classes[index] || ""}">
-          <strong>Clone ${clone.id} — ${clone.percent}%</strong>
-          <span class="small">
-            Fictional molecular features: ${clone.mutations.join(", ")}<br>
-            Modeled target availability: ${clone.targets.join(", ")}
-          </span>
-        </div>
-      `).join("");
+      if (normal > 0.45) return "Reject";
+      if (ratio < 2) return "Uncertain";
+      return "Accept";
     }
 
-    function allCurrentTargets() {
-      return [...new Set(currentClones.flatMap(clone => clone.targets))].sort();
-    }
+    function neoantigenScore(cancer, target) {
+      const data = TARGET_BASE[target];
+      const coverage = overallCoverage(cancer, [target]);
+      const normalRisk = cancer.normalTissue[target] || 0;
 
-    function renderTargetOptions() {
-      const container = document.getElementById("targetOptions");
-      const targets = allCurrentTargets();
+      const score =
+        0.20 * data.mutation +
+        0.15 * data.rna +
+        0.20 * data.hla +
+        0.20 * coverage +
+        0.15 * data.immune -
+        0.20 * normalRisk -
+        0.10 * data.uncertainty;
 
-      container.innerHTML = targets.map((target, index) => {
-        const coverage = currentClones
-          .filter(clone => clone.targets.includes(target))
-          .map(clone => `Clone ${clone.id}`)
-          .join(", ");
-
-        const checked = index < 2 ? "checked" : "";
-
-        return `
-          <label class="option">
-            <input class="target-check" type="checkbox" value="${target}" ${checked} onchange="runSimulation()">
-            <span>
-              <strong>${target}</strong><br>
-              <small>Modeled coverage: ${coverage}</small>
-            </span>
-          </label>
-        `;
-      }).join("");
-    }
-
-    function renderNeoantigenTable() {
-      const tableBody = document.getElementById("neoantigenTableBody");
-      const targets = allCurrentTargets();
-
-      tableBody.innerHTML = targets.map((target, index) => {
-        const cloneCoverage = currentClones
-          .filter(clone => clone.targets.includes(target))
-          .map(clone => `Clone ${clone.id}`)
-          .join(", ");
-
-        const mutation = index % 3 === 0 ? "Simulated high" : index % 3 === 1 ? "Simulated moderate" : "Simulated preliminary";
-        const rna = index % 3 === 0 ? "High" : index % 3 === 1 ? "Moderate" : "Low";
-        const hla = index % 3 === 0 ? "Higher potential" : index % 3 === 1 ? "Moderate potential" : "Unknown";
-        const risk = index % 4 === 0 ? "Lower predicted" : index % 4 === 1 ? "Moderate predicted" : "Uncertain";
-
-        let status = `<span class="pill green">Further validation</span>`;
-        if (risk === "Moderate predicted") status = `<span class="pill yellow">Safety review</span>`;
-        if (risk === "Uncertain") status = `<span class="pill yellow">Deprioritize / test</span>`;
-
-        return `
-          <tr>
-            <td><strong>${target}</strong></td>
-            <td>${mutation}</td>
-            <td>${rna}</td>
-            <td>${hla}</td>
-            <td>${cloneCoverage}</td>
-            <td>${risk}</td>
-            <td>${status}</td>
-          </tr>
-        `;
-      }).join("");
-
-      tableBody.innerHTML += `
-        <tr>
-          <td><strong>N-X</strong></td>
-          <td>Insufficient</td>
-          <td>Low</td>
-          <td>Unknown</td>
-          <td>Unknown</td>
-          <td>Potentially high</td>
-          <td><span class="pill red">Reject / defer</span></td>
-        </tr>
-      `;
-    }
-
-    function updateRNAInfo() {
-      const selected = document.querySelector('input[name="rnaType"]:checked');
-      const value = selected ? selected.value : "No RNA cargo selected";
-
-      let text = "";
-
-      if (value === "mRNA vaccine concept") {
-        text = "<strong>Selected simulated mechanism: mRNA cancer-vaccine concept.</strong><br>Potential research purpose: provide instructions to produce selected antigen sequence(s) and investigate immune priming. This does not prove immune activation or clinical effectiveness.";
-      } else if (value === "siRNA concept") {
-        text = "<strong>Selected simulated mechanism: siRNA concept.</strong><br>Potential research purpose: investigate reduction of a selected cancer-associated transcript. Off-target effects, normal-cell effects, delivery, and safety require validation.";
-      } else if (value === "miRNA modulation concept") {
-        text = "<strong>Selected simulated mechanism: miRNA-modulation concept.</strong><br>Potential research purpose: explore regulation of gene networks. miRNA effects can be broad and context-dependent, so careful testing is required.";
-      } else {
-        text = "<strong>No RNA cargo selected.</strong><br>The simulation will focus on target coverage, immune-escape scenarios, and evolution modeling only.";
-      }
-
-      document.getElementById("rnaInfo").innerHTML = text;
-    }
-
-    function getSelectedTargets() {
-      return [...document.querySelectorAll(".target-check:checked")]
-        .map(input => input.value);
-    }
-
-    function getOptions() {
       return {
-        targetLoss: document.getElementById("targetLoss").checked,
-        resistantExpansion: document.getElementById("resistantExpansion").checked,
-        hlaLoss: document.getElementById("hlaLoss").checked,
-        antigenProcessing: document.getElementById("antigenProcessing").checked,
-        immuneSuppression: document.getElementById("immuneSuppression").checked,
-        newMutation: document.getElementById("newMutation").checked,
-        compensatory: document.getElementById("compensatory").checked,
-        highHeterogeneity: document.getElementById("highHeterogeneity").checked
+        target,
+        mutation: data.mutation,
+        rna: data.rna,
+        hla: data.hla,
+        immune: data.immune,
+        uncertainty: data.uncertainty,
+        coverage,
+        normalRisk,
+        score: clamp(score),
+        safety: safetyStatus(cancer, target)
       };
     }
 
     function normalizeClones(clones) {
-      const total = clones.reduce((sum, clone) => sum + clone.percent, 0);
+      const total = clones.reduce((sum, clone) => sum + clone.fraction, 0);
 
       return clones.map(clone => ({
         ...clone,
-        percent: (clone.percent / total) * 100
+        fraction: clone.fraction / total
       }));
     }
 
-    function addCloneDIfNeeded(clones, options) {
-      if (!options.highHeterogeneity) return clones;
+    function addHighHeterogeneityClone(clones, active) {
+      if (!active) return clones.map(clone => ({ ...clone }));
 
-      const expanded = copyData(clones);
+      const adjusted = clones.map(clone => ({
+        ...clone,
+        fraction: clone.fraction * 0.92
+      }));
 
-      expanded.forEach(clone => {
-        clone.percent = clone.percent * 0.92;
-      });
-
-      expanded.push({
+      adjusted.push({
         id: "D",
-        percent: 8,
-        mutations: ["Fictional minor resistant feature"],
-        targets: ["N6"]
+        fraction: 0.08,
+        color: "#148a58",
+        mutations: ["Minor resistant feature (simulated)"],
+        targets: { N1: 0.05, N2: 0.05, N3: 0.05, N4: 0.10, N5: 0.15, N6: 0.75 }
       });
 
-      return normalizeClones(expanded);
+      return normalizeClones(adjusted);
     }
 
-    function calculateCoverage(clones, targets) {
-      return clones
-        .filter(clone => clone.targets.some(target => targets.includes(target)))
-        .reduce((sum, clone) => sum + clone.percent, 0);
-    }
+    function cloneFitness(clone, selectedTargets, options, step, index) {
+      const coverage = cloneCoverage(clone, selectedTargets);
+      let fitness = 1.12 - 0.82 * coverage;
 
-    function calculateFitness(clone, targets, options, step, index) {
-      const targeted = clone.targets.some(target => targets.includes(target));
-
-      let fitness = targeted ? 0.43 : 1.18;
-
-      if (options.targetLoss && step >= 4 && targeted && index === 0) {
-        fitness += 0.28;
+      if (options.targetLoss && step >= 4 && index === 0 && coverage > 0.20) {
+        fitness += 0.24;
       }
 
-      if (options.resistantExpansion && !targeted) {
+      if (options.resistantExpansion && coverage < 0.35) {
         fitness += 0.25;
       }
 
-      if (options.hlaLoss && targeted) {
-        fitness += 0.22;
+      if (options.reducedHLA && coverage > 0.20) {
+        fitness += 0.17;
       }
 
-      if (options.antigenProcessing && targeted) {
+      if (options.antigenProcessing && coverage > 0.20) {
+        fitness += 0.13;
+      }
+
+      if (options.immuneSuppression && coverage > 0.20) {
         fitness += 0.15;
-      }
-
-      if (options.immuneSuppression && targeted) {
-        fitness += 0.16;
       }
 
       if (options.newMutation && step >= 6 && index === 2) {
         fitness += 0.18;
       }
 
-      if (options.compensatory && step >= 5 && index === 1) {
+      if (options.compensatoryPathway && step >= 5 && index === 1) {
         fitness += 0.18;
       }
 
@@ -1297,474 +511,54 @@
         fitness += 0.22;
       }
 
-      return Math.max(fitness, 0.05);
+      return Math.max(0.05, fitness);
     }
 
-    function runSimulation() {
-      if (!currentCancer) return;
+    function simulateEvolution(cancer, selectedTargets, options) {
+      let clones = addHighHeterogeneityClone(cancer.clones, options.highHeterogeneity);
 
-      const targets = getSelectedTargets();
-      const options = getOptions();
+      const baseline = clones.map(clone => ({ ...clone }));
+      const timeline = [];
 
-      let clones = addCloneDIfNeeded(copyData(currentClones), options);
-      const baselineClones = copyData(clones);
-      const coverage = calculateCoverage(clones, targets);
-      const timeline = {};
-
-      clones.forEach(clone => {
-        timeline[clone.id] = [Number(clone.percent.toFixed(1))];
-      });
-
-      for (let step = 1; step <= 10; step++) {
-        const weighted = clones.map((clone, index) => ({
-          ...clone,
-          percent: clone.percent * calculateFitness(clone, targets, options, step, index)
-        }));
-
-        clones = normalizeClones(weighted);
+      for (let time = 0; time <= 10; time++) {
+        const row = { time: time === 0 ? "Baseline" : `T${time}` };
 
         clones.forEach(clone => {
-          timeline[clone.id].push(Number(clone.percent.toFixed(1)));
+          row[`Clone ${clone.id}`] = Number((clone.fraction * 100).toFixed(1));
         });
+
+        timeline.push(row);
+
+        if (time === 10) break;
+
+        clones = clones.map((clone, index) => ({
+          ...clone,
+          fraction: clone.fraction * cloneFitness(clone, selectedTargets, options, time + 1, index)
+        }));
+
+        clones = normalizeClones(clones);
       }
 
-      const finalClone = [...clones].sort((a, b) => b.percent - a.percent)[0];
-      const uncovered = Math.max(0, 100 - coverage);
-
-      lastFinalClones = copyData(clones);
-
-      document.getElementById("coverage").textContent = coverage.toFixed(0) + "%";
-      document.getElementById("selectedCount").textContent = targets.length;
-      document.getElementById("uncovered").textContent = uncovered.toFixed(0) + "%";
-      document.getElementById("dominantClone").textContent = "Clone " + finalClone.id;
-
-      updateRedTeamTable(options);
-      updateRiskBox(coverage, finalClone, targets, options);
-      updateWhyGrowBox(finalClone, targets, options, baselineClones);
-      updateChart(timeline);
-      updateGraph(targets, options, finalClone);
-
-      latestReport = {
-        generatedAt: new Date().toISOString(),
-        disclaimer: "Simulated educational scenario only. Not patient data, medical advice, a diagnosis, a true neoantigen prediction, or a clinical outcome prediction.",
-        cancerContext: {
-          id: currentCancer.id,
-          name: currentCancer.name,
-          category: currentCancer.category,
-          exampleGenes: currentCancer.genes
-        },
-        selectedTargets: targets,
-        selectedRNAConcept: document.querySelector('input[name="rnaType"]:checked').value,
-        redTeamOptions: options,
-        baselineCoveragePercent: Number(coverage.toFixed(1)),
-        baselineModeledClones: baselineClones,
-        finalModeledClones: clones.map(clone => ({
-          id: clone.id,
-          finalProportionPercent: Number(clone.percent.toFixed(1)),
-          fictionalMutations: clone.mutations,
-          modeledTargets: clone.targets
-        })),
-        finalDominantClone: {
-          id: finalClone.id,
-          percent: Number(finalClone.percent.toFixed(1))
-        },
-        evolutionTimeline: timeline
-      };
-    }
-
-    function updateRedTeamTable(options) {
-      const rows = [
-        ["Target loss", options.targetLoss, "A selected target may become unavailable in a modeled clone."],
-        ["Resistant-clone expansion", options.resistantExpansion, "Untargeted clones receive a simulated relative growth advantage."],
-        ["Reduced HLA class I presentation", options.hlaLoss, "Modeled immune recognition of targeted clones is reduced."],
-        ["Antigen-processing defect", options.antigenProcessing, "Modeled peptide processing/presentation is reduced."],
-        ["Inhibitory immune environment", options.immuneSuppression, "Modeled immune pressure is weakened."],
-        ["New mutation event", options.newMutation, "A simulated later resistance-associated feature affects one clone."],
-        ["Compensatory pathway", options.compensatory, "A clone receives a simulated alternate survival advantage."],
-        ["High tumor heterogeneity", options.highHeterogeneity, "A fictional small additional clone is included."]
-      ];
-
-      document.getElementById("redTeamTable").innerHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>Modeled escape mechanism</th>
-              <th>Status</th>
-              <th>Simple interpretation</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows.map(row => `
-              <tr>
-                <td><strong>${row[0]}</strong></td>
-                <td>${row[1] ? '<span class="pill red">Activated</span>' : '<span class="pill green">Off</span>'}</td>
-                <td>${row[2]}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      `;
-    }
-
-    function updateRiskBox(coverage, finalClone, targets, options) {
-      const riskBox = document.getElementById("riskBox");
-      const activeEvents = Object.values(options).filter(Boolean).length;
-
-      let level = "LOW";
-      let css = "green-border";
-      let message = "";
-
-      if (coverage < 100 || finalClone.percent > 50 || activeEvents >= 2) {
-        level = "MODERATE";
-        css = "yellow-border";
-      }
-
-      if (coverage < 70 || finalClone.percent > 68 || targets.length === 0) {
-        level = "HIGH";
-        css = "red-border";
-      }
-
-      if (level === "LOW") {
-        message = "No major escape pattern was observed in this simplified scenario. This does not establish treatment durability, safety, or efficacy. Independent validation remains required.";
-      } else if (level === "MODERATE") {
-        message = `A plausible vulnerability was modeled. Clone ${finalClone.id} becomes relatively dominant at ${finalClone.percent.toFixed(1)}% under selected assumptions. Re-check coverage, target stability, antigen presentation, delivery feasibility, and evidence quality.`;
-      } else {
-        message = `Major modeled vulnerability detected. Clone ${finalClone.id} becomes dominant at ${finalClone.percent.toFixed(1)}%, or important baseline clones are not covered. Suggested research action: redesign → Red Team → laboratory validation.`;
-      }
-
-      riskBox.className = "result-box " + css;
-      riskBox.innerHTML = `
-        <span class="status">MODELED RISK: ${level}</span>
-        ${message}
-      `;
-    }
-
-    function updateWhyGrowBox(finalClone, targets, options, baselineClones) {
-      const reasons = [];
-      const targeted = finalClone.targets.some(target => targets.includes(target));
-
-      if (!targeted) {
-        reasons.push(`Clone ${finalClone.id} is not covered by the currently selected fictional targets.`);
-      }
-
-      if (options.resistantExpansion) {
-        reasons.push("Resistant-clone expansion is activated, increasing modeled relative survival of uncovered clones.");
-      }
-
-      if (options.targetLoss) {
-        reasons.push("Target loss is activated, weakening modeled dependence on a selected target.");
-      }
-
-      if (options.hlaLoss || options.antigenProcessing) {
-        reasons.push("Antigen-presentation escape is activated, reducing modeled immune recognition.");
-      }
-
-      if (options.immuneSuppression) {
-        reasons.push("An inhibitory immune environment is activated, weakening simulated immune pressure.");
-      }
-
-      if (options.compensatory) {
-        reasons.push("A compensatory survival pathway is activated in one simulated clone.");
-      }
-
-      if (options.newMutation) {
-        reasons.push("A simulated new mutation event is included in later time points.");
-      }
-
-      if (options.highHeterogeneity) {
-        reasons.push("High heterogeneity adds a smaller modeled clone with incomplete coverage.");
-      }
-
-      if (reasons.length === 0) {
-        reasons.push("The result is driven by baseline clone proportions and selected demonstration rules.");
-      }
-
-      document.getElementById("whyGrowBox").innerHTML = `
-        <strong class="orange">Why Clone ${finalClone.id} increased in this simulation:</strong><br>
-        <span class="small">${reasons.map(reason => "• " + reason).join("<br>")}</span>
-        <br><br>
-        <span class="small"><strong>Reminder:</strong> These are modeled explanations, not evidence of real patient resistance.</span>
-      `;
-    }
-
-    function updateChart(timeline) {
-      if (chart) chart.destroy();
-
-      const cloneIds = Object.keys(timeline);
-
-      const datasets = cloneIds.map(id => ({
-        label: "Clone " + id,
-        data: timeline[id],
-        borderColor: cloneColors[id] || "#152238",
-        backgroundColor: (cloneColors[id] || "#152238") + "22",
-        tension: 0.28,
-        fill: false,
-        borderWidth: 3,
-        pointRadius: 2.5
+      const finalClones = clones.map(clone => ({
+        ...clone,
+        percent: Number((clone.fraction * 100).toFixed(1))
       }));
 
-      chart = new Chart(document.getElementById("evolutionChart"), {
-        type: "line",
-        data: {
-          labels: ["Baseline", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10"],
-          datasets
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: {
-            mode: "index",
-            intersect: false
-          },
-          plugins: {
-            legend: {
-              labels: { color: "#24364c" }
-            },
-            title: {
-              display: true,
-              text: "Simulated clone proportions under selected assumptions",
-              color: "#24364c"
-            },
-            tooltip: {
-              callbacks: {
-                label: context => `${context.dataset.label}: ${context.parsed.y}%`
-              }
-            }
-          },
-          scales: {
-            x: {
-              ticks: { color: "#5b6b80" },
-              grid: { color: "rgba(39, 84, 134, 0.10)" }
-            },
-            y: {
-              min: 0,
-              max: 100,
-              ticks: {
-                color: "#5b6b80",
-                callback: value => value + "%"
-              },
-              title: {
-                display: true,
-                text: "Modeled clone proportion",
-                color: "#5b6b80"
-              },
-              grid: { color: "rgba(39, 84, 134, 0.10)" }
-            }
-          }
-        }
-      });
+      const dominant = [...finalClones].sort((a, b) => b.percent - a.percent)[0];
+
+      return { baseline, timeline, finalClones, dominant };
     }
 
-    function updateGraph(targets, options, finalClone) {
-      if (cy) cy.destroy();
-
-      const displayClones = addCloneDIfNeeded(copyData(currentClones), options);
-      const events = [];
-
-      if (options.targetLoss) events.push("Target loss");
-      if (options.resistantExpansion) events.push("Resistant clone expansion");
-      if (options.hlaLoss) events.push("Reduced HLA presentation");
-      if (options.antigenProcessing) events.push("Antigen-processing defect");
-      if (options.immuneSuppression) events.push("Inhibitory immune environment");
-      if (options.newMutation) events.push("New mutation event");
-      if (options.compensatory) events.push("Compensatory pathway");
-      if (options.highHeterogeneity) events.push("High heterogeneity");
-
-      const elements = [
-        { data: { id: "baseline", label: "Baseline\nTumor" }, classes: "baseline" },
-        { data: { id: "strategy", label: "Selected strategy\n" + (targets.join(" + ") || "No target") }, classes: "strategy" },
-        { data: { id: "escape", label: "Potential\nEscape" }, classes: "escape" },
-        { data: { id: "final", label: "Final modeled\nClone " + finalClone.id }, classes: "final" },
-        { data: { source: "strategy", target: "escape" } },
-        { data: { source: "escape", target: "final" } }
-      ];
-
-      displayClones.forEach(clone => {
-        elements.push({
-          data: { id: "clone" + clone.id, label: `Clone ${clone.id}\n${clone.percent.toFixed(0)}%` },
-          classes: "clone" + clone.id
-        });
-
-        elements.push({ data: { source: "baseline", target: "clone" + clone.id } });
-        elements.push({ data: { source: "clone" + clone.id, target: "strategy" } });
+    function downloadJSON(data, filename) {
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: "application/json"
       });
 
-      events.forEach((event, index) => {
-        const id = "event" + index;
-
-        elements.push({
-          data: { id, label: event },
-          classes: "event"
-        });
-
-        elements.push({
-          data: { source: "strategy", target: id },
-          classes: "eventEdge"
-        });
-
-        elements.push({
-          data: { source: id, target: "escape" },
-          classes: "eventEdge"
-        });
-      });
-
-      cy = cytoscape({
-        container: document.getElementById("cy"),
-        elements,
-        style: [
-          {
-            selector: "node",
-            style: {
-              "shape": "round-rectangle",
-              "background-color": "#e7f3ff",
-              "border-width": 2,
-              "border-color": "#1479d1",
-              "label": "data(label)",
-              "color": "#1d3148",
-              "font-size": "11px",
-              "text-wrap": "wrap",
-              "text-max-width": "120px",
-              "text-valign": "center",
-              "text-halign": "center",
-              "width": "112px",
-              "height": "50px"
-            }
-          },
-          {
-            selector: "edge",
-            style: {
-              "width": 2,
-              "line-color": "#7497bd",
-              "target-arrow-color": "#7497bd",
-              "target-arrow-shape": "triangle",
-              "curve-style": "bezier"
-            }
-          },
-          {
-            selector: ".baseline",
-            style: { "background-color": "#d8edff", "border-color": "#1479d1" }
-          },
-          {
-            selector: ".strategy",
-            style: { "background-color": "#eee6ff", "border-color": "#7145d0" }
-          },
-          {
-            selector: ".cloneA",
-            style: { "background-color": "#d9efff", "border-color": "#1479d1" }
-          },
-          {
-            selector: ".cloneB",
-            style: { "background-color": "#eee5ff", "border-color": "#7145d0" }
-          },
-          {
-            selector: ".cloneC",
-            style: { "background-color": "#fff0d9", "border-color": "#d97706" }
-          },
-          {
-            selector: ".cloneD",
-            style: { "background-color": "#ddf8eb", "border-color": "#148a58" }
-          },
-          {
-            selector: ".event",
-            style: { "background-color": "#ffe1e7", "border-color": "#c92f4a" }
-          },
-          {
-            selector: ".eventEdge",
-            style: { "line-color": "#c92f4a", "target-arrow-color": "#c92f4a" }
-          },
-          {
-            selector: ".escape",
-            style: { "background-color": "#ffe7ec", "border-color": "#d34159" }
-          },
-          {
-            selector: ".final",
-            style: { "background-color": "#fff5cc", "border-color": "#b77d00" }
-          }
-        ],
-        layout: {
-          name: "breadthfirst",
-          directed: true,
-          padding: 20,
-          spacingFactor: 1.35
-        }
-      });
-    }
-
-    function suggestOptimization() {
-      if (!lastFinalClones.length) {
-        document.getElementById("optimizationBox").innerHTML =
-          "<strong class='purple'>Strategy re-analysis:</strong><br><span class='small'>Run the simulation first.</span>";
-        return;
-      }
-
-      const selected = getSelectedTargets();
-      const finalClone = [...lastFinalClones].sort((a, b) => b.percent - a.percent)[0];
-      const possibleTarget = finalClone.targets.find(target => !selected.includes(target));
-
-      let message = "";
-
-      if (possibleTarget) {
-        message = `
-          <strong class="purple">Simulated re-analysis suggestion:</strong><br>
-          Clone ${finalClone.id} became dominant in the current scenario and is modeled as having target ${possibleTarget}.
-          A fictional next research question is whether adding ${possibleTarget} could improve modeled coverage.
-          <br><br>
-          Suggested demo action: test <strong>${[...selected, possibleTarget].join(" + ")}</strong> and re-run the Red Team.
-          <br><br>
-          <span class="small">This is a rule-based educational suggestion. It is not a treatment recommendation and requires safety and experimental validation.</span>
-        `;
-      } else {
-        message = `
-          <strong class="purple">Simulated re-analysis suggestion:</strong><br>
-          The final modeled clone is already covered by selected fictional targets, or no additional modeled target is available.
-          Investigate target loss, antigen-presentation escape, delivery limitations, and alternative biological mechanisms.
-          <br><br>
-          <span class="small">This is a research prompt, not a clinical recommendation.</span>
-        `;
-      }
-
-      document.getElementById("optimizationBox").innerHTML = message;
-    }
-
-    function resetDemo() {
-      document.getElementById("targetLoss").checked = true;
-      document.getElementById("resistantExpansion").checked = true;
-      document.getElementById("hlaLoss").checked = false;
-      document.getElementById("antigenProcessing").checked = false;
-      document.getElementById("immuneSuppression").checked = false;
-      document.getElementById("newMutation").checked = false;
-      document.getElementById("compensatory").checked = false;
-      document.getElementById("highHeterogeneity").checked = false;
-
-      document.querySelector('input[name="rnaType"][value="mRNA vaccine concept"]').checked = true;
-
-      currentClones = copyData(currentCancer.clones);
-
-      renderCancerInfo();
-      renderCloneCards();
-      renderTargetOptions();
-      renderNeoantigenTable();
-      updateRNAInfo();
-
-      document.getElementById("optimizationBox").innerHTML =
-        "<strong class='purple'>Strategy re-analysis:</strong><br><span class='small'>Run a simulation to view a fictional rule-based re-analysis suggestion.</span>";
-
-      runSimulation();
-    }
-
-    function downloadReport() {
-      if (!latestReport) {
-        alert("Please run the simulation first.");
-        return;
-      }
-
-      const json = JSON.stringify(latestReport, null, 2);
-      const blob = new Blob([json], { type: "application/json" });
       const url = URL.createObjectURL(blob);
-
       const link = document.createElement("a");
+
       link.href = url;
-      link.download = `neoimmune-ai-${currentCancer.id}-simulated-report.json`;
+      link.download = filename;
 
       document.body.appendChild(link);
       link.click();
@@ -1773,10 +567,1273 @@
       URL.revokeObjectURL(url);
     }
 
-    window.onload = function() {
-      populateCancerSelect();
-      loadCancerModel();
-    };
+    function Panel({ children, tone = "slate", className = "" }) {
+      const tones = {
+        slate: "border-slate-200",
+        blue: "border-blue-200 blue-glow",
+        purple: "border-purple-200 purple-glow",
+        green: "border-green-200 green-glow",
+        orange: "border-orange-200 orange-glow",
+        red: "border-red-200 red-glow"
+      };
+
+      return (
+        <div className={`bg-white border rounded-2xl p-5 md:p-6 soft-shadow ${tones[tone]} ${className}`}>
+          {children}
+        </div>
+      );
+    }
+
+    function Badge({ children, type = "blue" }) {
+      const styles = {
+        blue: "bg-blue-50 border-blue-200 text-blue-700",
+        purple: "bg-purple-50 border-purple-200 text-purple-700",
+        green: "bg-green-50 border-green-200 text-green-700",
+        orange: "bg-orange-50 border-orange-200 text-orange-700",
+        red: "bg-red-50 border-red-200 text-red-700",
+        gold: "bg-amber-50 border-amber-200 text-amber-800",
+        gray: "bg-slate-50 border-slate-200 text-slate-600"
+      };
+
+      return (
+        <span className={`inline-block rounded-full border px-2.5 py-1 text-xs font-semibold ${styles[type]}`}>
+          {children}
+        </span>
+      );
+    }
+
+    function SectionHeading({ stage, title, description }) {
+      return (
+        <div className="mb-4">
+          <div className="mono text-xs text-blue-600 mb-1">{stage}</div>
+          <h2 className="display-font text-2xl font-bold text-slate-800">{title}</h2>
+          {description && <p className="text-slate-600 mt-1">{description}</p>}
+        </div>
+      );
+    }
+
+    function ProgressBar({ label, value, color = "#1479d1" }) {
+      return (
+        <div className="mb-3">
+          <div className="flex items-center justify-between text-sm mb-1">
+            <span className="text-slate-600">{label}</span>
+            <span className="mono text-slate-700">{Math.round(value * 100)}%</span>
+          </div>
+
+          <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{ width: `${value * 100}%`, backgroundColor: color }}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    function Header({ activeTab, setActiveTab, resetAll, report }) {
+      const tabs = [
+        ["home", "Home"],
+        ["cancer", "Cancer Explorer"],
+        ["twin", "Digital Twin"],
+        ["neo", "Neoantigen"],
+        ["rna", "RNA + Carrier"],
+        ["redteam", "Red Team"],
+        ["evolution", "Evolution"],
+        ["loop", "Closed Loop"]
+      ];
+
+      return (
+        <>
+          <header className="bg-white/95 border-b border-slate-200">
+            <div className="max-w-7xl mx-auto px-4 py-8 text-center">
+              <h1 className="display-font text-3xl md:text-5xl font-bold text-slate-900">
+                NEOIMMUNE <span className="text-blue-600">AI</span> Lab
+              </h1>
+
+              <p className="mt-2 text-slate-600 text-base md:text-lg">
+                Evolution-Aware, Safety-Validated, Closed-Loop Personalized Cancer Therapy
+              </p>
+
+              <div className="mt-4 inline-block max-w-5xl rounded-xl border border-purple-200 bg-gradient-to-r from-blue-50 to-purple-50 px-5 py-3 text-sm md:text-base font-bold text-slate-700">
+                PREDICT → CHALLENGE → VALIDATE → REVIEW → TREAT → MONITOR → ADAPT
+              </div>
+
+              <div className="mt-5 max-w-6xl mx-auto rounded-xl border-l-4 border-amber-500 bg-amber-50 px-4 py-3 text-left text-amber-900 text-sm">
+                <strong>Research and educational prototype only.</strong> This website uses simulated,
+                cohort-inspired demo values. It does not diagnose cancer, predict individual patient outcomes,
+                prescribe treatment, establish neoantigen safety or efficacy, or replace laboratory studies,
+                clinical trials, clinicians, ethics review, regulatory approval, or informed consent.
+              </div>
+            </div>
+          </header>
+
+          <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+            <div className="max-w-7xl mx-auto px-3 py-2 flex gap-2 items-center">
+              <div className="flex-1 overflow-x-auto">
+                <div className="flex gap-1 min-w-max">
+                  {tabs.map(([id, label]) => (
+                    <button
+                      key={id}
+                      onClick={() => setActiveTab(id)}
+                      className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                        activeTab === id
+                          ? "bg-blue-600 text-white"
+                          : "text-slate-600 hover:bg-blue-50 hover:text-blue-700"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={() => downloadJSON(report, `neoimmune-ai-${report.cancer.id}-simulated-report.json`)}
+                className="hidden md:block whitespace-nowrap rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50"
+              >
+                Download JSON
+              </button>
+
+              <button
+                onClick={resetAll}
+                className="hidden md:block whitespace-nowrap rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-100"
+              >
+                Reset
+              </button>
+            </div>
+          </nav>
+        </>
+      );
+    }
+
+    function HomePage({ setActiveTab }) {
+      const flow = [
+        "Cancer Context",
+        "Tumor Mapper",
+        "Digital Twin",
+        "Neoantigen Evaluation",
+        "Safety Filter",
+        "RNA + Nanocarrier",
+        "Strategy Builder",
+        "Therapeutic Red Team",
+        "Evidence Gate",
+        "Monitoring",
+        "Update + Adapt"
+      ];
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+          <Panel tone="blue">
+            <Badge type="blue">PROPOSED RESEARCH FRAMEWORK</Badge>
+
+            <h2 className="display-font text-3xl font-bold text-slate-800 mt-4">
+              What NEOIMMUNE AI demonstrates
+            </h2>
+
+            <p className="mt-3 text-slate-600 max-w-4xl">
+              NEOIMMUNE AI is a closed-loop educational simulation of how tumor heterogeneity,
+              candidate-target prioritization, normal-tissue risk, RNA delivery feasibility,
+              immune-escape mechanisms, evidence validation, and longitudinal monitoring can be
+              connected in a personalized cancer-therapy research framework.
+            </p>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              {flow.map((step, index) => (
+                <React.Fragment key={step}>
+                  <span className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">
+                    {step}
+                  </span>
+                  {index < flow.length - 1 && (
+                    <span className="self-center text-slate-400 font-bold">→</span>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setActiveTab("cancer")}
+              className="mt-6 rounded-lg bg-blue-600 px-5 py-3 font-bold text-white hover:bg-blue-700"
+            >
+              Start the Demo
+            </button>
+          </Panel>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            <Panel tone="blue">
+              <Badge type="blue">AI + DATA</Badge>
+              <h3 className="display-font text-lg font-bold text-slate-800 mt-3">
+                Tumor Mapper + Digital Twin
+              </h3>
+              <p className="mt-2 text-sm text-slate-600">
+                Visualizes simulated tumor clones, molecular features, target expression, and evolving tumor composition.
+              </p>
+            </Panel>
+
+            <Panel tone="green">
+              <Badge type="green">SAFETY</Badge>
+              <h3 className="display-font text-lg font-bold text-slate-800 mt-3">
+                Neoantigen + Normal Tissue Filter
+              </h3>
+              <p className="mt-2 text-sm text-slate-600">
+                Demonstrates why a candidate must be ranked using tumor evidence, clone coverage, normal-tissue risk, and uncertainty.
+              </p>
+            </Panel>
+
+            <Panel tone="red">
+              <Badge type="red">RED TEAM</Badge>
+              <h3 className="display-font text-lg font-bold text-slate-800 mt-3">
+                Immune Escape Stress Test
+              </h3>
+              <p className="mt-2 text-sm text-slate-600">
+                Simulates plausible failure mechanisms such as target loss, resistant clone expansion, and reduced antigen presentation.
+              </p>
+            </Panel>
+          </div>
+
+          <Panel tone="purple">
+            <h3 className="display-font text-xl font-bold text-slate-800">
+              Strong presentation statement
+            </h3>
+
+            <p className="mt-3 text-slate-700">
+              “NEOIMMUNE AI is not simply a system that predicts a cancer treatment. It is a
+              proposed closed-loop framework that maps tumor heterogeneity, prioritizes candidate
+              targets, checks potential normal-tissue risk, explores RNA-delivery feasibility,
+              challenges strategies against modeled escape, requires independent validation, and
+              updates the tumor model as new monitoring information becomes available.”
+            </p>
+          </Panel>
+        </div>
+      );
+    }
+
+    function CancerExplorer({ cancer, setCancerId, search, setSearch }) {
+      const filtered = useMemo(() => {
+        const q = search.trim().toLowerCase();
+
+        if (!q) return CANCER_DATABASE;
+
+        return CANCER_DATABASE.filter(item =>
+          item.id.toLowerCase().includes(q) ||
+          item.name.toLowerCase().includes(q) ||
+          item.shortName.toLowerCase().includes(q) ||
+          item.category.toLowerCase().includes(q)
+        );
+      }, [search]);
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+          <SectionHeading
+            stage="STAGE 1 — CANCER DATABASE EXPLORER"
+            title="Choose a cancer context"
+            description="This website provides simulated, cancer-context-specific models for education and hypothesis generation. It does not analyze real patient data."
+          />
+
+          <Panel tone="blue">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-semibold text-slate-700">Search cancer type</label>
+                <input
+                  value={search}
+                  onChange={event => setSearch(event.target.value)}
+                  placeholder="Example: melanoma, lung, breast, leukemia..."
+                  className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-semibold text-slate-700">Select cancer</label>
+                <select
+                  value={cancer.id}
+                  onChange={event => setCancerId(event.target.value)}
+                  className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                >
+                  {filtered.map(item => (
+                    <option key={item.id} value={item.id}>
+                      {item.shortName} ({item.id})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-xl border border-green-200 bg-green-50 p-4">
+              <div className="font-bold text-green-800">
+                Loaded simulated cancer context: {cancer.shortName} ({cancer.id})
+              </div>
+
+              <div className="mt-2 text-sm text-green-900">
+                <strong>Category:</strong> {cancer.category}<br />
+                <strong>Example commonly altered genes:</strong> {cancer.commonGenes.join(", ")}<br />
+                <strong>Modeled baseline clones:</strong> {cancer.clones.map(clone => `Clone ${clone.id} (${Math.round(clone.fraction * 100)}%)`).join(" • ")}
+              </div>
+
+              <div className="mt-3">
+                <Badge type="gold">SIMULATED DEMO DATA — NOT PATIENT DATA</Badge>
+              </div>
+            </div>
+          </Panel>
+
+          <Panel>
+            <h3 className="display-font text-xl font-bold text-slate-800">
+              Public research resources for future work
+            </h3>
+
+            <p className="mt-2 text-sm text-slate-600">
+              These are source links for research and data exploration. This prototype does not automatically download or clinically interpret them.
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <a className="rounded-full border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-bold text-blue-700" href="https://portal.gdc.cancer.gov/" target="_blank">NCI GDC</a>
+              <a className="rounded-full border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-bold text-blue-700" href="https://www.cbioportal.org/" target="_blank">cBioPortal</a>
+              <a className="rounded-full border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-bold text-blue-700" href="https://cancer.sanger.ac.uk/cosmic" target="_blank">COSMIC</a>
+              <a className="rounded-full border border-green-200 bg-green-50 px-3 py-2 text-sm font-bold text-green-700" href="https://gtexportal.org/home/" target="_blank">GTEx</a>
+              <a className="rounded-full border border-green-200 bg-green-50 px-3 py-2 text-sm font-bold text-green-700" href="https://www.proteinatlas.org/" target="_blank">Human Protein Atlas</a>
+              <a className="rounded-full border border-purple-200 bg-purple-50 px-3 py-2 text-sm font-bold text-purple-700" href="https://www.iedb.org/" target="_blank">IEDB</a>
+              <a className="rounded-full border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-bold text-orange-700" href="https://clinicaltrials.gov/" target="_blank">ClinicalTrials.gov</a>
+            </div>
+          </Panel>
+        </div>
+      );
+    }
+
+    function DigitalTwin({ cancer }) {
+      const chartData = cancer.clones.map(clone => ({
+        name: `Clone ${clone.id}`,
+        value: Math.round(clone.fraction * 100),
+        color: clone.color
+      }));
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+          <SectionHeading
+            stage="STAGE 2 — AI-1: TUMOR MAPPER + DIGITAL TWIN"
+            title={`Digital Twin: ${cancer.shortName}`}
+            description="A simplified, continuously updateable computational representation of currently available tumor features. In this prototype, all features are simulated."
+          />
+
+          <div className="grid lg:grid-cols-2 gap-6">
+            <Panel tone="blue">
+              <Badge type="blue">SIMULATED CLONE MAP</Badge>
+
+              <div className="mt-5 h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#dbe6f1" />
+                    <XAxis dataKey="name" stroke="#5b6b80" />
+                    <YAxis stroke="#5b6b80" unit="%" />
+                    <Tooltip />
+                    <Bar dataKey="value" radius={[8, 8, 0, 0]}>
+                      {chartData.map(entry => (
+                        <Cell key={entry.name} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Panel>
+
+            <Panel tone="purple">
+              <Badge type="purple">SIMULATED MOLECULAR FEATURES</Badge>
+
+              <div className="mt-4 space-y-3">
+                {cancer.clones.map(clone => (
+                  <div key={clone.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="flex justify-between gap-2">
+                      <strong className="text-slate-800">Clone {clone.id}</strong>
+                      <span className="mono text-sm text-slate-600">
+                        {(clone.fraction * 100).toFixed(0)}%
+                      </span>
+                    </div>
+
+                    <div className="mt-2 text-sm text-slate-600">
+                      <strong>Fictional molecular features:</strong> {clone.mutations.join(", ")}
+                    </div>
+
+                    <div className="mt-2 text-sm text-slate-600">
+                      <strong>Modeled target availability:</strong> {Object.entries(clone.targets)
+                        .filter(([, value]) => value >= 0.50)
+                        .map(([target]) => target)
+                        .join(", ")}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Panel>
+          </div>
+
+          <Panel>
+            <h3 className="display-font text-xl font-bold text-slate-800">
+              Digital Twin definition
+            </h3>
+
+            <p className="mt-2 text-slate-600">
+              In NEOIMMUNE AI, a Digital Twin is not a perfect virtual copy of the human body. It is
+              a versioned computational representation of available tumor and clinical information,
+              such as mutations, clone composition, target expression, treatment context, safety flags,
+              and monitoring updates.
+            </p>
+          </Panel>
+        </div>
+      );
+    }
+
+    function NeoantigenEvaluator({ cancer, selectedTargets, toggleTarget }) {
+      const rows = useMemo(() => {
+        return TARGET_IDS.map(target => neoantigenScore(cancer, target))
+          .sort((a, b) => b.score - a.score);
+      }, [cancer]);
+
+      function statusBadge(status) {
+        if (status === "Accept") return <Badge type="green">Further validation</Badge>;
+        if (status === "Uncertain") return <Badge type="gold">Safety review</Badge>;
+        return <Badge type="red">Reject / defer</Badge>;
+      }
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+          <SectionHeading
+            stage="STAGE 3 — AI-2: NEOANTIGEN EVALUATOR + AI-3: SAFETY FILTER"
+            title="Candidate target prioritization"
+            description="This educational ranking combines simulated mutation evidence, RNA evidence, HLA context, clone coverage, normal-tissue risk, and uncertainty."
+          />
+
+          <Panel tone="green">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <Badge type="green">SIMULATED CANDIDATE VALUES</Badge>
+                <p className="mt-3 text-slate-600">
+                  A mutated gene is not automatically a neoantigen. A predicted neoantigen is not
+                  automatically expressed, HLA-presented, immunogenic, safe, or clinically useful.
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-800">
+                <strong>Conceptual score:</strong><br />
+                Sᵢ = wₘMᵢ + wₑEᵢ + wₕHᵢ + w𝚌Cᵢ + wₚPᵢ − wᵣRᵢ − wᵤUᵢ
+              </div>
+            </div>
+
+            <div className="mt-5 overflow-x-auto">
+              <table className="w-full min-w-[900px] text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50 text-slate-700">
+                    <th className="text-left p-3">Select</th>
+                    <th className="text-left p-3">Candidate</th>
+                    <th className="text-left p-3">Mutation</th>
+                    <th className="text-left p-3">RNA</th>
+                    <th className="text-left p-3">HLA</th>
+                    <th className="text-left p-3">Clone coverage</th>
+                    <th className="text-left p-3">Normal risk</th>
+                    <th className="text-left p-3">Score</th>
+                    <th className="text-left p-3">Status</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {rows.map(row => (
+                    <tr key={row.target} className="border-b border-slate-100 hover:bg-slate-50">
+                      <td className="p-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedTargets.includes(row.target)}
+                          onChange={() => toggleTarget(row.target)}
+                          className="h-4 w-4 accent-blue-600"
+                        />
+                      </td>
+                      <td className="p-3 font-bold text-slate-800">{row.target}</td>
+                      <td className="p-3">{Math.round(row.mutation * 100)}%</td>
+                      <td className="p-3">{Math.round(row.rna * 100)}%</td>
+                      <td className="p-3">{Math.round(row.hla * 100)}%</td>
+                      <td className="p-3">{Math.round(row.coverage * 100)}%</td>
+                      <td className="p-3">{Math.round(row.normalRisk * 100)}%</td>
+                      <td className="p-3 font-bold text-slate-800">{Math.round(row.score * 100)}%</td>
+                      <td className="p-3">{statusBadge(row.safety)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Panel>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <Panel tone="green">
+              <h3 className="display-font text-xl font-bold text-slate-800">
+                Neoantigen workflow
+              </h3>
+
+              <div className="mt-4 space-y-2 text-sm">
+                {[
+                  "Tumor DNA + matched normal DNA",
+                  "Tumor-specific somatic mutation identification",
+                  "Protein-changing mutation filter",
+                  "RNA expression evidence",
+                  "HLA context and presentation potential",
+                  "Tumor-clone coverage",
+                  "Normal-tissue risk assessment",
+                  "Candidate for experimental validation"
+                ].map((item, index) => (
+                  <div key={item} className="flex gap-3 items-center">
+                    <span className="rounded-full bg-green-100 text-green-700 h-7 w-7 flex items-center justify-center font-bold">
+                      {index + 1}
+                    </span>
+                    <span className="text-slate-700">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </Panel>
+
+            <Panel tone="red">
+              <h3 className="display-font text-xl font-bold text-slate-800">
+                Why a candidate is not treatment
+              </h3>
+
+              <div className="mt-4 space-y-2 text-sm text-slate-700">
+                <div>✓ Mutation must be confirmed.</div>
+                <div>✓ RNA expression should be confirmed.</div>
+                <div>✓ Peptide/HLA presentation needs investigation.</div>
+                <div>✓ Immune recognition requires testing where relevant.</div>
+                <div>✓ Normal-cell safety needs assessment.</div>
+                <div>✓ RNA/nanocarrier feasibility needs validation.</div>
+                <div>✓ Preclinical and clinical evidence are required.</div>
+              </div>
+            </Panel>
+          </div>
+        </div>
+      );
+    }
+
+    function RNANanocarrier({ rnaType, setRnaType }) {
+      const descriptions = {
+        "mRNA vaccine concept": "Simulated research purpose: deliver instructions to produce selected antigen sequence(s) and investigate immune-priming concepts.",
+        "siRNA concept": "Simulated research purpose: investigate reduction of a selected cancer-associated transcript. Off-target effects and delivery constraints require validation.",
+        "miRNA modulation concept": "Simulated research purpose: explore modulation of gene-regulatory networks. Effects can be broad and context-dependent.",
+        "No RNA cargo selected": "The simulation will focus on target ranking and tumor evolution only."
+      };
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+          <SectionHeading
+            stage="STAGE 4 — RNA CARGO + NANOCARRIER FEASIBILITY"
+            title="RNA and delivery-vehicle module"
+            description="Target selection and RNA modality selection are separate research decisions. This page demonstrates the questions that must be answered before experimental development."
+          />
+
+          <Panel tone="orange">
+            <Badge type="orange">PROPOSED RESEARCH MECHANISM — NOT A PRESCRIPTION</Badge>
+
+            <h3 className="display-font text-xl font-bold text-slate-800 mt-4">
+              Choose a simulated RNA approach
+            </h3>
+
+            <div className="mt-4 grid md:grid-cols-2 gap-3">
+              {Object.keys(descriptions).map(option => (
+                <label
+                  key={option}
+                  className={`cursor-pointer rounded-xl border p-4 ${
+                    rnaType === option
+                      ? "border-orange-400 bg-orange-50"
+                      : "border-slate-200 bg-slate-50"
+                  }`}
+                >
+                  <div className="flex gap-3">
+                    <input
+                      type="radio"
+                      name="rnaType"
+                      checked={rnaType === option}
+                      onChange={() => setRnaType(option)}
+                      className="mt-1 accent-orange-600"
+                    />
+                    <div>
+                      <strong className="text-slate-800">{option}</strong>
+                      <p className="mt-1 text-sm text-slate-600">{descriptions[option]}</p>
+                    </div>
+                  </div>
+                </label>
+              ))}
+            </div>
+
+            <div className="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-orange-900">
+              <strong>Selected concept:</strong> {rnaType}<br />
+              <span className="text-sm">{descriptions[rnaType]}</span>
+            </div>
+          </Panel>
+
+          <div className="grid lg:grid-cols-2 gap-6">
+            <Panel tone="orange">
+              <h3 className="display-font text-xl font-bold text-slate-800">
+                RNA + nanocarrier pathway
+              </h3>
+
+              <div className="mt-5 space-y-2">
+                {[
+                  "RNA cargo",
+                  "Nanocarrier / lipid nanoparticle",
+                  "RNA loading and protection",
+                  "Stability and tissue distribution",
+                  "Cellular uptake",
+                  "Endosomal escape",
+                  "Cargo release",
+                  "Intended biological effect",
+                  "Safety and toxicity evaluation"
+                ].map((step, index) => (
+                  <React.Fragment key={step}>
+                    <div className="rounded-lg border border-orange-200 bg-orange-50 p-3 font-semibold text-orange-900">
+                      {index + 1}. {step}
+                    </div>
+                    {index < 8 && <div className="text-center text-orange-400 font-bold">↓</div>}
+                  </React.Fragment>
+                ))}
+              </div>
+            </Panel>
+
+            <Panel tone="red">
+              <h3 className="display-font text-xl font-bold text-slate-800">
+                Nanocarrier feasibility checklist
+              </h3>
+
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-200">
+                      <th className="text-left p-3">Requirement</th>
+                      <th className="text-left p-3">Prototype status</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {[
+                      ["RNA loading", "Simulated acceptable", "green"],
+                      ["RNA protection", "Simulated acceptable", "green"],
+                      ["Particle stability", "Needs laboratory testing", "gold"],
+                      ["Target-cell uptake", "Needs laboratory testing", "gold"],
+                      ["Endosomal escape", "Needs laboratory testing", "gold"],
+                      ["Cargo release", "Needs validation", "gold"],
+                      ["Tumor selectivity", "Not established", "red"],
+                      ["Normal-cell exposure", "Needs safety testing", "red"],
+                      ["Repeated-dose safety", "Not assessed", "red"]
+                    ].map(([item, status, type]) => (
+                      <tr key={item} className="border-b border-slate-100">
+                        <td className="p-3 text-slate-700">{item}</td>
+                        <td className="p-3"><Badge type={type}>{status}</Badge></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-4 rounded-xl border-l-4 border-red-500 bg-red-50 p-4 text-sm text-red-900">
+                A carrier that appears useful in one tissue, dose, or laboratory model may behave
+                differently in another. Delivery, biodistribution, immune effects, toxicity, and
+                repeat-dose safety require independent testing.
+              </div>
+            </Panel>
+          </div>
+        </div>
+      );
+    }
+
+    function StrategyBuilder({ cancer, selectedTargets, toggleTarget, simulation }) {
+      const coverage = overallCoverage(cancer, selectedTargets);
+      const singleBest = Math.max(...TARGET_IDS.map(target => overallCoverage(cancer, [target])));
+      const uncovered = 1 - coverage;
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+          <SectionHeading
+            stage="STAGE 5 — AI-4: MULTI-TARGET STRATEGY DESIGNER"
+            title="Build a simulated candidate strategy"
+            description="Select fictional targets to compare modeled baseline clone coverage. Outputs are research visualization results, not treatment recommendations."
+          />
+
+          <Panel tone="purple">
+            <Badge type="purple">SIMULATED STRATEGY DESIGN</Badge>
+
+            <div className="mt-5 grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {TARGET_IDS.map(target => {
+                const score = neoantigenScore(cancer, target);
+                const checked = selectedTargets.includes(target);
+
+                return (
+                  <label
+                    key={target}
+                    className={`cursor-pointer rounded-xl border p-4 ${
+                      checked
+                        ? "border-purple-400 bg-purple-50"
+                        : "border-slate-200 bg-slate-50"
+                    }`}
+                  >
+                    <div className="flex gap-3">
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleTarget(target)}
+                        className="mt-1 h-4 w-4 accent-purple-600"
+                      />
+
+                      <div>
+                        <strong className="text-slate-800">{target}</strong>
+                        <div className="mt-1 text-sm text-slate-600">
+                          Modeled single-target coverage: {Math.round(score.coverage * 100)}%
+                        </div>
+                        <div className="mt-1">
+                          <Badge type={score.safety === "Accept" ? "green" : score.safety === "Uncertain" ? "gold" : "red"}>
+                            {score.safety}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+
+            <div className="mt-5 grid md:grid-cols-4 gap-3">
+              <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+                <div className="text-sm text-blue-700">Selected targets</div>
+                <div className="mt-1 text-2xl font-bold text-blue-900">{selectedTargets.length}</div>
+              </div>
+
+              <div className="rounded-xl border border-purple-200 bg-purple-50 p-4">
+                <div className="text-sm text-purple-700">Modeled combination coverage</div>
+                <div className="mt-1 text-2xl font-bold text-purple-900">{Math.round(coverage * 100)}%</div>
+              </div>
+
+              <div className="rounded-xl border border-orange-200 bg-orange-50 p-4">
+                <div className="text-sm text-orange-700">Modeled uncovered fraction</div>
+                <div className="mt-1 text-2xl font-bold text-orange-900">{Math.round(uncovered * 100)}%</div>
+              </div>
+
+              <div className="rounded-xl border border-green-200 bg-green-50 p-4">
+                <div className="text-sm text-green-700">Best single-target coverage</div>
+                <div className="mt-1 text-2xl font-bold text-green-900">{Math.round(singleBest * 100)}%</div>
+              </div>
+            </div>
+          </Panel>
+
+          <Panel tone="green">
+            <h3 className="display-font text-xl font-bold text-slate-800">
+              Strategy interpretation
+            </h3>
+
+            <p className="mt-3 text-slate-600">
+              Multi-target selection may improve modeled coverage of heterogeneous clones. However,
+              more targets do not automatically mean a safer or clinically better strategy. Every
+              component requires normal-tissue safety assessment, delivery feasibility, experimental
+              validation, and clinical review.
+            </p>
+
+            <div className="mt-4 rounded-xl border border-green-200 bg-green-50 p-4 text-green-900">
+              <strong>Current simulated result:</strong> The final dominant clone after the current
+              evolution scenario is <strong>Clone {simulation.dominant.id}</strong> at {simulation.dominant.percent}%.
+            </div>
+          </Panel>
+        </div>
+      );
+    }
+
+    function RedTeam({ options, setOptions, cancer, selectedTargets, simulation }) {
+      const switches = [
+        ["targetLoss", "Target loss", "A selected target may become unavailable in one modeled clone."],
+        ["resistantExpansion", "Resistant-clone expansion", "Uncovered clones receive a simulated relative survival advantage."],
+        ["reducedHLA", "Reduced HLA class I presentation", "Modeled immune recognition of targeted clones becomes weaker."],
+        ["antigenProcessing", "Antigen-processing defect", "Modeled peptide processing/presentation is reduced."],
+        ["immuneSuppression", "Inhibitory immune environment", "Modeled immune pressure is weakened."],
+        ["newMutation", "New mutation event", "A simulated later molecular event affects one clone."],
+        ["compensatoryPathway", "Compensatory survival pathway", "A clone receives a simulated alternate survival advantage."],
+        ["highHeterogeneity", "High tumor heterogeneity", "A small fictional fourth clone with incomplete coverage is added."]
+      ];
+
+      const baselineCoverage = overallCoverage(cancer, selectedTargets);
+      const activeEvents = Object.values(options).filter(Boolean).length;
+
+      let level = "LOW";
+      if (baselineCoverage < 1 || simulation.dominant.percent > 50 || activeEvents >= 2) level = "MODERATE";
+      if (baselineCoverage < 0.70 || simulation.dominant.percent > 68 || selectedTargets.length === 0) level = "HIGH";
+
+      const riskStyle = level === "HIGH"
+        ? "border-red-200 bg-red-50 text-red-900"
+        : level === "MODERATE"
+          ? "border-amber-200 bg-amber-50 text-amber-900"
+          : "border-green-200 bg-green-50 text-green-900";
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+          <SectionHeading
+            stage="STAGE 6 — AI-5: THERAPEUTIC RED TEAM"
+            title="Stress-test possible treatment escape"
+            description="The Red Team intentionally tries to make the simulated candidate strategy fail. It generates plausible vulnerabilities under selected assumptions."
+          />
+
+          <Panel tone="red">
+            <Badge type="red">MODELED ESCAPE SCENARIOS — NOT CLINICAL PREDICTIONS</Badge>
+
+            <div className="mt-5 grid md:grid-cols-2 gap-3">
+              {switches.map(([id, label, explanation]) => (
+                <label
+                  key={id}
+                  className={`cursor-pointer rounded-xl border p-4 ${
+                    options[id]
+                      ? "border-red-300 bg-red-50"
+                      : "border-slate-200 bg-slate-50"
+                  }`}
+                >
+                  <div className="flex gap-3">
+                    <input
+                      type="checkbox"
+                      checked={options[id]}
+                      onChange={() => setOptions({ ...options, [id]: !options[id] })}
+                      className="mt-1 h-4 w-4 accent-red-600"
+                    />
+
+                    <div>
+                      <strong className="text-slate-800">{label}</strong>
+                      <p className="mt-1 text-sm text-slate-600">{explanation}</p>
+                    </div>
+                  </div>
+                </label>
+              ))}
+            </div>
+
+            <div className="mt-6 overflow-x-auto">
+              <table className="w-full min-w-[720px] text-sm">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200">
+                    <th className="text-left p-3">Modeled escape mechanism</th>
+                    <th className="text-left p-3">Status</th>
+                    <th className="text-left p-3">Meaning</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {switches.map(([id, label, explanation]) => (
+                    <tr key={id} className="border-b border-slate-100">
+                      <td className="p-3 font-semibold text-slate-700">{label}</td>
+                      <td className="p-3">
+                        <Badge type={options[id] ? "red" : "green"}>
+                          {options[id] ? "Activated" : "Off"}
+                        </Badge>
+                      </td>
+                      <td className="p-3 text-slate-600">{explanation}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className={`mt-5 rounded-xl border-l-4 p-4 ${riskStyle}`}>
+              <strong>MODELED RISK: {level}</strong><br />
+              <span className="text-sm">
+                Under the selected assumptions, Clone {simulation.dominant.id} becomes dominant at
+                {" "}{simulation.dominant.percent}%. This is a simulated vulnerability result, not
+                evidence of real patient resistance.
+              </span>
+            </div>
+          </Panel>
+        </div>
+      );
+    }
+
+    function EvolutionSimulator({ cancer, simulation, selectedTargets, options }) {
+      const cloneKeys = simulation.finalClones.map(clone => `Clone ${clone.id}`);
+
+      const reasons = [];
+      const dominant = simulation.dominant;
+      const dominantCoverage = cloneCoverage(dominant, selectedTargets);
+
+      if (dominantCoverage < 0.35) {
+        reasons.push(`Clone ${dominant.id} has low modeled coverage by the selected targets.`);
+      }
+
+      if (options.resistantExpansion) {
+        reasons.push("Resistant-clone expansion is active in the simulation.");
+      }
+
+      if (options.targetLoss) {
+        reasons.push("Target loss is active and weakens reliance on one selected target.");
+      }
+
+      if (options.reducedHLA || options.antigenProcessing) {
+        reasons.push("Antigen-presentation escape is active and reduces modeled immune recognition.");
+      }
+
+      if (options.immuneSuppression) {
+        reasons.push("An inhibitory immune environment weakens modeled immune pressure.");
+      }
+
+      if (options.newMutation) {
+        reasons.push("A later simulated mutation event is included.");
+      }
+
+      if (options.compensatoryPathway) {
+        reasons.push("A compensatory survival pathway is active in one clone.");
+      }
+
+      if (options.highHeterogeneity) {
+        reasons.push("High heterogeneity adds a fourth minor clone with incomplete coverage.");
+      }
+
+      if (!reasons.length) {
+        reasons.push("The result is driven by baseline clone proportions and the simplified demonstration rules.");
+      }
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+          <SectionHeading
+            stage="STAGE 7 — EVOLUTION SIMULATOR"
+            title={`Simulated evolution: ${cancer.shortName}`}
+            description="T1–T10 represent simulated cycles, not days, months, doses, or actual clinical follow-up intervals."
+          />
+
+          <Panel tone="orange">
+            <Badge type="orange">SIMULATED EVOLUTION UNDER SELECTED ASSUMPTIONS</Badge>
+
+            <div className="mt-5 h-[420px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={simulation.timeline} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#dbe6f1" />
+                  <XAxis dataKey="time" stroke="#5b6b80" />
+                  <YAxis stroke="#5b6b80" unit="%" domain={[0, 100]} />
+                  <Tooltip />
+                  <Legend />
+
+                  {cloneKeys.map((key, index) => {
+                    const clone = simulation.finalClones[index];
+                    return (
+                      <Line
+                        key={key}
+                        type="monotone"
+                        dataKey={key}
+                        stroke={clone.color}
+                        strokeWidth={3}
+                        dot={{ r: 3 }}
+                        activeDot={{ r: 5 }}
+                      />
+                    );
+                  })}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </Panel>
+
+          <div className="grid lg:grid-cols-2 gap-6">
+            <Panel tone="orange">
+              <h3 className="display-font text-xl font-bold text-slate-800">
+                Why Clone {dominant.id} increased
+              </h3>
+
+              <div className="mt-4 space-y-2 text-sm text-slate-700">
+                {reasons.map(reason => (
+                  <div key={reason}>• {reason}</div>
+                ))}
+              </div>
+
+              <div className="mt-4 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">
+                These are modeled explanations under selected rules. They are not evidence of how
+                cancer will evolve in a real patient.
+              </div>
+            </Panel>
+
+            <Panel tone="blue">
+              <h3 className="display-font text-xl font-bold text-slate-800">
+                Final simulated clone composition
+              </h3>
+
+              <div className="mt-4">
+                {simulation.finalClones.map(clone => (
+                  <ProgressBar
+                    key={clone.id}
+                    label={`Clone ${clone.id}`}
+                    value={clone.percent / 100}
+                    color={clone.color}
+                  />
+                ))}
+              </div>
+
+              <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-4 text-blue-900">
+                <strong>Modeled dominant clone:</strong> Clone {dominant.id} ({dominant.percent}%)
+              </div>
+            </Panel>
+          </div>
+        </div>
+      );
+    }
+
+    function ClosedLoop({ cancer, selectedTargets, simulation, rnaType }) {
+      const dominant = simulation.dominant;
+      const potentialNewTarget = Object.entries(dominant.targets)
+        .sort((a, b) => b[1] - a[1])
+        .find(([target]) => !selectedTargets.includes(target));
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+          <SectionHeading
+            stage="STAGE 8 — VALIDATION, MONITORING, AND ADAPTATION"
+            title="The NEOIMMUNE AI closed loop"
+            description="The core principle is not to assume that a treatment candidate remains appropriate as tumor populations change."
+          />
+
+          <Panel tone="purple">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                ["1", "Predict", "Map simulated tumor features and prioritize candidate targets."],
+                ["2", "Challenge", "Activate Red-Team escape scenarios and identify vulnerabilities."],
+                ["3", "Validate", "Require target, immune, normal-cell, RNA, nanocarrier, and preclinical evidence."],
+                ["4", "Review", "Require clinical expert, ethics, regulatory, and consent processes."],
+                ["5", "Monitor", "Use clinically appropriate assessment, imaging, molecular testing, and ctDNA where appropriate."],
+                ["6", "Adapt", "Update the Digital Twin and repeat candidate evaluation if concerning evolution is detected."]
+              ].map(([number, title, text]) => (
+                <div key={number} className="rounded-xl border border-purple-200 bg-purple-50 p-4">
+                  <div className="flex items-center gap-3">
+                    <span className="h-8 w-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center">
+                      {number}
+                    </span>
+                    <strong className="text-purple-900">{title}</strong>
+                  </div>
+                  <p className="mt-3 text-sm text-purple-900">{text}</p>
+                </div>
+              ))}
+            </div>
+          </Panel>
+
+          <div className="grid lg:grid-cols-2 gap-6">
+            <Panel tone="green">
+              <h3 className="display-font text-xl font-bold text-slate-800">
+                Evidence and safety gate
+              </h3>
+
+              <div className="mt-4 space-y-3">
+                {[
+                  "Target presence and RNA expression confirmation",
+                  "HLA presentation and immune recognition investigation where relevant",
+                  "Normal-cell and normal-tissue safety assessment",
+                  "RNA cargo and nanocarrier validation",
+                  "Appropriate preclinical evaluation",
+                  "Clinical, ethical, regulatory, and informed-consent review"
+                ].map(item => (
+                  <div key={item} className="rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-900">
+                    ✓ {item}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 rounded-xl border-l-4 border-red-500 bg-red-50 p-4 text-sm text-red-900">
+                <strong>AI cannot pass this gate alone.</strong> Passing a simulation does not establish
+                safety, biological activity, clinical efficacy, or patient suitability.
+              </div>
+            </Panel>
+
+            <Panel tone="blue">
+              <h3 className="display-font text-xl font-bold text-slate-800">
+                Monitoring update and simulated adaptation
+              </h3>
+
+              <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-4 text-blue-900">
+                <strong>Current modeled finding:</strong><br />
+                Clone {dominant.id} is dominant at {dominant.percent}% after the simulated evolution cycles.
+              </div>
+
+              <div className="mt-4 space-y-3 text-sm text-slate-700">
+                <div>1. Compare new signals with baseline Digital Twin.</div>
+                <div>2. Re-map clone composition and target coverage.</div>
+                <div>3. Re-check normal-tissue risk and RNA/nanocarrier feasibility.</div>
+                <div>4. Re-run the Therapeutic Red Team.</div>
+                <div>5. Require validation again before any clinical consideration.</div>
+              </div>
+
+              <div className="mt-5 rounded-xl border border-purple-200 bg-purple-50 p-4 text-purple-900">
+                <strong>Selected simulated RNA concept:</strong> {rnaType}<br />
+                {potentialNewTarget ? (
+                  <span className="text-sm">
+                    <strong>Rule-based educational re-analysis:</strong> Clone {dominant.id} is modeled as
+                    expressing {potentialNewTarget[0]}. A future research question could be whether adding
+                    this candidate improves modeled coverage, followed by renewed safety filtering and Red-Team testing.
+                  </span>
+                ) : (
+                  <span className="text-sm">
+                    <strong>Rule-based educational re-analysis:</strong> Re-check target loss, antigen presentation,
+                    delivery limitations, and alternate survival mechanisms.
+                  </span>
+                )}
+              </div>
+            </Panel>
+          </div>
+
+          <Panel tone="red">
+            <h3 className="display-font text-xl font-bold text-slate-800">
+              Final website statement
+            </h3>
+
+            <p className="mt-3 text-slate-700">
+              NEOIMMUNE AI is a proposed research and decision-support framework. It is intended
+              to integrate personalized tumor analysis, safety-oriented candidate prioritization,
+              computational stress testing of therapeutic escape, independent validation, and
+              longitudinal adaptation under qualified clinical, ethical, and regulatory oversight.
+            </p>
+          </Panel>
+        </div>
+      );
+    }
+
+    function App() {
+      const [activeTab, setActiveTab] = useState("home");
+      const [cancerId, setCancerId] = useState("SKCM");
+      const [search, setSearch] = useState("");
+      const [selectedTargets, setSelectedTargets] = useState(["N1", "N3"]);
+      const [redTeam, setRedTeam] = useState(DEFAULT_RED_TEAM);
+      const [rnaType, setRnaType] = useState("mRNA vaccine concept");
+
+      const cancer = useMemo(
+        () => CANCER_DATABASE.find(item => item.id === cancerId) || CANCER_DATABASE[0],
+        [cancerId]
+      );
+
+      const simulation = useMemo(
+        () => simulateEvolution(cancer, selectedTargets, redTeam),
+        [cancer, selectedTargets, redTeam]
+      );
+
+      function setCancerAndReset(newId) {
+        setCancerId(newId);
+        setSelectedTargets(["N1", "N3"]);
+      }
+
+      function toggleTarget(target) {
+        setSelectedTargets(current => {
+          if (current.includes(target)) {
+            return current.filter(item => item !== target);
+          }
+
+          return [...current, target];
+        });
+      }
+
+      function resetAll() {
+        setCancerId("SKCM");
+        setSearch("");
+        setSelectedTargets(["N1", "N3"]);
+        setRedTeam(DEFAULT_RED_TEAM);
+        setRnaType("mRNA vaccine concept");
+        setActiveTab("home");
+      }
+
+      const report = {
+        generatedAt: new Date().toISOString(),
+        disclaimer: "Simulated educational prototype only. Not patient data, medical advice, diagnosis, clinical prediction, validated neoantigen result, or treatment recommendation.",
+        cancer: {
+          id: cancer.id,
+          name: cancer.name,
+          category: cancer.category,
+          commonGenes: cancer.commonGenes
+        },
+        selectedTargets,
+        RNAConcept: rnaType,
+        redTeamOptions: redTeam,
+        simulatedBaselineClones: simulation.baseline.map(clone => ({
+          id: clone.id,
+          baselinePercent: Number((clone.fraction * 100).toFixed(1)),
+          fictionalMolecularFeatures: clone.mutations,
+          modeledTargetExpression: clone.targets
+        })),
+        finalSimulatedClones: simulation.finalClones.map(clone => ({
+          id: clone.id,
+          finalPercent: clone.percent,
+          fictionalMolecularFeatures: clone.mutations,
+          modeledTargetExpression: clone.targets
+        })),
+        finalDominantClone: {
+          id: simulation.dominant.id,
+          percent: simulation.dominant.percent
+        },
+        timeline: simulation.timeline
+      };
+
+      let page = null;
+
+      if (activeTab === "home") {
+        page = <HomePage setActiveTab={setActiveTab} />;
+      } else if (activeTab === "cancer") {
+        page = (
+          <CancerExplorer
+            cancer={cancer}
+            setCancerId={setCancerAndReset}
+            search={search}
+            setSearch={setSearch}
+          />
+        );
+      } else if (activeTab === "twin") {
+        page = <DigitalTwin cancer={cancer} />;
+      } else if (activeTab === "neo") {
+        page = (
+          <NeoantigenEvaluator
+            cancer={cancer}
+            selectedTargets={selectedTargets}
+            toggleTarget={toggleTarget}
+          />
+        );
+      } else if (activeTab === "rna") {
+        page = <RNANanocarrier rnaType={rnaType} setRnaType={setRnaType} />;
+      } else if (activeTab === "redteam") {
+        page = (
+          <RedTeam
+            options={redTeam}
+            setOptions={setRedTeam}
+            cancer={cancer}
+            selectedTargets={selectedTargets}
+            simulation={simulation}
+          />
+        );
+      } else if (activeTab === "evolution") {
+        page = (
+          <EvolutionSimulator
+            cancer={cancer}
+            simulation={simulation}
+            selectedTargets={selectedTargets}
+            options={redTeam}
+          />
+        );
+      } else if (activeTab === "loop") {
+        page = (
+          <ClosedLoop
+            cancer={cancer}
+            selectedTargets={selectedTargets}
+            simulation={simulation}
+            rnaType={rnaType}
+          />
+        );
+      } else {
+        page = (
+          <StrategyBuilder
+            cancer={cancer}
+            selectedTargets={selectedTargets}
+            toggleTarget={toggleTarget}
+            simulation={simulation}
+          />
+        );
+      }
+
+      return (
+        <>
+          <Header
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            resetAll={resetAll}
+            report={report}
+          />
+
+          <main>{page}</main>
+
+          <footer className="border-t border-slate-200 bg-white mt-8">
+            <div className="max-w-7xl mx-auto px-4 py-6 text-center text-sm text-slate-500">
+              NEOIMMUNE AI Lab • Simulated research prototype • No patient data • No medical advice •
+              Laboratory, clinical, ethical, and regulatory validation required
+            </div>
+          </footer>
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
   </script>
 </body>
 </html>
