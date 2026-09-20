@@ -2,45 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>NEOIMMUNE AI Lab – Advanced Research Interface</title>
+  <title>NEOIMMUNE AI Lab – Ultimate Research Interface</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="NEOIMMUNE AI Lab: Advanced, futuristic interface for evolution-aware cancer therapy research simulation. Educational prototype only." />
+  <meta name="description" content="NEOIMMUNE AI Lab: Ultimate, futuristic interface for evolution-aware cancer therapy research simulation. Educational prototype only." />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
 
-  <!-- Three.js (for future 3D) -->
+  <!-- Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- NGL Viewer -->
+  <script src="https://unpkg.com/ngl@2.4.0/dist/ngl.min.js"></script>
 
   <style>
     :root {
-      --bg: #050810;
-      --bg-soft: #0a1020;
-      --surface: rgba(16, 24, 48, 0.7);
-      --surface-strong: rgba(20, 30, 60, 0.9);
-      --text: #e6ebf5;
-      --muted: #9aa3b2;
-      --line: rgba(120, 140, 180, 0.25);
+      --bg: #03060f;
+      --bg-soft: #081024;
+      --surface: rgba(12, 20, 40, 0.75);
+      --surface-strong: rgba(16, 28, 56, 0.9);
+      --text: #e8eef9;
+      --muted: #94a3b8;
+      --line: rgba(100, 130, 180, 0.25);
       --blue: #3b82f6;
-      --blue-glow: rgba(59, 130, 246, 0.35);
+      --blue-glow: rgba(59, 130, 246, 0.4);
       --teal: #14b8a6;
-      --teal-glow: rgba(20, 184, 166, 0.35);
+      --teal-glow: rgba(20, 184, 166, 0.4);
       --purple: #8b5cf6;
-      --purple-glow: rgba(139, 92, 246, 0.35);
+      --purple-glow: rgba(139, 92, 246, 0.4);
       --red: #ef4444;
       --yellow: #f59e0b;
       --green: #10b981;
-      --shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-      --radius: 14px;
+      --shadow: 0 12px 50px rgba(0, 0, 0, 0.7);
+      --radius: 16px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
       height: 100%;
-      background: radial-gradient(1200px 800px at 10% -10%, #0b1224, #050810 60%);
+      background: radial-gradient(1400px 900px at 10% -20%, #0a1530, #03060f 60%);
       color: var(--text);
       font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       overflow-x: hidden;
@@ -49,23 +51,22 @@
     a { color: var(--blue); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
-    /* Animated background particles (simple CSS) */
     body::before {
       content: "";
       position: fixed;
-      inset: -50%;
+      inset: -60%;
       background:
-        radial-gradient(circle at 20% 30%, rgba(59,130,246,0.08), transparent 40%),
-        radial-gradient(circle at 80% 20%, rgba(139,92,246,0.08), transparent 40%),
-        radial-gradient(circle at 40% 80%, rgba(20,184,166,0.08), transparent 40%);
-      filter: blur(40px);
+        radial-gradient(circle at 20% 30%, rgba(59,130,246,0.1), transparent 45%),
+        radial-gradient(circle at 80% 20%, rgba(139,92,246,0.1), transparent 45%),
+        radial-gradient(circle at 40% 80%, rgba(20,184,166,0.1), transparent 45%);
+      filter: blur(60px);
       z-index: -1;
-      animation: floatBg 18s ease-in-out infinite;
+      animation: floatBg 22s ease-in-out infinite;
     }
 
     @keyframes floatBg {
       0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(-2%, 2%) scale(1.05); }
+      50% { transform: translate(-3%, 3%) scale(1.08); }
     }
 
     /* Header */
@@ -73,81 +74,82 @@
       position: sticky;
       top: 0;
       z-index: 200;
-      background: linear-gradient(180deg, rgba(5,8,16,0.9), rgba(5,8,16,0.6));
+      background: linear-gradient(180deg, rgba(3,6,15,0.95), rgba(3,6,15,0.7));
       border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
     }
 
     .header-inner {
-      max-width: 1400px;
+      max-width: 1500px;
       margin: auto;
-      padding: 12px 18px;
+      padding: 14px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 18px;
       flex-wrap: wrap;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       font-weight: 800;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       letter-spacing: -0.02em;
       color: #fff;
     }
 
     .brand-badge {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
       background: linear-gradient(135deg, var(--blue), var(--purple));
-      box-shadow: 0 0 18px var(--blue-glow);
+      box-shadow: 0 0 22px var(--blue-glow);
     }
 
     .nav {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .nav button {
       border: 0;
-      background: rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.05);
       color: var(--muted);
-      padding: 8px 12px;
-      border-radius: 10px;
+      padding: 9px 13px;
+      border-radius: 11px;
       cursor: pointer;
       font-weight: 600;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
       border: 1px solid transparent;
+      font-family: inherit;
     }
 
     .nav button:hover,
     .nav button.active {
       color: #fff;
-      background: rgba(59,130,246,0.12);
-      border-color: rgba(59,130,246,0.35);
-      box-shadow: 0 0 18px var(--blue-glow);
+      background: rgba(59,130,246,0.15);
+      border-color: rgba(59,130,246,0.45);
+      box-shadow: 0 0 22px var(--blue-glow);
     }
 
     .notice {
-      max-width: 1400px;
-      margin: 12px auto 0;
-      padding: 8px 18px 10px;
-      font-size: 0.78rem;
-      background: rgba(245, 158, 11, 0.08);
-      border: 1px solid rgba(245, 158, 11, 0.25);
+      max-width: 1500px;
+      margin: 14px auto 0;
+      padding: 10px 20px 12px;
+      font-size: 0.8rem;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
       color: #fcd380;
-      border-radius: 10px;
+      border-radius: 11px;
     }
 
     main {
-      max-width: 1400px;
+      max-width: 1500px;
       margin: auto;
-      padding: 18px;
+      padding: 20px;
     }
 
     .view { display: none; }
@@ -155,10 +157,10 @@
 
     /* Hero */
     .hero {
-      background: linear-gradient(135deg, rgba(16,24,48,0.7), rgba(10,16,32,0.7));
+      background: linear-gradient(135deg, rgba(12,20,40,0.75), rgba(8,16,32,0.75));
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 36px 22px;
+      padding: 42px 26px;
       text-align: center;
       box-shadow: var(--shadow);
       position: relative;
@@ -168,11 +170,11 @@
     .hero::after {
       content: "";
       position: absolute;
-      inset: -40%;
+      inset: -50%;
       background:
-        radial-gradient(circle at 30% 40%, rgba(59,130,246,0.12), transparent 45%),
-        radial-gradient(circle at 70% 60%, rgba(139,92,246,0.12), transparent 45%);
-      filter: blur(40px);
+        radial-gradient(circle at 30% 40%, rgba(59,130,246,0.15), transparent 50%),
+        radial-gradient(circle at 70% 60%, rgba(139,92,246,0.15), transparent 50%);
+      filter: blur(50px);
       z-index: 0;
     }
 
@@ -183,73 +185,75 @@
 
     .hero h1 {
       color: #fff;
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      margin-bottom: 8px;
-      text-shadow: 0 0 24px rgba(59,130,246,0.35);
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      margin-bottom: 10px;
+      text-shadow: 0 0 28px rgba(59,130,246,0.45);
     }
 
     .hero p {
-      max-width: 800px;
-      margin: 8px auto;
+      max-width: 900px;
+      margin: 10px auto;
       color: var(--muted);
+      font-size: 1.05rem;
     }
 
     .pipeline {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 8px;
-      margin: 20px 0 10px;
+      gap: 10px;
+      margin: 24px 0 12px;
       color: #fff;
       font-weight: 800;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
     }
 
     .pipeline span {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.22);
       border-radius: 999px;
-      padding: 7px 12px;
-      backdrop-filter: blur(6px);
+      padding: 8px 14px;
+      backdrop-filter: blur(8px);
     }
 
     .btn-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 16px;
+      gap: 12px;
+      margin-top: 20px;
       justify-content: center;
     }
 
     .btn {
       border: 0;
-      border-radius: 10px;
-      padding: 10px 14px;
+      border-radius: 12px;
+      padding: 11px 16px;
       cursor: pointer;
       font-weight: 700;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
       font-family: inherit;
+      font-size: 0.95rem;
     }
 
     .btn-primary {
       background: linear-gradient(135deg, var(--blue), var(--purple));
       color: #fff;
-      box-shadow: 0 0 18px var(--blue-glow);
+      box-shadow: 0 0 22px var(--blue-glow);
     }
 
     .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 0 26px var(--blue-glow);
+      transform: translateY(-2px);
+      box-shadow: 0 0 32px var(--blue-glow);
     }
 
     .btn-secondary {
-      background: rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.07);
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.22);
     }
 
     .btn-secondary:hover {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.12);
     }
 
     /* Cards */
@@ -257,10 +261,10 @@
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 18px;
-      margin-top: 16px;
+      padding: 22px;
+      margin-top: 18px;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
     }
 
     .card h2, .card h3 {
@@ -270,23 +274,23 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 14px;
-      margin-top: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
     }
 
     .grid-3 {
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     }
 
-    .muted { color: var(--muted); font-size: 0.9rem; }
+    .muted { color: var(--muted); font-size: 0.92rem; }
 
     /* Forms */
     label {
       display: block;
       font-weight: 600;
-      font-size: 0.85rem;
-      margin-bottom: 6px;
+      font-size: 0.88rem;
+      margin-bottom: 7px;
       color: #fff;
     }
 
@@ -294,56 +298,56 @@
     select,
     textarea {
       width: 100%;
-      padding: 8px 10px;
-      border-radius: 8px;
+      padding: 9px 11px;
+      border-radius: 10px;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.05);
       color: var(--text);
       font-family: inherit;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
     }
 
     .checkbox-group {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 8px;
-      margin-top: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
     }
 
     .checkbox-group label {
       font-weight: 400;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       color: var(--muted);
-      font-size: 0.88rem;
+      font-size: 0.9rem;
     }
 
     /* Metrics */
     .metric-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-      margin: 14px 0;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
     }
 
     .metric {
-      background: rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.05);
       border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 12px;
+      border-radius: 12px;
+      padding: 14px;
     }
 
     .metric-label {
       color: var(--muted);
-      font-size: 0.72rem;
+      font-size: 0.74rem;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
     }
 
     .metric-value {
-      margin-top: 4px;
-      font-size: 1.3rem;
+      margin-top: 6px;
+      font-size: 1.4rem;
       font-weight: 800;
       color: #fff;
     }
@@ -351,23 +355,23 @@
     .risk {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 5px 9px;
+      gap: 7px;
+      padding: 6px 11px;
       border-radius: 999px;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 800;
     }
 
-    .risk-high { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(239,68,68,0.35); }
-    .risk-medium { background: rgba(245, 158, 11, 0.18); color: #fcd380; border: 1px solid rgba(245,158,11,0.35); }
-    .risk-low { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.35); }
+    .risk-high { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
+    .risk-medium { background: rgba(245, 158, 11, 0.2); color: #fcd380; border: 1px solid rgba(245,158,11,0.4); }
+    .risk-low { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.4); }
 
     .clone-bar {
-      height: 12px;
+      height: 14px;
       display: flex;
       border-radius: 99px;
-      background: rgba(255,255,255,0.06);
-      margin: 8px 0;
+      background: rgba(255,255,255,0.07);
+      margin: 10px 0;
       overflow: hidden;
       border: 1px solid var(--line);
     }
@@ -380,76 +384,101 @@
     /* Data hub */
     .data-hub-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 12px;
-      margin-top: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
     }
 
     .data-card {
-      background: rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.05);
       border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 12px;
+      border-radius: 11px;
+      padding: 14px;
     }
 
     .data-card h4 {
       color: #fff;
-      margin-bottom: 6px;
-      font-size: 0.95rem;
+      margin-bottom: 7px;
+      font-size: 1rem;
     }
 
     .data-card p {
       color: var(--muted);
-      font-size: 0.85rem;
-      margin-bottom: 8px;
+      font-size: 0.88rem;
+      margin-bottom: 9px;
     }
 
     .data-card a {
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       display: inline-block;
-      margin-top: 6px;
+      margin-top: 7px;
     }
 
-    /* 3D viewer placeholder */
-    #viewer3D {
+    /* 3D viewers */
+    #viewer3D, #viewer3DStruct {
       width: 100%;
-      height: 320px;
-      border-radius: 10px;
-      background: radial-gradient(600px 220px at 50% -40%, #0f1730, #060a16 70%);
+      height: 380px;
+      border-radius: 12px;
+      background: radial-gradient(700px 260px at 50% -50%, #0f1b3a, #060c1c 70%);
       border: 1px solid var(--line);
       position: relative;
       overflow: hidden;
     }
 
-    #viewer3D .overlay {
+    #viewer3D .overlay, #viewer3DStruct .overlay {
       position: absolute;
       inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--muted);
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       text-align: center;
-      padding: 12px;
-      background: rgba(0,0,0,0.25);
+      padding: 16px;
+      background: rgba(0,0,0,0.3);
+    }
+
+    /* Evolution table */
+    .evo-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin-top: 10px;
+    }
+
+    .evo-table th, .evo-table td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    .evo-table th {
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .evo-table td {
+      color: var(--muted);
     }
 
     /* Footer */
     footer {
-      max-width: 1400px;
-      margin: 40px auto 60px;
-      padding: 18px;
+      max-width: 1500px;
+      margin: 50px auto 70px;
+      padding: 22px;
       color: var(--muted);
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       text-align: center;
       border-top: 1px solid var(--line);
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 1000px) {
       .header-inner { flex-direction: column; align-items: flex-start; }
       .nav { width: 100%; overflow-x: auto; flex-wrap: nowrap; }
-      .hero { padding: 26px 16px; }
+      .hero { padding: 32px 18px; }
       .grid-3 { grid-template-columns: 1fr; }
+      #viewer3D, #viewer3DStruct { height: 280px; }
     }
   </style>
 </head>
@@ -468,6 +497,7 @@
         <button data-view="resultsView">Results</button>
         <button data-view="dataView">Data Hub</button>
         <button data-view="structureView">Structures</button>
+        <button data-view="evolutionView">Evolution</button>
         <button data-view="historyView">Saved</button>
         <button data-view="learnView">Learn</button>
       </nav>
@@ -486,7 +516,7 @@
         <div class="hero-inner">
           <h1>NEOIMMUNE AI Lab</h1>
           <p>
-            Advanced, evolution-aware, safety-validated, closed-loop personalized cancer-therapy research interface.
+            Ultimate, evolution-aware, safety-validated, closed-loop personalized cancer-therapy research interface with 3D tumor and protein visualization.
           </p>
 
           <div class="pipeline">
@@ -500,12 +530,13 @@
           </div>
 
           <p class="muted">
-            Map tumor clones, stress-test fictional strategies, explore reference databases, and visualize how simulated tumor evolution changes the result.
+            Map tumor clones, stress-test fictional strategies, explore reference databases, visualize 3D tumor evolution, and inspect protein structures.
           </p>
 
           <div class="btn-row">
             <button class="btn btn-primary" data-go="setupView">Start New Simulation</button>
             <button class="btn btn-secondary" data-go="dataView">Open Data Hub</button>
+            <button class="btn btn-secondary" data-go="structureView">View Structures</button>
             <button class="btn btn-secondary" data-go="learnView">How It Works</button>
           </div>
         </div>
@@ -515,7 +546,7 @@
         <div class="card">
           <h3>Clone-aware Digital Twin</h3>
           <p class="muted">
-            Represents a simulated tumor as multiple evolving clones with distinct mutations and target profiles.
+            Represents a simulated tumor as multiple evolving clones with distinct mutations and target profiles, visualized in 3D.
           </p>
         </div>
         <div class="card">
@@ -556,7 +587,7 @@
           </div>
         </div>
 
-        <h3 style="margin-top:16px">Select fictional candidate targets</h3>
+        <h3 style="margin-top:18px">Select fictional candidate targets</h3>
         <div class="checkbox-group">
           <label><input type="checkbox" class="targetCheck" value="N1" /> N1 – Fictional candidate</label>
           <label><input type="checkbox" class="targetCheck" value="N2" /> N2 – Fictional candidate</label>
@@ -565,7 +596,7 @@
           <label><input type="checkbox" class="targetCheck" value="N5" /> N5 – Fictional candidate</label>
         </div>
 
-        <h3 style="margin-top:16px">RNA + Nanocarrier Concept</h3>
+        <h3 style="margin-top:18px">RNA + Nanocarrier Concept</h3>
         <div class="grid">
           <div>
             <label for="rnaConcept">RNA research concept</label>
@@ -585,7 +616,7 @@
           </div>
         </div>
 
-        <h3 style="margin-top:16px">Therapeutic Red Team — modeled escape scenarios</h3>
+        <h3 style="margin-top:18px">Therapeutic Red Team — modeled escape scenarios</h3>
         <div class="checkbox-group">
           <label><input type="checkbox" class="redTeamCheck" value="targetLoss" /> Target loss</label>
           <label><input type="checkbox" class="redTeamCheck" value="resistantExpansion" /> Resistant-clone expansion</label>
@@ -640,31 +671,4 @@
         </div>
       </div>
 
-      <div class="grid grid-3">
-        <div class="card">
-          <h3>Clone Evolution</h3>
-          <div id="cloneEvolutionChart"></div>
-        </div>
-
-        <div class="card">
-          <h3>Target Coverage</h3>
-          <div id="targetCoverageChart"></div>
-        </div>
-
-        <div class="card">
-          <h3>Red Team Result</h3>
-          <div id="redTeamResult"></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>3D Tumor Lab (Concept)</h3>
-        <p class="muted">
-          Conceptual 3D visualization of simulated clones and illustrative nanocarriers. Real structural viewers can be integrated here.
-        </p>
-        <div id="viewer3D">
-          <div class="overlay">
-            3D viewer placeholder – connect Three.js / NGL / 3Dmol here for protein or tumor visualization.
-          </div>
-        </div>
-      </div>
+      <div class="grid gr
