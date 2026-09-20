@@ -2,15 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>NEOIMMUNE AI Lab – Evolution-Aware, Safety-Validated, Closed-Loop Personalized Cancer Therapy</title>
+  <title>NEOIMMUNE AI Lab</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="NEOIMMUNE AI Lab: Educational simulation of evolution-aware, safety-validated, closed-loop personalized cancer therapy research. Fictional, cohort-inspired values only." />
-
-  <!-- Optional: Google Font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
-
   <style>
     :root {
       --bg: #f7faff;
@@ -21,365 +14,254 @@
       --line: #dbe6f2;
       --blue: #1264d8;
       --blue-dark: #083d91;
-      --teal: #079b91;
       --red: #d9363e;
-      --yellow: #d99000;
-      --green: #168348;
       --shadow: 0 8px 26px rgba(20, 58, 100, 0.08);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
     }
 
-    a {
-      color: var(--blue);
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    /* Sticky header */
-    .app-header {
+    header {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255,255,255,0.95);
       border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(8px);
     }
 
-    .app-header-inner {
-      max-width: 1180px;
+    .nav-inner {
+      max-width: 1100px;
       margin: auto;
-      min-height: 68px;
-      padding: 12px 18px;
+      padding: 10px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 18px;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .brand {
-      color: var(--blue-dark);
       font-weight: 800;
-      letter-spacing: -0.02em;
+      color: var(--blue-dark);
+      font-size: 1.05rem;
     }
 
-    .brand small {
-      display: block;
-      color: var(--muted);
-      font-weight: 500;
-      font-size: 0.72rem;
-      margin-top: 2px;
-    }
-
-    .app-nav {
+    .nav {
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
     }
 
-    .app-nav button {
+    .nav button {
       border: 0;
       background: transparent;
       color: var(--muted);
-      padding: 8px 10px;
-      border-radius: 8px;
+      padding: 6px 10px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
     }
 
-    .app-nav button:hover,
-    .app-nav button.active {
+    .nav button.active,
+    .nav button:hover {
       color: var(--blue);
       background: var(--surface-soft);
     }
 
-    .notice-bar {
-      margin: 18px 0;
-      padding: 10px 14px;
+    .notice {
+      max-width: 1100px;
+      margin: 14px auto 0;
+      padding: 8px 16px;
+      font-size: 0.8rem;
       background: #fff8e6;
       border: 1px solid #f1d995;
       color: #694f00;
-      border-radius: 10px;
-      font-size: 0.82rem;
+      border-radius: 8px;
     }
 
-    .app-shell {
-      max-width: 1180px;
+    main {
+      max-width: 1100px;
       margin: auto;
-      padding: 0 18px 90px;
+      padding: 16px;
     }
 
-    .view {
-      display: none;
-    }
+    .view { display: none; }
+    .view.active { display: block; }
 
-    .view.active {
-      display: block;
-    }
-
-    .hero-card {
-      background: linear-gradient(135deg, #ffffff, #edf5ff);
+    .hero {
+      background: linear-gradient(135deg, #fff, #edf5ff);
       border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 40px 28px;
-      box-shadow: var(--shadow);
+      border-radius: 14px;
+      padding: 28px 18px;
       text-align: center;
+      box-shadow: var(--shadow);
     }
 
-    .hero-card h1 {
+    .hero h1 {
       color: var(--blue-dark);
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      margin-bottom: 8px;
+      font-size: 1.8rem;
+      margin-bottom: 6px;
     }
 
-    .hero-card p {
-      max-width: 720px;
-      margin: 8px auto;
+    .hero p {
       color: var(--muted);
+      max-width: 700px;
+      margin: 6px auto;
     }
 
     .pipeline {
       display: flex;
       justify-content: center;
-      align-items: center;
       flex-wrap: wrap;
-      gap: 7px;
-      margin: 24px auto;
+      gap: 6px;
+      margin: 16px 0;
       color: var(--blue);
-      font-size: 0.85rem;
       font-weight: 800;
+      font-size: 0.85rem;
     }
 
     .pipeline span {
       background: #fff;
       border: 1px solid #cfe0f5;
       border-radius: 999px;
-      padding: 7px 11px;
+      padding: 6px 10px;
     }
 
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 14px;
-    }
-
-    .app-card {
+    .card {
       background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 18px;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
       box-shadow: var(--shadow);
     }
 
-    .app-card h2,
-    .app-card h3 {
-      margin-top: 0;
-      color: var(--blue-dark);
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
     }
 
-    .stepper {
-      display: flex;
-      gap: 8px;
-      margin: 20px 0;
-      overflow-x: auto;
-    }
-
-    .step {
-      min-width: 120px;
-      padding: 10px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      color: var(--muted);
-      text-align: center;
-      font-size: 0.82rem;
-    }
-
-    .step.active {
-      color: var(--blue);
-      border-color: var(--blue);
-      background: var(--surface-soft);
-      font-weight: 700;
-    }
-
-    .btn-primary,
-    .btn-secondary,
-    .btn-danger {
+    .btn {
       border: 0;
-      border-radius: 9px;
-      padding: 10px 14px;
+      border-radius: 8px;
+      padding: 8px 12px;
       cursor: pointer;
       font-weight: 700;
     }
 
     .btn-primary {
-      color: #fff;
       background: var(--blue);
-    }
-
-    .btn-primary:hover {
-      background: var(--blue-dark);
+      color: #fff;
     }
 
     .btn-secondary {
-      color: var(--blue);
       background: var(--surface-soft);
+      color: var(--blue);
       border: 1px solid #cfe0f5;
     }
 
-    .btn-danger {
-      color: #fff;
-      background: var(--red);
-    }
-
-    .button-row {
+    .btn-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 9px;
-      margin-top: 16px;
+      gap: 8px;
+      margin-top: 12px;
     }
 
     .metric-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-      margin: 18px 0;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
     }
 
     .metric {
       background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 15px;
+      border-radius: 10px;
+      padding: 12px;
     }
 
     .metric-label {
       color: var(--muted);
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
 
     .metric-value {
-      margin-top: 5px;
-      font-size: 1.4rem;
+      margin-top: 4px;
+      font-size: 1.3rem;
       font-weight: 800;
       color: var(--blue-dark);
     }
 
     .risk {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
+      display: inline-block;
+      padding: 4px 8px;
       border-radius: 999px;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 800;
     }
 
-    .risk-high {
-      color: #8c141b;
-      background: #ffe3e5;
-    }
-
-    .risk-medium {
-      color: #765000;
-      background: #fff1c7;
-    }
-
-    .risk-low {
-      color: #075d32;
-      background: #dff7e9;
-    }
+    .risk-high { background: #ffe3e5; color: #8c141b; }
+    .risk-medium { background: #fff1c7; color: #765000; }
+    .risk-low { background: #dff7e9; color: #075d32; }
 
     .clone-bar {
-      height: 12px;
-      overflow: hidden;
+      height: 10px;
       display: flex;
       border-radius: 99px;
       background: #e7edf5;
-      margin: 10px 0;
+      margin: 8px 0;
+      overflow: hidden;
     }
 
     .clone-bar span:nth-child(1) { background: #2878df; }
     .clone-bar span:nth-child(2) { background: #13a89e; }
     .clone-bar span:nth-child(3) { background: #a65adb; }
-    .clone-bar span:nth-child(4) { background: #f0a52f; }
 
-    .muted {
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .hidden {
-      display: none !important;
-    }
+    .muted { color: var(--muted); font-size: 0.9rem; }
 
     @media (max-width: 700px) {
-      .app-header-inner {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .app-nav {
-        width: 100%;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-      }
-
-      .hero-card {
-        padding: 28px 18px;
-      }
+      .nav-inner { flex-direction: column; align-items: flex-start; }
+      .nav { width: 100%; overflow-x: auto; flex-wrap: nowrap; }
+      .hero h1 { font-size: 1.4rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- App header -->
-  <header class="app-header">
-    <div class="app-header-inner">
-      <div class="brand">
-        NEOIMMUNE AI Lab
-        <small>Evolution-aware research simulation</small>
-      </div>
-
-      <nav class="app-nav" aria-label="Main navigation">
+  <header>
+    <div class="nav-inner">
+      <div class="brand">NEOIMMUNE AI Lab</div>
+      <nav class="nav">
         <button class="active" data-view="homeView">Home</button>
         <button data-view="setupView">New Simulation</button>
         <button data-view="resultsView">Results</button>
-        <button data-view="historyView">Saved Runs</button>
+        <button data-view="historyView">Saved</button>
         <button data-view="learnView">Learn</button>
       </nav>
     </div>
   </header>
 
-  <!-- Main app shell -->
-  <main class="app-shell">
+  <div class="notice">
+    Educational simulation only • Fictional values • No patient data • Not diagnosis or treatment advice
+  </div>
 
-    <div class="notice-bar">
-      Educational simulation only • Fictional cohort-inspired values • No patient data • Not diagnosis or treatment advice
-    </div>
+  <main>
 
-    <!-- HOME VIEW -->
+    <!-- HOME -->
     <section id="homeView" class="view active">
-      <div class="hero-card">
+      <div class="hero">
         <h1>NEOIMMUNE AI Lab</h1>
         <p>Evolution-aware, safety-validated, closed-loop personalized cancer-therapy research.</p>
 
@@ -393,150 +275,124 @@
           <span>Adapt</span>
         </div>
 
-        <p>
+        <p class="muted">
           Map tumor clones, stress-test fictional strategies, and observe how simulated tumor evolution changes the result.
         </p>
 
-        <div class="button-row" style="justify-content:center">
-          <button class="btn-primary" data-go="setupView">Start New Simulation</button>
-          <button class="btn-secondary" data-go="learnView">How It Works</button>
+        <div class="btn-row" style="justify-content:center">
+          <button class="btn btn-primary" data-go="setupView">Start New Simulation</button>
+          <button class="btn btn-secondary" data-go="learnView">How It Works</button>
         </div>
       </div>
 
-      <div class="card-grid" style="margin-top:20px">
-        <article class="app-card">
+      <div class="grid">
+        <div class="card">
           <h3>Clone-aware</h3>
-          <p>Represents a simulated tumor as multiple evolving clones instead of one uniform mass.</p>
-        </article>
-
-        <article class="app-card">
+          <p class="muted">Represents a simulated tumor as multiple evolving clones.</p>
+        </div>
+        <div class="card">
           <h3>Red Team tested</h3>
-          <p>Challenges a strategy with modeled target loss, escape, and resistant-clone expansion.</p>
-        </article>
-
-        <article class="app-card">
+          <p class="muted">Challenges a strategy with modeled escape scenarios.</p>
+        </div>
+        <div class="card">
           <h3>Evidence-gated</h3>
-          <p>Separates computational hypotheses from laboratory, clinical, ethical, and regulatory evidence.</p>
-        </article>
+          <p class="muted">Separates computational hypotheses from lab and clinical evidence.</p>
+        </div>
       </div>
     </section>
 
-    <!-- SETUP VIEW (your existing simulation controls go here) -->
+    <!-- SETUP -->
     <section id="setupView" class="view">
-      <div class="app-card">
+      <div class="card">
         <h2>New Simulation</h2>
-        <p class="muted">Configure your simulated scenario. All values are fictional and for education only.</p>
+        <p class="muted">Configure your simulated scenario. All values are fictional.</p>
 
-        <div class="stepper">
-          <div class="step active">1. Context</div>
-          <div class="step">2. Targets</div>
-          <div class="step">3. Delivery</div>
-          <div class="step">4. Red Team</div>
-          <div class="step">5. Run</div>
+        <h3>1. Cancer Context</h3>
+        <div class="btn-row">
+          <button class="btn btn-secondary">Melanoma (SKCM)</button>
+          <button class="btn btn-secondary">Lung (LUAD)</button>
+          <button class="btn btn-secondary">Breast (BRCA)</button>
         </div>
 
-        <!-- EXISTING SIMULATION CONTROLS -->
-        <!-- Replace the content below with your current simulation form fields -->
-        <div id="existingSimulationControls">
-          <h3>1. Cancer Context</h3>
-          <p class="muted">Select a simulated cancer type.</p>
-          <div class="button-row">
-            <button class="btn-secondary">Melanoma (SKCM)</button>
-            <button class="btn-secondary">Lung (LUAD)</button>
-            <button class="btn-secondary">Breast (BRCA)</button>
-          </div>
-
-          <h3 style="margin-top:18px">2. Target Selection</h3>
-          <p class="muted">Choose fictional neoantigen candidates.</p>
-          <div class="button-row">
-            <label><input type="checkbox" /> N1</label>
-            <label><input type="checkbox" /> N2</label>
-            <label><input type="checkbox" /> N3</label>
-            <label><input type="checkbox" /> N4</label>
-          </div>
-
-          <h3 style="margin-top:18px">3. RNA + Nanocarrier Concept</h3>
-          <p class="muted">Select conceptual delivery settings.</p>
-          <div class="button-row">
-            <button class="btn-secondary">mRNA vaccine concept</button>
-            <button class="btn-secondary">Lipid nanoparticle concept</button>
-          </div>
-
-          <h3 style="margin-top:18px">4. Red Team Scenarios</h3>
-          <p class="muted">Enable modeled escape conditions.</p>
-          <div class="button-row">
-            <label><input type="checkbox" /> Target loss</label>
-            <label><input type="checkbox" /> Resistant-clone expansion</label>
-            <label><input type="checkbox" /> Reduced HLA presentation</label>
-            <label><input type="checkbox" /> New mutation event</label>
-          </div>
+        <h3 style="margin-top:14px">2. Target Selection</h3>
+        <div class="btn-row">
+          <label><input type="checkbox" /> N1</label>
+          <label><input type="checkbox" /> N2</label>
+          <label><input type="checkbox" /> N3</label>
+          <label><input type="checkbox" /> N4</label>
         </div>
 
-        <div class="button-row">
-          <button id="runSimulationV2" class="btn-primary">Run Simulation</button>
-          <button id="resetSimulationV2" class="btn-secondary">Reset</button>
+        <h3 style="margin-top:14px">3. RNA + Nanocarrier Concept</h3>
+        <div class="btn-row">
+          <button class="btn btn-secondary">mRNA vaccine concept</button>
+          <button class="btn btn-secondary">Lipid nanoparticle concept</button>
+        </div>
+
+        <h3 style="margin-top:14px">4. Red Team Scenarios</h3>
+        <div class="btn-row">
+          <label><input type="checkbox" /> Target loss</label>
+          <label><input type="checkbox" /> Resistant-clone expansion</label>
+          <label><input type="checkbox" /> Reduced HLA presentation</label>
+          <label><input type="checkbox" /> New mutation event</label>
+        </div>
+
+        <div class="btn-row">
+          <button id="runBtn" class="btn btn-primary">Run Simulation</button>
+          <button id="resetBtn" class="btn btn-secondary">Reset</button>
         </div>
       </div>
     </section>
 
-    <!-- RESULTS VIEW -->
+    <!-- RESULTS -->
     <section id="resultsView" class="view">
-      <div class="app-card">
+      <div class="card">
         <h2>Simulation Results</h2>
-        <p class="muted">
-          Results are simulated outputs and research hypotheses only.
-        </p>
+        <p class="muted">Results are simulated outputs and research hypotheses only.</p>
 
         <div class="metric-grid">
           <div class="metric">
             <div class="metric-label">Tumor coverage</div>
             <div id="metricCoverage" class="metric-value">—</div>
           </div>
-
           <div class="metric">
             <div class="metric-label">Dominant clone</div>
             <div id="metricDominantClone" class="metric-value">—</div>
           </div>
-
           <div class="metric">
             <div class="metric-label">Modeled risk</div>
             <div id="metricRisk" class="metric-value">—</div>
           </div>
-
           <div class="metric">
             <div class="metric-label">Escape events</div>
             <div id="metricEscapeEvents" class="metric-value">—</div>
           </div>
         </div>
 
-        <div id="resultSummary" class="app-card">
+        <div id="resultSummary" class="card">
           Run a simulation to view the summary.
         </div>
 
-        <div class="button-row">
-          <button id="saveRunV2" class="btn-primary">Save This Run</button>
-          <button id="exportRunV2" class="btn-secondary">Export JSON</button>
-          <button id="reanalyzeV2" class="btn-secondary">Simulated Re-analysis</button>
+        <div class="btn-row">
+          <button id="saveBtn" class="btn btn-primary">Save This Run</button>
+          <button id="exportBtn" class="btn btn-secondary">Export JSON</button>
+          <button id="reanalyzeBtn" class="btn btn-secondary">Simulated Re-analysis</button>
         </div>
       </div>
 
-      <div class="card-grid" style="margin-top:16px">
-        <div class="app-card">
+      <div class="grid">
+        <div class="card">
           <h3>Clone Evolution</h3>
           <div id="cloneEvolutionChart"></div>
         </div>
-
-        <div class="app-card">
+        <div class="card">
           <h3>Target Coverage</h3>
           <div id="targetCoverageChart"></div>
         </div>
-
-        <div class="app-card">
+        <div class="card">
           <h3>Red Team Result</h3>
           <div id="redTeamResult"></div>
         </div>
-
-        <div class="app-card">
+        <div class="card">
           <h3>3D Tumor Lab</h3>
           <div id="threeDPreview">
             Open the 3D view after running the simulation.
@@ -545,17 +401,17 @@
       </div>
     </section>
 
-    <!-- HISTORY VIEW -->
+    <!-- HISTORY -->
     <section id="historyView" class="view">
-      <div class="app-card">
+      <div class="card">
         <h2>Saved Simulations</h2>
         <div id="historyList">No saved simulations yet.</div>
       </div>
     </section>
 
-    <!-- LEARN VIEW -->
+    <!-- LEARN -->
     <section id="learnView" class="view">
-      <div class="app-card">
+      <div class="card">
         <h2>How the Framework Works</h2>
         <div class="pipeline">
           <span>Map</span>
@@ -568,12 +424,12 @@
           <span>Adapt</span>
         </div>
 
-        <p>
+        <p class="muted" style="margin-top:10px">
           The framework maps simulated tumor heterogeneity, ranks fictional target candidates, filters normal-tissue risk, designs multi-target strategies, challenges them with Red Team scenarios, and updates the Digital Twin.
         </p>
 
-        <h3>Evidence gate</h3>
-        <ul>
+        <h3 style="margin-top:14px">Evidence gate</h3>
+        <ul class="muted">
           <li>Mutation and RNA confirmation.</li>
           <li>HLA presentation and immune-recognition studies.</li>
           <li>Normal-tissue safety testing.</li>
@@ -582,7 +438,7 @@
           <li>Clinical, ethical, regulatory, and consent review.</li>
         </ul>
 
-        <div class="notice-bar">
+        <div class="notice" style="margin-top:12px">
           AI cannot pass this gate alone. The website produces educational simulation outputs, not clinical recommendations.
         </div>
       </div>
@@ -590,46 +446,33 @@
 
   </main>
 
-  <!-- App logic -->
   <script>
-    (() => {
+    (function() {
       const STORAGE_KEY = "neoimmune_simulation_history_v2";
       let latestRun = null;
 
-      const $ = selector => document.querySelector(selector);
-      const $$ = selector => [...document.querySelectorAll(selector)];
+      const $ = sel => document.querySelector(sel);
+      const $$ = sel => [...document.querySelectorAll(sel)];
 
-      function showView(viewId) {
-        $$(".view").forEach(view => {
-          view.classList.toggle("active", view.id === viewId);
+      function showView(id) {
+        $$(".view").forEach(v => v.classList.toggle("active", v.id === id));
+        $$(".nav button").forEach(b => {
+          b.classList.toggle("active", b.dataset.view === id);
         });
-
-        $$(".app-nav button").forEach(button => {
-          button.classList.toggle(
-            "active",
-            button.dataset.view === viewId
-          );
-        });
-
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
-      $$(".app-nav button").forEach(button => {
-        button.addEventListener("click", () => {
-          showView(button.dataset.view);
-        });
+      $$(".nav button").forEach(b => {
+        b.addEventListener("click", () => showView(b.dataset.view));
       });
 
-      $$("[data-go]").forEach(button => {
-        button.addEventListener("click", () => {
-          showView(button.dataset.go);
-        });
+      $$("[data-go]").forEach(b => {
+        b.addEventListener("click", () => showView(b.dataset.go));
       });
 
-      // Fallback simulation state – replace with your real engine output
-      function readExistingSimulationState() {
+      function defaultRun() {
         return {
-          id: crypto.randomUUID(),
+          id: "" + Date.now() + Math.random(),
           date: new Date().toISOString(),
           cancer: "Melanoma (SKCM)",
           targets: ["N1", "N3"],
@@ -644,53 +487,156 @@
       }
 
       function renderMetrics(run) {
-        $("#metricCoverage").textContent = `${run.coverage}%`;
+        $("#metricCoverage").textContent = run.coverage + "%";
         $("#metricDominantClone").textContent = run.dominantClone;
         $("#metricRisk").textContent = run.risk;
         $("#metricEscapeEvents").textContent = run.escapeEvents;
 
-        const riskClass =
-          run.risk === "High" ? "risk-high" :
-          run.risk === "Moderate" ? "risk-medium" :
-          "risk-low";
+        let riskClass = "risk-high";
+        if (run.risk === "Moderate") riskClass = "risk-medium";
+        if (run.risk === "Low") riskClass = "risk-low";
 
-        $("#resultSummary").innerHTML = `
-          <span class="risk ${riskClass}">MODELED RISK: ${run.risk.toUpperCase()}</span>
-          <p style="margin-top:12px">
-            ${run.dominantClone} becomes dominant under the selected simulated conditions.
-            Current target coverage is incomplete and requires re-analysis.
-          </p>
-          <p class="muted">
-            This is a fictional simulation result, not evidence of real patient resistance.
-          </p>
-        `;
+        $("#resultSummary").innerHTML =
+          '<span class="risk ' + riskClass + '">MODELED RISK: ' + run.risk.toUpperCase() + '</span>' +
+          '<p style="margin-top:10px" class="muted">' +
+          run.dominantClone + ' becomes dominant under the selected simulated conditions. ' +
+          'Current target coverage is incomplete and requires re-analysis.' +
+          '</p>';
 
-        $("#redTeamResult").innerHTML = `
-          <span class="risk ${riskClass}">
-            ${run.risk.toUpperCase()} MODELED RISK
-          </span>
-          <p style="margin-top:12px">
-            Active simulated escape events: ${run.escapeEvents}
-          </p>
-          <p class="muted">
-            Suggested educational next step: re-check coverage and test an alternative multi-target strategy.
-          </p>
-        `;
+        $("#redTeamResult").innerHTML =
+          '<span class="risk ' + riskClass + '">' + run.risk.toUpperCase() + ' MODELED RISK</span>' +
+          '<p class="muted" style="margin-top:8px">Active simulated escape events: ' + run.escapeEvents + '</p>';
 
-        $("#cloneEvolutionChart").innerHTML = `
-          <div class="muted">Baseline</div>
-          <div class="clone-bar">
-            <span style="width:${run.clones.A}%"></span>
-            <span style="width:${run.clones.B}%"></span>
-            <span style="width:${run.clones.C}%"></span>
-          </div>
-          <div class="muted">Final simulated state</div>
-          <div class="clone-bar">
-            <span style="width:${run.finalClones.A}%"></span>
-            <span style="width:${run.finalClones.B}%"></span>
-            <span style="width:${run.finalClones.C}%"></span>
-          </div>
-          <p class="muted">Blue: A • Teal: B • Purple: C</p>
-        `;
+        $("#cloneEvolutionChart").innerHTML =
+          '<div class="muted">Baseline</div>' +
+          '<div class="clone-bar">' +
+          '<span style="width:' + run.clones.A + '%"></span>' +
+          '<span style="width:' + run.clones.B + '%"></span>' +
+          '<span style="width:' + run.clones.C + '%"></span>' +
+          '</div>' +
+          '<div class="muted">Final simulated state</div>' +
+          '<div class="clone-bar">' +
+          '<span style="width:' + run.finalClones.A + '%"></span>' +
+          '<span style="width:' + run.finalClones.B + '%"></span>' +
+          '<span style="width:' + run.finalClones.C + '%"></span>' +
+          '</div>' +
+          '<p class="muted">Blue: A • Teal: B • Purple: C</p>';
 
-      
+        $("#targetCoverageChart").innerHTML =
+          '<p>N1 <strong>47%</strong></p>' +
+          '<p>N3 <strong>49%</strong></p>' +
+          '<p>N4 <strong>38%</strong></p>' +
+          '<p class="muted">Values are fictional target-coverage values for demonstration.</p>';
+
+        $("#threeDPreview").innerHTML =
+          '<p class="muted">Simulation ready for 3D visualization.</p>' +
+          '<button id="open3DBtn" class="btn btn-secondary">Open 3D Tumor Lab</button>';
+
+        const open3DBtn = $("#open3DBtn");
+        if (open3DBtn) {
+          open3DBtn.addEventListener("click", function() {
+            alert("Connect this button to your existing Three.js viewer.");
+          });
+        }
+      }
+
+      function getHistory() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function saveHistory(run) {
+        const hist = getHistory();
+        hist.unshift(run);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(hist.slice(0, 20)));
+        renderHistory();
+      }
+
+      function renderHistory() {
+        const hist = getHistory();
+        const list = $("#historyList");
+        if (!hist.length) {
+          list.textContent = "No saved simulations yet.";
+          return;
+        }
+
+        list.innerHTML = hist.map(function(run, i) {
+          return '<div class="card" style="margin-bottom:8px">' +
+            '<strong>Simulation ' + (i + 1) + '</strong><br>' +
+            '<span class="muted">' + run.cancer + ' • ' + new Date(run.date).toLocaleString() + '</span><br>' +
+            'Targets: ' + run.targets.join(" + ") + '<br>' +
+            'Coverage: ' + run.coverage + '% • Risk: ' + run.risk + '<br>' +
+            'Dominant clone: ' + run.dominantClone + '<br>' +
+            '<button class="btn btn-secondary" data-id="' + run.id + '">Reopen Results</button>' +
+            '</div>';
+        }).join("");
+
+        list.querySelectorAll("button[data-id]").forEach(function(btn) {
+          btn.addEventListener("click", function() {
+            const id = btn.getAttribute("data-id");
+            const run = getHistory().find(function(r) { return r.id === id; });
+            if (!run) return;
+            latestRun = run;
+            renderMetrics(run);
+            showView("resultsView");
+          });
+        });
+      }
+
+      function downloadJSON(run) {
+        const blob = new Blob([JSON.stringify(run, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "neoimmune-simulation-" + run.id + ".json";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      $("#runBtn").addEventListener("click", function() {
+        latestRun = defaultRun();
+        renderMetrics(latestRun);
+        showView("resultsView");
+      });
+
+      $("#resetBtn").addEventListener("click", function() {
+        latestRun = null;
+        showView("setupView");
+      });
+
+      $("#saveBtn").addEventListener("click", function() {
+        if (!latestRun) {
+          alert("Run a simulation first.");
+          return;
+        }
+        saveHistory(latestRun);
+        alert("Simulation saved locally on this device.");
+      });
+
+      $("#exportBtn").addEventListener("click", function() {
+        if (!latestRun) {
+          alert("Run a simulation first.");
+          return;
+        }
+        downloadJSON(latestRun);
+      });
+
+      $("#reanalyzeBtn").addEventListener("click", function() {
+        if (!latestRun) {
+          alert("Run a simulation first.");
+          return;
+        }
+        alert(
+          "Simulated re-analysis: test whether adding N4 improves coverage of Clone C. " +
+          "This is an educational suggestion, not a treatment recommendation."
+        );
+      });
+
+      renderHistory();
+    })();
+  </script>
+</body>
+</html>
