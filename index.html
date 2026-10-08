@@ -1335,7 +1335,7 @@
       const clones = simulation ? simulation.baseline : currentCancer.clones;
 
       document.getElementById("cloneList").innerHTML = clones.map((clone, index) => `
-        <div class="clone-row ${index === 1 ? ""b" : index === 2 ? "c" : index === 3 ? "d" : ""}">
+        <div class="clone-row ${index === 1 ? "b" : index === 2 ? "c" : index === 3 ? "d" : ""}">
           <strong>Clone ${clone.id} — ${Math.round(clone.fraction * 100)}%</strong><br />
           <span class="small">
             Fictional feature: ${clone.mutations.join(", ")}<br />
@@ -1710,8 +1710,7 @@
       const height = container.clientHeight;
 
       scene = new THREE.Scene();
-      scene.background = new
-        THREE.Color("#f8fbff");
+      scene.background = new THREE.Color("#f8fbff");
 
       camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
       camera.position.set(0, 0, 17);
@@ -2058,4 +2057,3 @@
   </script>
 </body>
 </html>
-        
