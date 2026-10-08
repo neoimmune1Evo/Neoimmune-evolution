@@ -8,7 +8,7 @@
   <title>NEOIMMUNE AI Lab | Closed-Loop Tumor Evolution Simulator</title>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@vladkrutenyuk/three-umd/dist/three.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 
   <style>
     :root {
@@ -41,16 +41,8 @@
       color: var(--text);
       line-height: 1.5;
       background:
-        radial-gradient(
-          circle at 12% 0%,
-          rgba(20, 121, 209, 0.13),
-          transparent 25%
-        ),
-        radial-gradient(
-          circle at 88% 5%,
-          rgba(110, 69, 207, 0.1),
-          transparent 25%
-        ),
+        radial-gradient(circle at 12% 0%, rgba(20, 121, 209, 0.13), transparent 25%),
+        radial-gradient(circle at 88% 5%, rgba(110, 69, 207, 0.1), transparent 25%),
         linear-gradient(135deg, #fcfeff, #edf5fc 55%, #f8f4ff);
     }
 
@@ -65,9 +57,7 @@
       margin: auto;
     }
 
-    h1,
-    h2,
-    h3 {
+    h1, h2, h3 {
       margin-top: 0;
     }
 
@@ -180,57 +170,211 @@
       box-shadow: 0 9px 24px rgba(26, 74, 119, 0.08);
     }
 
-    .span-4 {
-      grid-column: span 4;
-    }
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
 
-    .span-5 {
-      grid-column: span 5;
-    }
-
-    .span-6 {
-      grid-column: span 6;
-    }
-
-    .span-7 {
-      grid-column: span 7;
-    }
-
-    .span-8 {
-      grid-column: span 8;
-    }
-
-    .span-12 {
-      grid-column: span 12;
-    }
-
-    .blue {
-      color: var(--blue);
-    }
-
-    .purple {
-      color: var(--purple);
-    }
-
-    .green {
-      color: var(--green);
-    }
-
-    .orange {
-      color: var(--orange);
-    }
-
-    .red {
-      color: var(--red);
-    }
-
-    .gold {
-      color: var(--gold);
-    }
+    .blue { color: var(--blue); }
+    .purple { color: var(--purple); }
+    .green { color: var(--green); }
+    .orange { color: var(--orange); }
+    .red { color: var(--red); }
+    .gold { color: var(--gold); }
 
     .small {
       color: var(--muted);
       font-size: 0.9rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #856404;
+      margin: 12px 0;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--navy);
+    }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 0.92rem;
+      background: #fff;
+    }
+
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .checkbox-group label {
+      font-weight: 400;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 6px 8px 6px 0;
+    }
+
+    button.primary {
+      background: var(--blue);
+      color: white;
+    }
+
+    button.secondary {
+      background: var(--purple);
+      color: white;
+    }
+
+    button.danger {
+      background: var(--red);
+      color: white;
+    }
+
+    .result {
+      padding: 14px;
+      background: #f8f9fa;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin: 12px 0;
+    }
+
+    .result.yellow {
+      background: #fff3cd;
+      border-color: #ffc107;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      text-align: left;
+    }
+
+    th {
+      background: #f1f5f9;
+      font-weight: 600;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 280px;
+    }
+
+    #tumor3d {
+      width: 100%;
+      height: 320px;
+      background: #0a1020;
+      border-radius: 8px;
+      margin: 12px 0;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 12px 0;
+    }
+
+    .slider-row input[type="range"] {
+      flex: 1;
+    }
+
+    .small-button {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .metric {
+      padding: 10px;
+      background: #f1f5f9;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-top: 4px;
+    }
+
+    .check {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .check:last-child {
+      border-bottom: none;
+    }
+
+    footer {
+      padding: 24px 0;
+      background: rgba(255, 255, 255, 0.95);
+      border-top: 1px solid var(--line);
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .span-4, .span-5, .span-6, .span-7, .span-8, .span-12 {
+        grid-column: span 1;
+      }
     }
   </style>
 </head>
@@ -239,21 +383,11 @@
   <header>
     <div class="wrap">
       <h1>NEOIMMUNE AI Lab</h1>
-
-      <p class="subtitle">
-        Evolution-Aware, Safety-Validated, Closed-Loop Personalized Cancer Therapy
-      </p>
-
-      <div class="tagline">
-        PREDICT → CHALLENGE → VALIDATE → REVIEW → TREAT → MONITOR → ADAPT
-      </div>
-
+      <p class="subtitle">Evolution-Aware, Safety-Validated, Closed-Loop Personalized Cancer Therapy</p>
+      <div class="tagline">PREDICT → CHALLENGE → VALIDATE → REVIEW → TREAT → MONITOR → ADAPT</div>
       <div class="notice">
         <strong>Research and educational simulation only:</strong>
-        This prototype uses fictional, cohort-inspired demo values. It is not
-        patient data, diagnosis, treatment advice, molecular docking, validated
-        neoantigen prediction, real RNA design, nanocarrier formulation, or a
-        clinical treatment recommendation.
+        This prototype uses fictional, cohort-inspired demo values. It is not patient data, diagnosis, treatment advice, molecular docking, validated neoantigen prediction, real RNA design, nanocarrier formulation, or a clinical treatment recommendation.
       </div>
     </div>
   </header>
@@ -285,110 +419,87 @@
     </div>
 
     <div class="grid">
+      <!-- 1. Controls -->
       <section class="card span-12" id="controls">
         <h2 class="blue">1. Interactive Simulation Controls</h2>
-
-        <span class="badge">
-          SIMULATED DEMO MODE — NOT PATIENT DATA
-        </span>
-
-        <p class="small">
-          Select a cancer context, fictional target candidates, an RNA mechanism,
-          a nanocarrier concept, and modeled immune-escape conditions. Then run
-          the simulation.
-        </p>
+        <span class="badge">SIMULATED DEMO MODE — NOT PATIENT DATA</span>
+        <p class="small">Select a cancer context, fictional target candidates, an RNA mechanism, a nanocarrier concept, and modeled immune-escape conditions. Then run the simulation.</p>
 
         <div class="form-grid">
           <div>
             <label for="cancerSearch">Search cancer type</label>
-            <input
-              id="cancerSearch"
-              type="text"
-              placeholder="Melanoma, lung, breast, bladder..."
-            />
+            <input id="cancerSearch" type="text" placeholder="Melanoma, lung, breast, bladder..." />
           </div>
-
           <div>
             <label for="cancerSelect">Cancer context</label>
-            <select id="cancerSelect"></select>
+            <select id="cancerSelect">
+              <option value="Melanoma (SKCM)">Melanoma (SKCM)</option>
+              <option value="Lung (LUAD)">Lung (LUAD)</option>
+              <option value="Breast (BRCA)">Breast (BRCA)</option>
+              <option value="Bladder (BLCA)">Bladder (BLCA)</option>
+            </select>
           </div>
-
           <div>
             <label for="rnaSelect">RNA research concept</label>
             <select id="rnaSelect">
-              <option value="mRNA vaccine concept">
-                mRNA vaccine concept
-              </option>
+              <option value="mRNA vaccine concept">mRNA vaccine concept</option>
               <option value="siRNA concept">siRNA concept</option>
-              <option value="miRNA modulation concept">
-                miRNA modulation concept
-              </option>
-              <option value="No RNA cargo selected">
-                No RNA cargo selected
-              </option>
+              <option value="miRNA modulation concept">miRNA modulation concept</option>
+              <option value="No RNA cargo selected">No RNA cargo selected</option>
             </select>
           </div>
-
           <div>
             <label for="carrierSelect">Nanocarrier concept</label>
             <select id="carrierSelect">
-              <option value="Lipid nanoparticle concept">
-                Lipid nanoparticle concept
-              </option>
-              <option value="Polymeric nanocarrier concept">
-                Polymeric nanocarrier concept
-              </option>
-              <option value="Targeted nanocarrier concept">
-                Targeted nanocarrier concept
-              </option>
-              <option value="No carrier selected">
-                No carrier selected
-              </option>
+              <option value="Lipid nanoparticle concept">Lipid nanoparticle concept</option>
+              <option value="Polymeric nanocarrier concept">Polymeric nanocarrier concept</option>
+              <option value="Targeted nanocarrier concept">Targeted nanocarrier concept</option>
+              <option value="No carrier selected">No carrier selected</option>
             </select>
           </div>
         </div>
 
-        <button id="runButton">
-          Run NEOIMMUNE AI Simulation
-        </button>
+        <h3>Select fictional candidate targets</h3>
+        <div class="checkbox-group">
+          <label><input type="checkbox" class="targetCheck" value="N1" /> N1</label>
+          <label><input type="checkbox" class="targetCheck" value="N2" /> N2</label>
+          <label><input type="checkbox" class="targetCheck" value="N3" /> N3</label>
+          <label><input type="checkbox" class="targetCheck" value="N4" /> N4</label>
+          <label><input type="checkbox" class="targetCheck" value="N5" /> N5</label>
+        </div>
 
-        <button id="optimizeButton" class="secondary">
-          Suggest Simulated Re-analysis
-        </button>
+        <h3>Therapeutic Red Team — modeled escape scenarios</h3>
+        <div class="checkbox-group">
+          <label><input type="checkbox" id="targetLoss" /> Target loss</label>
+          <label><input type="checkbox" id="resistantExpansion" /> Resistant-clone expansion</label>
+          <label><input type="checkbox" id="hlaLoss" /> Reduced HLA presentation</label>
+          <label><input type="checkbox" id="processingDefect" /> Antigen-processing defect</label>
+          <label><input type="checkbox" id="immuneSuppression" /> Immune suppression</label>
+          <label><input type="checkbox" id="newMutation" /> New mutation event</label>
+          <label><input type="checkbox" id="compensatoryPathway" /> Compensatory pathway</label>
+          <label><input type="checkbox" id="highHeterogeneity" /> High heterogeneity (add Clone D)</label>
+        </div>
 
-        <button id="downloadButton" class="danger">
-          Download Simulation JSON
-        </button>
+        <button id="runButton" class="primary">Run NEOIMMUNE AI Simulation</button>
+        <button id="optimizeButton" class="secondary">Suggest Simulated Re-analysis</button>
+        <button id="downloadButton" class="danger">Download Simulation JSON</button>
       </section>
 
+      <!-- 2. Tumor Mapper -->
       <section class="card span-5" id="mapper">
         <h2 class="blue">2. Tumor Mapper and Digital Twin</h2>
-
-        <p class="small">
-          The digital twin is a simplified computational representation of the
-          current simulated tumor context.
-        </p>
-
+        <p class="small">The digital twin is a simplified computational representation of the current simulated tumor context.</p>
         <div id="cloneList"></div>
-
         <div id="digitalTwinBox" class="result">
-          <strong class="purple">Digital Twin status:</strong>
-          <br />
+          <strong class="purple">Digital Twin status:</strong><br />
           <span class="small">Waiting for simulation.</span>
         </div>
       </section>
 
+      <!-- 3. Neoantigen -->
       <section class="card span-7" id="neoantigen">
-        <h2 class="green">
-          3. Dynamic Neoantigen Evaluator and Safety Filter
-        </h2>
-
-        <p class="small">
-          Fictional scoring combines mutation evidence, RNA evidence, HLA
-          context, clone coverage, normal-tissue risk, and uncertainty. It is
-          not a real neoantigen prediction engine.
-        </p>
-
+        <h2 class="green">3. Dynamic Neoantigen Evaluator and Safety Filter</h2>
+        <p class="small">Fictional scoring combines mutation evidence, RNA evidence, HLA context, clone coverage, normal-tissue risk, and uncertainty. It is not a real neoantigen prediction engine.</p>
         <div style="overflow-x: auto;">
           <table>
             <thead>
@@ -401,287 +512,116 @@
                 <th>Safety result</th>
               </tr>
             </thead>
-
             <tbody id="neoTable"></tbody>
           </table>
         </div>
       </section>
 
+      <!-- 4. RNA + Nanocarrier -->
       <section class="card span-6" id="rna">
-        <h2 class="orange">
-          4. RNA + Nanocarrier Simulation Logic
-        </h2>
-
-        <p class="small">
-          RNA is the conceptual biological cargo. A nanocarrier is the conceptual
-          delivery vehicle. The website combines them into a transparent
-          simulated pressure calculation.
-        </p>
-
+        <h2 class="orange">4. RNA + Nanocarrier Simulation Logic</h2>
+        <p class="small">RNA is the conceptual biological cargo. A nanocarrier is the conceptual delivery vehicle. The website combines them into a transparent simulated pressure calculation.</p>
         <div id="rnaResult" class="result"></div>
         <div id="rnaMechanismBox" class="result yellow"></div>
       </section>
 
+      <!-- 5. Red Team -->
       <section class="card span-6" id="redteam">
         <h2 class="red">5. Therapeutic Red Team Result</h2>
-
-        <p class="small">
-          The Red Team intentionally tests ways a strategy might fail in the
-          simulated tumor ecosystem.
-        </p>
-
+        <p class="small">The Red Team intentionally tests ways a strategy might fail in the simulated tumor ecosystem.</p>
         <div id="redTeamResult" class="result yellow">
           <strong>MODELED RISK: NOT RUN</strong>
         </div>
-
         <div id="optimizationResult" class="result">
-          <strong class="purple">Re-analysis suggestion:</strong>
-          <br />
+          <strong class="purple">Re-analysis suggestion:</strong><br />
           <span class="small">Run simulation first.</span>
         </div>
       </section>
 
+      <!-- 6. Evolution -->
       <section class="card span-7" id="evolution">
-        <h2 class="orange">
-          6. Simulated Tumor Evolution Timeline
-        </h2>
-
-        <p class="small">
-          T0–T10 are simulated cycles only. They do not represent days, months,
-          dosing schedules, or real clinical follow-up times.
-        </p>
-
+        <h2 class="orange">6. Simulated Tumor Evolution Timeline</h2>
+        <p class="small">T0–T10 are simulated cycles only. They do not represent days, months, dosing schedules, or real clinical follow-up times.</p>
         <div class="chart-wrap">
           <canvas id="evolutionChart"></canvas>
         </div>
       </section>
 
+      <!-- 7. Baseline vs Final -->
       <section class="card span-5">
         <h2 class="blue">7. Baseline vs Final State</h2>
-
-        <p class="small">
-          Compare clone proportions before and after the selected model
-          conditions.
-        </p>
-
+        <p class="small">Compare clone proportions before and after the selected model conditions.</p>
         <div class="chart-wrap">
           <canvas id="barChart"></canvas>
         </div>
       </section>
 
+      <!-- 8. 3D View -->
       <section class="card span-12" id="tumor3dsection">
-        <h2 class="purple">
-          8. 3D Simulated Tumor Evolution View
-        </h2>
-
-        <span class="badge">
-          ILLUSTRATIVE 3D VISUALIZATION — NOT PATIENT IMAGING
-        </span>
-
-        <p class="small">
-          Colored spheres represent simulated tumor clones. Purple particles
-          represent illustrative RNA nanocarriers. Move through simulated time
-          points with the slider, or press Play.
-        </p>
-
+        <h2 class="purple">8. 3D Simulated Tumor Evolution View</h2>
+        <span class="badge">ILLUSTRATIVE 3D VISUALIZATION — NOT PATIENT IMAGING</span>
+        <p class="small">Colored spheres represent simulated tumor clones. Purple particles represent illustrative RNA nanocarriers. Move through simulated time points with the slider, or press Play.</p>
         <div id="tumor3d"></div>
-
         <div class="slider-row">
-          <button class="small-button" id="playButton">Play</button>
-          <button class="small-button secondary" id="reset3dButton">
-            Reset T0
-          </button>
-
-          <input
-            type="range"
-            id="timeSlider"
-            min="0"
-            max="10"
-            value="0"
-          />
-
+          <button class="small-button primary" id="playButton">Play</button>
+          <button class="small-button secondary" id="reset3dButton">Reset T0</button>
+          <input type="range" id="timeSlider" min="0" max="10" value="0" />
           <strong id="timeLabel">T0</strong>
         </div>
-
         <div id="threeStats" class="metrics"></div>
       </section>
 
+      <!-- 9. Closed Loop -->
       <section class="card span-6" id="loop">
         <h2 class="purple">9. Closed-Loop Adaptation</h2>
-
-        <div class="check">
-          <strong>1. Predict:</strong>
-          Map the simulated tumor and rank fictional target candidates.
-        </div>
-
-        <div class="check">
-          <strong>2. Challenge:</strong>
-          Use Red-Team escape events to stress-test the strategy.
-        </div>
-
-        <div class="check">
-          <strong>3. Validate:</strong>
-          In real research, test target biology, immune effects, normal-cell
-          safety, RNA delivery, and preclinical evidence.
-        </div>
-
-        <div class="check">
-          <strong>4. Monitor:</strong>
-          A future research workflow might use clinically appropriate imaging,
-          molecular testing, and ctDNA context.
-        </div>
-
-        <div class="check">
-          <strong>5. Adapt:</strong>
-          Update the Digital Twin, re-check coverage, risk, and escape, and run
-          the loop again.
-        </div>
+        <div class="check"><strong>1. Predict:</strong> Map the simulated tumor and rank fictional target candidates.</div>
+        <div class="check"><strong>2. Challenge:</strong> Use Red-Team escape events to stress-test the strategy.</div>
+        <div class="check"><strong>3. Validate:</strong> In real research, test target biology, immune effects, normal-cell safety, RNA delivery, and preclinical evidence.</div>
+        <div class="check"><strong>4. Monitor:</strong> A future research workflow might use clinically appropriate imaging, molecular testing, and ctDNA context.</div>
+        <div class="check"><strong>5. Adapt:</strong> Update the Digital Twin, re-check coverage, risk, and escape, and run the loop again.</div>
       </section>
 
+      <!-- 10. Safety Gate -->
       <section class="card span-6">
         <h2 class="green">10. Safety and Evidence Gate</h2>
-
-        <div class="check">
-          🔬 Confirm tumor mutation and RNA expression.
-        </div>
-
-        <div class="check">
-          🧪 Investigate HLA presentation and immune recognition where relevant.
-        </div>
-
-        <div class="check">
-          🛡️ Test normal-cell and normal-tissue safety.
-        </div>
-
-        <div class="check">
-          🚚 Validate RNA loading, protection, uptake, release, and toxicity.
-        </div>
-
-        <div class="check">
-          🐁 Obtain appropriate preclinical evidence.
-        </div>
-
-        <div class="check">
-          👩‍⚕️ Require clinical, ethical, regulatory, and consent review.
-        </div>
+        <div class="check">🔬 Confirm tumor mutation and RNA expression.</div>
+        <div class="check">🧪 Investigate HLA presentation and immune recognition where relevant.</div>
+        <div class="check">🛡️ Test normal-cell and normal-tissue safety.</div>
+        <div class="check">🚚 Validate RNA loading, protection, uptake, release, and toxicity.</div>
+        <div class="check">🐁 Obtain appropriate preclinical evidence.</div>
+        <div class="check">👩‍⚕️ Require clinical, ethical, regulatory, and consent review.</div>
       </section>
     </div>
   </main>
 
   <footer>
-    <strong>NEOIMMUNE AI Lab</strong>
-    • Educational simulation prototype
-    • Simulated data only
-    • No patient data
-    • No medical advice
-    • Independent laboratory, clinical, ethical, and regulatory validation
-    required.
+    <strong>NEOIMMUNE AI Lab</strong> • Educational simulation prototype • Simulated data only • No patient data • No medical advice • Independent laboratory, clinical, ethical, and regulatory validation required.
   </footer>
 
   <script>
     const TARGETS = ["N1", "N2", "N3", "N4", "N5"];
-
     const TARGET_META = {
-      N1: {
-        mutation: 0.85,
-        rna: 0.72,
-        hla: 0.76,
-        immune: 0.66,
-        uncertainty: 0.2
-      },
-
-      N2: {
-        mutation: 0.68,
-        rna: 0.78,
-        hla: 0.58,
-        immune: 0.52,
-        uncertainty: 0.28
-      },
-
-      N3: {
-        mutation: 0.55,
-        rna: 0.62,
-        hla: 0.48,
-        immune: 0.44,
-        uncertainty: 0.34
-      },
-
-      N4: {
-        mutation: 0.74,
-        rna: 0.56,
-        hla: 0.67,
-        immune: 0.61,
-        uncertainty: 0.24
-      },
-
-      N5: {
-        mutation: 0.35,
-        rna: 0.42,
-        hla: 0.36,
-        immune: 0.31,
-        uncertainty: 0.5
-      }
+      N1: { mutation: 0.85, rna: 0.72, hla: 0.76, immune: 0.66, uncertainty: 0.2 },
+      N2: { mutation: 0.68, rna: 0.78, hla: 0.58, immune: 0.52, uncertainty: 0.28 },
+      N3: { mutation: 0.55, rna: 0.62, hla: 0.48, immune: 0.44, uncertainty: 0.34 },
+      N4: { mutation: 0.74, rna: 0.56, hla: 0.67, immune: 0.61, uncertainty: 0.24 },
+      N5: { mutation: 0.35, rna: 0.42, hla: 0.36, immune: 0.31, uncertainty: 0.5 }
     };
 
-    let currentCancer;
+    let currentCancer = null;
     let simulation = null;
     let evolutionChart = null;
     let barChart = null;
+    let scene = null, camera = null, renderer = null, cloneMeshes = [];
+    let animationId = null;
 
     function getSelectedTargets() {
-      return [...document.querySelectorAll(".targetCheck:checked")]
-        .map(input => input.value);
+      return [...document.querySelectorAll(".targetCheck:checked")].map(input => input.value);
     }
 
     function getEscapeOptions() {
       return {
         targetLoss: document.getElementById("targetLoss")?.checked || false,
-        resistantExpansion:
-          document.getElementById("resistantExpansion")?.checked || false,
+        resistantExpansion: document.getElementById("resistantExpansion")?.checked || false,
         hlaLoss: document.getElementById("hlaLoss")?.checked || false,
-        processingDefect:
-          document.getElementById("processingDefect")?.checked || false,
-        immuneSuppression:
-          document.getElementById("immuneSuppression")?.checked || false,
-        newMutation:
-          document.getElementById("newMutation")?.checked || false,
-        compensatoryPathway:
-          document.getElementById("compensatoryPathway")?.checked || false,
-        highHeterogeneity:
-          document.getElementById("highHeterogeneity")?.checked || false
-      };
-    }
-
-    function runSimulation() {
-      const targets = getSelectedTargets();
-      const options = getEscapeOptions();
-
-      simulation = {
-        targets,
-        options,
-        risk: targets.length ? "Moderate" : "High"
-      };
-
-      document.getElementById("digitalTwinBox").innerHTML = `
-        <strong class="purple">Digital Twin status:</strong>
-        <br />
-        <span class="small">
-          Simulated tumor model loaded successfully.
-        </span>
-      `;
-
-      document.getElementById("redTeamResult").innerHTML = `
-        <strong>MODELED RISK: ${simulation.risk.toUpperCase()}</strong>
-        <br />
-        <span class="small">
-          This is an educational simulation result only.
-        </span>
-      `;
-    }
-
-    document
-      .getElementById("runButton")
-      .addEventListener("click", runSimulation);
-  </script>
-</body>
-</html>
+        processingDefect: document.getElementById("processingDefect")?.checked || f
