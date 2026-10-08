@@ -1,1 +1,41 @@
 
+$('#dj').onclick=()=>dl(S.id+'.json',JSON.stringify({id:S.id,time:S.time,version:VER,config:S.c,weights:W(),metrics:S.m,effectiveness:Object.fromEntries(CANDS.map(c=>[c.id,S.res[c.id].E])),frequencies:S.res[S.bw.id].F,redteam:S.rt,adaptive:{events:S.ev,E:S.ad.E}},null,1),'application/json');
+$('#dc').onclick=()=>dl(S.id+'.csv','candidate,generation,effectiveness\n'+CANDS.flatMap(c=>S.res[c.id].E.map((e,g)=>`${c.id},${g},${e.toFixed(5)}`)).join('\n'),'text/csv');
+$('#dr').onclick=()=>dl(S.id+'-report.txt',report(),'text/plain');
+$('#cc').onclick=()=>navigator.clipboard?.writeText(JSON.stringify(S.c)).then(()=>$('#cc').textContent='Copied');
+const again=analyze(S.c);$('#rc').textContent=again.sig==S.sig?'· reproducibility check: identical result on re-run ✓':'· reproducibility check FAILED'}
+function renderMet(){$('#metbody').innerHTML=`<h3>Model (simplified, hypothetical – not a validated biological law)</h3>
+<ul><li>Clone state: set of altered residues (M1–M4, synthetic). Sensitivity sᵢ = base(cand) × Π compat(cand, mutation).</li>
+<li>Fitness: Fᵢ = growthᵢ × (1 − T × 0.9 × abundance × sᵢ × dose) × noise(seeded). growthᵢ = 1 − 0.06 × #mutations.</li>
+<li>Update: fᵢ ← Fᵢfᵢ / ΣFⱼfⱼ; then mutation flux: fᵢ ← (1−0.1μ)fᵢ + 0.1μ/N.</li>
+<li>Effectiveness(t) = Σ fᵢ(t) sᵢ. ETR = 0.6·mean(E) + 0.4·E(final). Resistance barrier = 1 − mass of clones with s &lt; 0.45.</li>
+<li>Composite = Σ wᵢ·componentᵢ / Σ wᵢ. Uncertainty is authored per candidate; never below moderate because all states are synthetic.</li>
+<li>Random numbers: Mulberry32 seeded by the run seed, so the same configuration reproduces the same result.</li></ul>
+<div class="rs"><h3>Research mode</h3><pre>${JSON.stringify({version:VER,seed:S.c.seed,config:S.c,weights:W(),clones:S.cl,mutations:MUT,candidates:CANDS},null,1)}</pre></div>
+<h3>Real vs simulated</h3><ul><li>Real: your inputs, deterministic arithmetic, RCSB metadata when fetched.</li><li>Simulated: every binding, compatibility, resistance, selectivity and population value. No docking is run in this file; no Vina scores are shown.</li></ul>
+<h3>Limitations</h3><ul><li>Simulation ≠ biological experiment; docking ≠ proof of efficacy; docking score ≠ clinical outcome.</li><li>Simulated evolution ≠ actual tumor evolution; mutation model and population dynamics are simplified and hypothetical.</li><li>Selectivity proxy is not toxicity testing. No clinical recommendations are produced.</li><li>Not implemented in this single file: Vina backend, real structure viewer, SMILES parsing, unit tests.</li></ul>
+<h3>Novelty positioning</h3><p>Proposed research framework: a computational prototype exploring evolution-aware therapeutic stress testing. Combines interaction compatibility, population dynamics, red-team stress tests, adaptive re-analysis, uncertainty and reproducibility. Novelty is not independently verified.</p>
+<h3>Backend architecture (optional)</h3><p class="note">Expected endpoint: POST /api/docking/run {receptor, ligand, search box, exhaustiveness} → scores, poses, metadata. Until a backend responds, the engine badge stays OFFLINE.</p>`}
+
+/* pipeline + wiring */
+const ST=['Input validation','Structure preparation (schematic)','Baseline target analysis','Baseline ligand evaluation','Clone generation','Evolutionary challenge','Resistance scoring','Robustness analysis','Adaptive candidate selection','Final re-analysis','Report generation'];
+$('#stages').innerHTML=ST.map(s=>`<span>${s}</span>`).join('');
+function run(){const c=cfg();if(!Number.isFinite(c.seed)){alert('Seed must be a number');return}
+const sp=$$('#stages span');sp.forEach(s=>s.classList.remove('on'));let i=0;
+const step=()=>{if(i<sp.length){sp[i++].classList.add('on');setTimeout(step,70)}else{S=analyze(c);S.pdb=window._pdb||'';sel=Math.min(sel,c.n-1);$('#ecand').innerHTML='';renderAll();show('overview')}};step()}
+function show(id){$$('.tab').forEach(t=>t.classList.toggle('on',t.id=='t-'+id));$$('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t==id));if(S&&id=='evo')renderEvo()}
+$('#tabs').innerHTML=TABS.map(([i,n])=>`<button role="tab" data-t="${i}" aria-selected="${i=='overview'}">${n}</button>`).join('');
+$$('#tabs button').forEach(b=>b.onclick=()=>show(b.dataset.t));
+['n','mu','T','g'].forEach(i=>$('#'+i).oninput=()=>$('#'+{n:'nv',mu:'muv',T:'Tv',g:'gv'}[i]).textContent=i=='mu'||i=='T'?(+$('#'+i).value).toFixed(2):$('#'+i).value);
+$('#run').onclick=run;$('#load').onclick=()=>{$('#seed').value=847291;$('#n').value=5;$('#mu').value=.3;$('#T').value=.7;$('#g').value=12;['n','mu','T','g'].forEach(i=>$('#'+i).oninput());run();document.querySelector('.app').scrollIntoView()};
+$('#start').onclick=()=>$('#seed').focus();$('#meth').onclick=()=>{if(!S)run();setTimeout(()=>{show('met');document.querySelector('.app').scrollIntoView()},900)};
+$('#repro').onclick=run;$('#ecand').onchange=()=>S&&renderEvo();$('#rm').onchange=e=>document.body.classList.toggle('research',e.target.checked);
+$$('[data-v]').forEach(b=>b.onclick=()=>{view=b.dataset.v;draw3d()});
+$('#png').onclick=()=>{const a=document.createElement('a');a.href=$('#cv-freq').toDataURL();a.download='clone-frequencies.png';a.click()};
+window.addEventListener('resize',()=>S&&renderEvo());
+$('#fetchpdb').onclick=async()=>{const id=$('#pdb').value.trim().toUpperCase(),o=$('#pdbout');o.textContent='Loading…';
+try{const r=await fetch('https://data.rcsb.org/rest/v1/core/entry/'+id);if(!r.ok)throw 0;const j=await r.json();window._pdb=id;o.textContent=`Source: RCSB PDB · ${id} · ${j.struct?.title} · method: ${j.exptl?.[0]?.method} (experimental metadata only)`}catch(e){window._pdb='';o.textContent='DATA SOURCE UNAVAILABLE (RCSB could not be reached or ID not found). No data invented.'}};
+(async()=>{const e=$('#eng'),c=new AbortController();setTimeout(()=>c.abort(),1500);
+try{const r=await fetch('http://localhost:8000/api/docking/health',{signal:c.signal});if(!r.ok)throw 0;e.textContent='BACKEND REACHABLE (not wired in this file) – simulation in use';e.className='badge ok'}catch(_){e.textContent='REAL DOCKING ENGINE: OFFLINE';e.className='badge off'}})();
+</script></body></html>
+  
