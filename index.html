@@ -2,194 +2,156 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>NEOIMMUNE AI Lab – Advanced Research Interface</title>
+  <title>NEOIMMUNE AI Lab – Evolution-Aware, Safety-Validated, Closed-Loop Personalized Cancer Therapy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="NEOIMMUNE AI Lab: Advanced, futuristic interface for evolution-aware cancer therapy research simulation. Educational prototype only." />
+  <meta name="description" content="NEOIMMUNE AI Lab: Educational simulation of evolution-aware, safety-validated, closed-loop personalized cancer therapy research. Fictional, cohort-inspired values only." />
 
-  <!-- Fonts -->
+  <!-- Optional: Google Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-
-  <!-- Three.js (for future 3D) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --bg: #050810;
-      --bg-soft: #0a1020;
-      --surface: rgba(16, 24, 48, 0.7);
-      --surface-strong: rgba(20, 30, 60, 0.9);
-      --text: #e6ebf5;
-      --muted: #9aa3b2;
-      --line: rgba(120, 140, 180, 0.25);
-      --blue: #3b82f6;
-      --blue-glow: rgba(59, 130, 246, 0.35);
-      --teal: #14b8a6;
-      --teal-glow: rgba(20, 184, 166, 0.35);
-      --purple: #8b5cf6;
-      --purple-glow: rgba(139, 92, 246, 0.35);
-      --red: #ef4444;
-      --yellow: #f59e0b;
-      --green: #10b981;
-      --shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-      --radius: 14px;
+      --bg: #f7faff;
+      --surface: #ffffff;
+      --surface-soft: #eef5ff;
+      --text: #10233f;
+      --muted: #63748b;
+      --line: #dbe6f2;
+      --blue: #1264d8;
+      --blue-dark: #083d91;
+      --teal: #079b91;
+      --red: #d9363e;
+      --yellow: #d99000;
+      --green: #168348;
+      --shadow: 0 8px 26px rgba(20, 58, 100, 0.08);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    html, body {
-      height: 100%;
-      background: radial-gradient(1200px 800px at 10% -10%, #0b1224, #050810 60%);
-      color: var(--text);
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
       font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
     }
 
-    a { color: var(--blue); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    /* Animated background particles (simple CSS) */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: -50%;
-      background:
-        radial-gradient(circle at 20% 30%, rgba(59,130,246,0.08), transparent 40%),
-        radial-gradient(circle at 80% 20%, rgba(139,92,246,0.08), transparent 40%),
-        radial-gradient(circle at 40% 80%, rgba(20,184,166,0.08), transparent 40%);
-      filter: blur(40px);
-      z-index: -1;
-      animation: floatBg 18s ease-in-out infinite;
+    a {
+      color: var(--blue);
+      text-decoration: none;
     }
 
-    @keyframes floatBg {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(-2%, 2%) scale(1.05); }
+    a:hover {
+      text-decoration: underline;
     }
 
-    /* Header */
-    header {
+    /* Sticky header */
+    .app-header {
       position: sticky;
       top: 0;
-      z-index: 200;
-      background: linear-gradient(180deg, rgba(5,8,16,0.9), rgba(5,8,16,0.6));
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.94);
       border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
     }
 
-    .header-inner {
-      max-width: 1400px;
+    .app-header-inner {
+      max-width: 1180px;
       margin: auto;
+      min-height: 68px;
       padding: 12px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
+      gap: 18px;
     }
 
     .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      color: var(--blue-dark);
       font-weight: 800;
-      font-size: 1.05rem;
       letter-spacing: -0.02em;
-      color: #fff;
     }
 
-    .brand-badge {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, var(--blue), var(--purple));
-      box-shadow: 0 0 18px var(--blue-glow);
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.72rem;
+      margin-top: 2px;
     }
 
-    .nav {
+    .app-nav {
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
     }
 
-    .nav button {
+    .app-nav button {
       border: 0;
-      background: rgba(255,255,255,0.04);
+      background: transparent;
       color: var(--muted);
-      padding: 8px 12px;
-      border-radius: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
-      transition: all 0.2s ease;
-      border: 1px solid transparent;
     }
 
-    .nav button:hover,
-    .nav button.active {
-      color: #fff;
-      background: rgba(59,130,246,0.12);
-      border-color: rgba(59,130,246,0.35);
-      box-shadow: 0 0 18px var(--blue-glow);
+    .app-nav button:hover,
+    .app-nav button.active {
+      color: var(--blue);
+      background: var(--surface-soft);
     }
 
-    .notice {
-      max-width: 1400px;
-      margin: 12px auto 0;
-      padding: 8px 18px 10px;
-      font-size: 0.78rem;
-      background: rgba(245, 158, 11, 0.08);
-      border: 1px solid rgba(245, 158, 11, 0.25);
-      color: #fcd380;
+    .notice-bar {
+      margin: 18px 0;
+      padding: 10px 14px;
+      background: #fff8e6;
+      border: 1px solid #f1d995;
+      color: #694f00;
       border-radius: 10px;
+      font-size: 0.82rem;
     }
 
-    main {
-      max-width: 1400px;
+    .app-shell {
+      max-width: 1180px;
       margin: auto;
-      padding: 18px;
+      padding: 0 18px 90px;
     }
 
-    .view { display: none; }
-    .view.active { display: block; }
+    .view {
+      display: none;
+    }
 
-    /* Hero */
-    .hero {
-      background: linear-gradient(135deg, rgba(16,24,48,0.7), rgba(10,16,32,0.7));
+    .view.active {
+      display: block;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, #ffffff, #edf5ff);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 36px 22px;
-      text-align: center;
+      border-radius: 18px;
+      padding: 40px 28px;
       box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
+      text-align: center;
     }
 
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background:
-        radial-gradient(circle at 30% 40%, rgba(59,130,246,0.12), transparent 45%),
-        radial-gradient(circle at 70% 60%, rgba(139,92,246,0.12), transparent 45%);
-      filter: blur(40px);
-      z-index: 0;
-    }
-
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero h1 {
-      color: #fff;
+    .hero-card h1 {
+      color: var(--blue-dark);
       font-size: clamp(1.8rem, 4vw, 3rem);
       margin-bottom: 8px;
-      text-shadow: 0 0 24px rgba(59,130,246,0.35);
     }
 
-    .hero p {
-      max-width: 800px;
+    .hero-card p {
+      max-width: 720px;
       margin: 8px auto;
       color: var(--muted);
     }
@@ -197,474 +159,554 @@
     .pipeline {
       display: flex;
       justify-content: center;
+      align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
-      margin: 20px 0 10px;
-      color: #fff;
-      font-weight: 800;
+      gap: 7px;
+      margin: 24px auto;
+      color: var(--blue);
       font-size: 0.85rem;
+      font-weight: 800;
     }
 
     .pipeline span {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.18);
+      background: #fff;
+      border: 1px solid #cfe0f5;
       border-radius: 999px;
-      padding: 7px 12px;
-      backdrop-filter: blur(6px);
+      padding: 7px 11px;
     }
 
-    .btn-row {
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+    }
+
+    .app-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .app-card h2,
+    .app-card h3 {
+      margin-top: 0;
+      color: var(--blue-dark);
+    }
+
+    .stepper {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 16px;
-      justify-content: center;
+      gap: 8px;
+      margin: 20px 0;
+      overflow-x: auto;
     }
 
-    .btn {
-      border: 0;
+    .step {
+      min-width: 120px;
+      padding: 10px;
+      border: 1px solid var(--line);
       border-radius: 10px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.82rem;
+    }
+
+    .step.active {
+      color: var(--blue);
+      border-color: var(--blue);
+      background: var(--surface-soft);
+      font-weight: 700;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger {
+      border: 0;
+      border-radius: 9px;
       padding: 10px 14px;
       cursor: pointer;
       font-weight: 700;
-      transition: all 0.2s ease;
-      font-family: inherit;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--blue), var(--purple));
       color: #fff;
-      box-shadow: 0 0 18px var(--blue-glow);
+      background: var(--blue);
     }
 
     .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 0 26px var(--blue-glow);
+      background: var(--blue-dark);
     }
 
     .btn-secondary {
-      background: rgba(255,255,255,0.06);
+      color: var(--blue);
+      background: var(--surface-soft);
+      border: 1px solid #cfe0f5;
+    }
+
+    .btn-danger {
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.18);
+      background: var(--red);
     }
 
-    .btn-secondary:hover {
-      background: rgba(255,255,255,0.1);
-    }
-
-    /* Cards */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 18px;
-      margin-top: 16px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(8px);
-    }
-
-    .card h2, .card h3 {
-      margin-top: 0;
-      color: #fff;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 14px;
-      margin-top: 14px;
-    }
-
-    .grid-3 {
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    }
-
-    .muted { color: var(--muted); font-size: 0.9rem; }
-
-    /* Forms */
-    label {
-      display: block;
-      font-weight: 600;
-      font-size: 0.85rem;
-      margin-bottom: 6px;
-      color: #fff;
-    }
-
-    input[type="text"],
-    select,
-    textarea {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.04);
-      color: var(--text);
-      font-family: inherit;
-      font-size: 0.9rem;
-    }
-
-    .checkbox-group {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .checkbox-group label {
-      font-weight: 400;
+    .button-row {
       display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--muted);
-      font-size: 0.88rem;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 16px;
     }
 
-    /* Metrics */
     .metric-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 12px;
-      margin: 14px 0;
+      margin: 18px 0;
     }
 
     .metric {
-      background: rgba(255,255,255,0.04);
+      background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 12px;
+      border-radius: 12px;
+      padding: 15px;
     }
 
     .metric-label {
       color: var(--muted);
-      font-size: 0.72rem;
+      font-size: 0.76rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
 
     .metric-value {
-      margin-top: 4px;
-      font-size: 1.3rem;
+      margin-top: 5px;
+      font-size: 1.4rem;
       font-weight: 800;
-      color: #fff;
+      color: var(--blue-dark);
     }
 
     .risk {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 5px 9px;
+      padding: 6px 10px;
       border-radius: 999px;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 800;
     }
 
-    .risk-high { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(239,68,68,0.35); }
-    .risk-medium { background: rgba(245, 158, 11, 0.18); color: #fcd380; border: 1px solid rgba(245,158,11,0.35); }
-    .risk-low { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.35); }
+    .risk-high {
+      color: #8c141b;
+      background: #ffe3e5;
+    }
+
+    .risk-medium {
+      color: #765000;
+      background: #fff1c7;
+    }
+
+    .risk-low {
+      color: #075d32;
+      background: #dff7e9;
+    }
 
     .clone-bar {
       height: 12px;
+      overflow: hidden;
       display: flex;
       border-radius: 99px;
-      background: rgba(255,255,255,0.06);
-      margin: 8px 0;
-      overflow: hidden;
-      border: 1px solid var(--line);
+      background: #e7edf5;
+      margin: 10px 0;
     }
 
-    .clone-bar span:nth-child(1) { background: linear-gradient(90deg, #2878df, #3b82f6); }
-    .clone-bar span:nth-child(2) { background: linear-gradient(90deg, #13a89e, #14b8a6); }
-    .clone-bar span:nth-child(3) { background: linear-gradient(90deg, #a65adb, #8b5cf6); }
-    .clone-bar span:nth-child(4) { background: linear-gradient(90deg, #f0a52f, #f59e0b); }
+    .clone-bar span:nth-child(1) { background: #2878df; }
+    .clone-bar span:nth-child(2) { background: #13a89e; }
+    .clone-bar span:nth-child(3) { background: #a65adb; }
+    .clone-bar span:nth-child(4) { background: #f0a52f; }
 
-    /* Data hub */
-    .data-hub-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 12px;
-      margin-top: 12px;
-    }
-
-    .data-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 12px;
-    }
-
-    .data-card h4 {
-      color: #fff;
-      margin-bottom: 6px;
-      font-size: 0.95rem;
-    }
-
-    .data-card p {
+    .muted {
       color: var(--muted);
-      font-size: 0.85rem;
-      margin-bottom: 8px;
+      font-size: 0.92rem;
     }
 
-    .data-card a {
-      font-size: 0.85rem;
-      display: inline-block;
-      margin-top: 6px;
+    .hidden {
+      display: none !important;
     }
 
-    /* 3D viewer placeholder */
-    #viewer3D {
-      width: 100%;
-      height: 320px;
-      border-radius: 10px;
-      background: radial-gradient(600px 220px at 50% -40%, #0f1730, #060a16 70%);
-      border: 1px solid var(--line);
-      position: relative;
-      overflow: hidden;
-    }
+    @media (max-width: 700px) {
+      .app-header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
 
-    #viewer3D .overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted);
-      font-size: 0.85rem;
-      text-align: center;
-      padding: 12px;
-      background: rgba(0,0,0,0.25);
-    }
+      .app-nav {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+      }
 
-    /* Footer */
-    footer {
-      max-width: 1400px;
-      margin: 40px auto 60px;
-      padding: 18px;
-      color: var(--muted);
-      font-size: 0.8rem;
-      text-align: center;
-      border-top: 1px solid var(--line);
-    }
-
-    @media (max-width: 900px) {
-      .header-inner { flex-direction: column; align-items: flex-start; }
-      .nav { width: 100%; overflow-x: auto; flex-wrap: nowrap; }
-      .hero { padding: 26px 16px; }
-      .grid-3 { grid-template-columns: 1fr; }
+      .hero-card {
+        padding: 28px 18px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="header-inner">
+  <!-- App header -->
+  <header class="app-header">
+    <div class="app-header-inner">
       <div class="brand">
-        <div class="brand-badge"></div>
         NEOIMMUNE AI Lab
+        <small>Evolution-aware research simulation</small>
       </div>
 
-      <nav class="nav">
+      <nav class="app-nav" aria-label="Main navigation">
         <button class="active" data-view="homeView">Home</button>
-        <button data-view="setupView">Simulation</button>
+        <button data-view="setupView">New Simulation</button>
         <button data-view="resultsView">Results</button>
-        <button data-view="dataView">Data Hub</button>
-        <button data-view="structureView">Structures</button>
-        <button data-view="historyView">Saved</button>
+        <button data-view="historyView">Saved Runs</button>
         <button data-view="learnView">Learn</button>
       </nav>
     </div>
   </header>
 
-  <div class="notice">
-    Educational simulation only • Fictional, cohort-inspired values • No patient data • Not diagnosis or treatment advice • External databases are reference-only.
-  </div>
+  <!-- Main app shell -->
+  <main class="app-shell">
 
-  <main>
+    <div class="notice-bar">
+      Educational simulation only • Fictional cohort-inspired values • No patient data • Not diagnosis or treatment advice
+    </div>
 
-    <!-- HOME -->
+    <!-- HOME VIEW -->
     <section id="homeView" class="view active">
-      <div class="hero">
-        <div class="hero-inner">
-          <h1>NEOIMMUNE AI Lab</h1>
-          <p>
-            Advanced, evolution-aware, safety-validated, closed-loop personalized cancer-therapy research interface.
-          </p>
+      <div class="hero-card">
+        <h1>NEOIMMUNE AI Lab</h1>
+        <p>Evolution-aware, safety-validated, closed-loop personalized cancer-therapy research.</p>
 
-          <div class="pipeline">
-            <span>Predict</span>
-            <span>Challenge</span>
-            <span>Validate</span>
-            <span>Review</span>
-            <span>Design</span>
-            <span>Monitor</span>
-            <span>Adapt</span>
-          </div>
+        <div class="pipeline">
+          <span>Predict</span>
+          <span>Challenge</span>
+          <span>Validate</span>
+          <span>Review</span>
+          <span>Design</span>
+          <span>Monitor</span>
+          <span>Adapt</span>
+        </div>
 
-          <p class="muted">
-            Map tumor clones, stress-test fictional strategies, explore reference databases, and visualize how simulated tumor evolution changes the result.
-          </p>
+        <p>
+          Map tumor clones, stress-test fictional strategies, and observe how simulated tumor evolution changes the result.
+        </p>
 
-          <div class="btn-row">
-            <button class="btn btn-primary" data-go="setupView">Start New Simulation</button>
-            <button class="btn btn-secondary" data-go="dataView">Open Data Hub</button>
-            <button class="btn btn-secondary" data-go="learnView">How It Works</button>
-          </div>
+        <div class="button-row" style="justify-content:center">
+          <button class="btn-primary" data-go="setupView">Start New Simulation</button>
+          <button class="btn-secondary" data-go="learnView">How It Works</button>
         </div>
       </div>
 
-      <div class="grid grid-3">
-        <div class="card">
-          <h3>Clone-aware Digital Twin</h3>
-          <p class="muted">
-            Represents a simulated tumor as multiple evolving clones with distinct mutations and target profiles.
-          </p>
-        </div>
-        <div class="card">
-          <h3>Therapeutic Red Team</h3>
-          <p class="muted">
-            Actively challenges strategies with modeled escape: target loss, resistant-clone expansion, HLA loss, and more.
-          </p>
-        </div>
-        <div class="card">
-          <h3>Evidence-gated AI</h3>
-          <p class="muted">
-            Clear separation between computational hypotheses and laboratory, clinical, ethical, and regulatory evidence.
-          </p>
-        </div>
+      <div class="card-grid" style="margin-top:20px">
+        <article class="app-card">
+          <h3>Clone-aware</h3>
+          <p>Represents a simulated tumor as multiple evolving clones instead of one uniform mass.</p>
+        </article>
+
+        <article class="app-card">
+          <h3>Red Team tested</h3>
+          <p>Challenges a strategy with modeled target loss, escape, and resistant-clone expansion.</p>
+        </article>
+
+        <article class="app-card">
+          <h3>Evidence-gated</h3>
+          <p>Separates computational hypotheses from laboratory, clinical, ethical, and regulatory evidence.</p>
+        </article>
       </div>
     </section>
 
-    <!-- SETUP / SIMULATION -->
+    <!-- SETUP VIEW (your existing simulation controls go here) -->
     <section id="setupView" class="view">
-      <div class="card">
+      <div class="app-card">
         <h2>New Simulation</h2>
         <p class="muted">Configure your simulated scenario. All values are fictional and for education only.</p>
 
-        <div class="grid">
-          <div>
-            <label for="cancerSearch">Search cancer type</label>
-            <input id="cancerSearch" type="text" placeholder="Melanoma, lung, breast, bladder..." />
+        <div class="stepper">
+          <div class="step active">1. Context</div>
+          <div class="step">2. Targets</div>
+          <div class="step">3. Delivery</div>
+          <div class="step">4. Red Team</div>
+          <div class="step">5. Run</div>
+        </div>
+
+        <!-- EXISTING SIMULATION CONTROLS -->
+        <!-- Replace the content below with your current simulation form fields -->
+        <div id="existingSimulationControls">
+          <h3>1. Cancer Context</h3>
+          <p class="muted">Select a simulated cancer type.</p>
+          <div class="button-row">
+            <button class="btn-secondary">Melanoma (SKCM)</button>
+            <button class="btn-secondary">Lung (LUAD)</button>
+            <button class="btn-secondary">Breast (BRCA)</button>
           </div>
 
-          <div>
-            <label for="cancerContext">Cancer context</label>
-            <select id="cancerContext">
-              <option>Melanoma (SKCM)</option>
-              <option>Lung adenocarcinoma (LUAD)</option>
-              <option>Breast invasive carcinoma (BRCA)</option>
-              <option>Bladder urothelial carcinoma (BLCA)</option>
-            </select>
+          <h3 style="margin-top:18px">2. Target Selection</h3>
+          <p class="muted">Choose fictional neoantigen candidates.</p>
+          <div class="button-row">
+            <label><input type="checkbox" /> N1</label>
+            <label><input type="checkbox" /> N2</label>
+            <label><input type="checkbox" /> N3</label>
+            <label><input type="checkbox" /> N4</label>
+          </div>
+
+          <h3 style="margin-top:18px">3. RNA + Nanocarrier Concept</h3>
+          <p class="muted">Select conceptual delivery settings.</p>
+          <div class="button-row">
+            <button class="btn-secondary">mRNA vaccine concept</button>
+            <button class="btn-secondary">Lipid nanoparticle concept</button>
+          </div>
+
+          <h3 style="margin-top:18px">4. Red Team Scenarios</h3>
+          <p class="muted">Enable modeled escape conditions.</p>
+          <div class="button-row">
+            <label><input type="checkbox" /> Target loss</label>
+            <label><input type="checkbox" /> Resistant-clone expansion</label>
+            <label><input type="checkbox" /> Reduced HLA presentation</label>
+            <label><input type="checkbox" /> New mutation event</label>
           </div>
         </div>
 
-        <h3 style="margin-top:16px">Select fictional candidate targets</h3>
-        <div class="checkbox-group">
-          <label><input type="checkbox" class="targetCheck" value="N1" /> N1 – Fictional candidate</label>
-          <label><input type="checkbox" class="targetCheck" value="N2" /> N2 – Fictional candidate</label>
-          <label><input type="checkbox" class="targetCheck" value="N3" /> N3 – Fictional candidate</label>
-          <label><input type="checkbox" class="targetCheck" value="N4" /> N4 – Fictional candidate</label>
-          <label><input type="checkbox" class="targetCheck" value="N5" /> N5 – Fictional candidate</label>
-        </div>
-
-        <h3 style="margin-top:16px">RNA + Nanocarrier Concept</h3>
-        <div class="grid">
-          <div>
-            <label for="rnaConcept">RNA research concept</label>
-            <select id="rnaConcept">
-              <option>mRNA vaccine concept</option>
-              <option>siRNA knockdown concept</option>
-              <option>miRNA modulation concept</option>
-            </select>
-          </div>
-          <div>
-            <label for="nanocarrierConcept">Nanocarrier concept</label>
-            <select id="nanocarrierConcept">
-              <option>Lipid nanoparticle concept</option>
-              <option>Polymeric nanoparticle concept</option>
-              <option>Virus-like particle concept</option>
-            </select>
-          </div>
-        </div>
-
-        <h3 style="margin-top:16px">Therapeutic Red Team — modeled escape scenarios</h3>
-        <div class="checkbox-group">
-          <label><input type="checkbox" class="redTeamCheck" value="targetLoss" /> Target loss</label>
-          <label><input type="checkbox" class="redTeamCheck" value="resistantExpansion" /> Resistant-clone expansion</label>
-          <label><input type="checkbox" class="redTeamCheck" value="hlaLoss" /> Reduced HLA presentation</label>
-          <label><input type="checkbox" class="redTeamCheck" value="processingDefect" /> Antigen-processing defect</label>
-          <label><input type="checkbox" class="redTeamCheck" value="immuneSuppression" /> Immune suppression</label>
-          <label><input type="checkbox" class="redTeamCheck" value="newMutation" /> New mutation event</label>
-          <label><input type="checkbox" class="redTeamCheck" value="compensatory" /> Compensatory pathway</label>
-          <label><input type="checkbox" class="redTeamCheck" value="highHeterogeneity" /> High heterogeneity (add Clone D)</label>
-        </div>
-
-        <div class="btn-row">
-          <button id="runBtn" class="btn btn-primary">Run Simulation</button>
-          <button id="resetBtn" class="btn btn-secondary">Reset</button>
+        <div class="button-row">
+          <button id="runSimulationV2" class="btn-primary">Run Simulation</button>
+          <button id="resetSimulationV2" class="btn-secondary">Reset</button>
         </div>
       </div>
     </section>
 
-    <!-- RESULTS -->
+    <!-- RESULTS VIEW -->
     <section id="resultsView" class="view">
-      <div class="card">
+      <div class="app-card">
         <h2>Simulation Results</h2>
-        <p class="muted">Results are simulated outputs and research hypotheses only.</p>
+        <p class="muted">
+          Results are simulated outputs and research hypotheses only.
+        </p>
 
         <div class="metric-grid">
           <div class="metric">
             <div class="metric-label">Tumor coverage</div>
             <div id="metricCoverage" class="metric-value">—</div>
           </div>
+
           <div class="metric">
             <div class="metric-label">Dominant clone</div>
             <div id="metricDominantClone" class="metric-value">—</div>
           </div>
+
           <div class="metric">
             <div class="metric-label">Modeled risk</div>
             <div id="metricRisk" class="metric-value">—</div>
           </div>
+
           <div class="metric">
             <div class="metric-label">Escape events</div>
             <div id="metricEscapeEvents" class="metric-value">—</div>
           </div>
         </div>
 
-        <div id="resultSummary" class="card">
+        <div id="resultSummary" class="app-card">
           Run a simulation to view the summary.
         </div>
 
-        <div class="btn-row">
-          <button id="saveBtn" class="btn btn-primary">Save This Run</button>
-          <button id="exportBtn" class="btn btn-secondary">Export JSON</button>
-          <button id="reanalyzeBtn" class="btn btn-secondary">Simulated Re-analysis</button>
+        <div class="button-row">
+          <button id="saveRunV2" class="btn-primary">Save This Run</button>
+          <button id="exportRunV2" class="btn-secondary">Export JSON</button>
+          <button id="reanalyzeV2" class="btn-secondary">Simulated Re-analysis</button>
         </div>
       </div>
 
-      <div class="grid grid-3">
-        <div class="card">
+      <div class="card-grid" style="margin-top:16px">
+        <div class="app-card">
           <h3>Clone Evolution</h3>
           <div id="cloneEvolutionChart"></div>
         </div>
 
-        <div class="card">
+        <div class="app-card">
           <h3>Target Coverage</h3>
           <div id="targetCoverageChart"></div>
         </div>
 
-        <div class="card">
+        <div class="app-card">
           <h3>Red Team Result</h3>
           <div id="redTeamResult"></div>
         </div>
-      </div>
 
-      <div class="card">
-        <h3>3D Tumor Lab (Concept)</h3>
-        <p class="muted">
-          Conceptual 3D visualization of simulated clones and illustrative nanocarriers. Real structural viewers can be integrated here.
-        </p>
-        <div id="viewer3D">
-          <div class="overlay">
-            3D viewer placeholder – connect Three.js / NGL / 3Dmol here for protein or tumor visualization.
+        <div class="app-card">
+          <h3>3D Tumor Lab</h3>
+          <div id="threeDPreview">
+            Open the 3D view after running the simulation.
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- HISTORY VIEW -->
+    <section id="historyView" class="view">
+      <div class="app-card">
+        <h2>Saved Simulations</h2>
+        <div id="historyList">No saved simulations yet.</div>
+      </div>
+    </section>
+
+    <!-- LEARN VIEW -->
+    <section id="learnView" class="view">
+      <div class="app-card">
+        <h2>How the Framework Works</h2>
+        <div class="pipeline">
+          <span>Map</span>
+          <span>Rank</span>
+          <span>Filter</span>
+          <span>Design</span>
+          <span>Challenge</span>
+          <span>Validate</span>
+          <span>Monitor</span>
+          <span>Adapt</span>
+        </div>
+
+        <p>
+          The framework maps simulated tumor heterogeneity, ranks fictional target candidates, filters normal-tissue risk, designs multi-target strategies, challenges them with Red Team scenarios, and updates the Digital Twin.
+        </p>
+
+        <h3>Evidence gate</h3>
+        <ul>
+          <li>Mutation and RNA confirmation.</li>
+          <li>HLA presentation and immune-recognition studies.</li>
+          <li>Normal-tissue safety testing.</li>
+          <li>RNA and nanocarrier delivery studies.</li>
+          <li>Preclinical evidence.</li>
+          <li>Clinical, ethical, regulatory, and consent review.</li>
+        </ul>
+
+        <div class="notice-bar">
+          AI cannot pass this gate alone. The website produces educational simulation outputs, not clinical recommendations.
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- App logic -->
+  <script>
+    (() => {
+      const STORAGE_KEY = "neoimmune_simulation_history_v2";
+      let latestRun = null;
+
+      const $ = selector => document.querySelector(selector);
+      const $$ = selector => [...document.querySelectorAll(selector)];
+
+      function showView(viewId) {
+        $$(".view").forEach(view => {
+          view.classList.toggle("active", view.id === viewId);
+        });
+
+        $$(".app-nav button").forEach(button => {
+          button.classList.toggle(
+            "active",
+            button.dataset.view === viewId
+          );
+        });
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      $$(".app-nav button").forEach(button => {
+        button.addEventListener("click", () => {
+          showView(button.dataset.view);
+        });
+      });
+
+      $$("[data-go]").forEach(button => {
+        button.addEventListener("click", () => {
+          showView(button.dataset.go);
+        });
+      });
+
+      // Fallback simulation state – replace with your real engine output
+      function readExistingSimulationState() {
+        return {
+          id: crypto.randomUUID(),
+          date: new Date().toISOString(),
+          cancer: "Melanoma (SKCM)",
+          targets: ["N1", "N3"],
+          coverage: 68,
+          dominantClone: "Clone C",
+          risk: "High",
+          escapeEvents: 2,
+          clones: { A: 50, B: 30, C: 20 },
+          finalClones: { A: 20, B: 17, C: 63 },
+          note: "Fictional educational simulation output."
+        };
+      }
+
+      function renderMetrics(run) {
+        $("#metricCoverage").textContent = `${run.coverage}%`;
+        $("#metricDominantClone").textContent = run.dominantClone;
+        $("#metricRisk").textContent = run.risk;
+        $("#metricEscapeEvents").textContent = run.escapeEvents;
+
+        const riskClass =
+          run.risk === "High" ? "risk-high" :
+          run.risk === "Moderate" ? "risk-medium" :
+          "risk-low";
+
+        $("#resultSummary").innerHTML = `
+          <span class="risk ${riskClass}">MODELED RISK: ${run.risk.toUpperCase()}</span>
+          <p style="margin-top:12px">
+            ${run.dominantClone} becomes dominant under the selected simulated conditions.
+            Current target coverage is incomplete and requires re-analysis.
+          </p>
+          <p class="muted">
+            This is a fictional simulation result, not evidence of real patient resistance.
+          </p>
+        `;
+
+        $("#redTeamResult").innerHTML = `
+          <span class="risk ${riskClass}">
+            ${run.risk.toUpperCase()} MODELED RISK
+          </span>
+          <p style="margin-top:12px">
+            Active simulated escape events: ${run.escapeEvents}
+          </p>
+          <p class="muted">
+            Suggested educational next step: re-check coverage and test an alternative multi-target strategy.
+          </p>
+        `;
+
+        $("#cloneEvolutionChart").innerHTML = `
+          <div class="muted">Baseline</div>
+          <div class="clone-bar">
+            <span style="width:${run.clones.A}%"></span>
+            <span style="width:${run.clones.B}%"></span>
+            <span style="width:${run.clones.C}%"></span>
+          </div>
+          <div class="muted">Final simulated state</div>
+          <div class="clone-bar">
+            <span style="width:${run.finalClones.A}%"></span>
+            <span style="width:${run.finalClones.B}%"></span>
+            <span style="width:${run.finalClones.C}%"></span>
+          </div>
+          <p class="muted">Blue: A • Teal: B • Purple: C</p>
+        `;
+
+        $("#targetCoverageChart").innerHTML = `
+          <p>N1 <strong>47%</strong></p>
+          <p>N3 <strong>49%</strong></p>
+          <p>N4 <strong>38%</strong></p>
+          <p class="muted">
+            Values are fictional target-coverage values for demonstration.
+          </p>
+        `;
+
+        $("#threeDPreview").innerHTML = `
+          <p>Simulation ready for 3D visualization.</p>
+          <button class="btn-secondary" id="open3DV2">Open 3D Tumor Lab</button>
+        `;
+
+        $("#open3DV2")?.addEventListener("click", () => {
+          alert("Connect this button to your existing Three.js viewer.");
+       
