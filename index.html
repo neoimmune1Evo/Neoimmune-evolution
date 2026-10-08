@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light" />
-  <title>NEOIMMUNE AI Lab | Advanced Tumor Evolution Simulator</title>
+  <title>NEOIMMUNE AI Lab | Closed-Loop Tumor Evolution Simulator</title>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@vladkrutenyuk/three-umd/dist/three.umd.min.js"></script>
 
   <style>
     :root {
@@ -23,160 +23,152 @@
       --line: #d8e4f0;
       --white: #ffffff;
       --bg: #f5f9fd;
-      --shadow: 0 4px 12px rgba(19, 42, 67, 0.08);
-      --shadow-lg: 0 12px 28px rgba(19, 42, 67, 0.12);
     }
 
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.5;
       background:
         radial-gradient(circle at 12% 0%, rgba(20, 121, 209, 0.13), transparent 25%),
-        radial-gradient(circle at 88% 5%, rgba(110, 69, 207, 0.1), transparent 25%),
+        radial-gradient(circle at 88% 5%, rgba(110, 69, 207, 0.10), transparent 25%),
         linear-gradient(135deg, #fcfeff, #edf5fc 55%, #f8f4ff);
     }
 
     header {
-      padding: 36px 0;
-      background: rgba(255, 255, 255, 0.97);
+      padding: 32px 0;
+      background: rgba(255, 255, 255, 0.95);
       border-bottom: 1px solid var(--line);
-      box-shadow: var(--shadow);
     }
 
     .wrap {
-      width: min(1400px, calc(100% - 40px));
+      width: min(1340px, calc(100% - 32px));
       margin: auto;
     }
 
+    h1,
+    h2,
+    h3 {
+      margin-top: 0;
+    }
+
     h1 {
-      margin: 0 0 8px 0;
+      margin-bottom: 6px;
       color: var(--navy);
-      font-size: clamp(2.2rem, 6vw, 4rem);
-      letter-spacing: -0.5px;
-      font-weight: 800;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      letter-spacing: 0.3px;
     }
 
     h2 {
-      margin: 0 0 10px 0;
-      font-size: 1.35rem;
-      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 1.25rem;
     }
 
     h3 {
-      margin: 20px 0 10px;
-      font-size: 1.05rem;
-      font-weight: 600;
+      margin: 18px 0 8px;
+      font-size: 1rem;
     }
 
     .subtitle {
       margin: 0;
       color: var(--muted);
-      font-size: 1.1rem;
-      max-width: 900px;
+      font-size: 1.04rem;
     }
 
     .tagline {
-      margin-top: 18px;
-      padding: 14px 18px;
+      margin-top: 16px;
+      padding: 12px 15px;
       color: #293e5b;
       background: linear-gradient(90deg, #edf8ff, #f2edff);
       border: 1px solid #d8cdfa;
       border-radius: 12px;
-      font-weight: 700;
-      font-size: 1.05rem;
-      letter-spacing: 0.5px;
+      font-weight: bold;
     }
 
     .notice {
-      margin-top: 18px;
-      padding: 16px 18px;
+      margin-top: 16px;
+      padding: 14px 15px;
       color: #6a4c00;
       background: #fff8da;
       border-left: 5px solid #d79d00;
-      border-radius: 10px;
-      font-size: 0.92rem;
-      line-height: 1.6;
+      border-radius: 9px;
+      font-size: 0.91rem;
     }
 
     nav {
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 20;
       display: flex;
-      gap: 10px;
+      gap: 8px;
       overflow-x: auto;
-      padding: 12px 20px;
+      padding: 10px 18px;
       border-bottom: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.98);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(8px);
+      background: rgba(255, 255, 255, 0.97);
     }
 
     nav a {
-      padding: 9px 14px;
+      padding: 8px 10px;
       color: #385470;
       text-decoration: none;
       border: 1px solid var(--line);
       border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 600;
+      font-size: 0.81rem;
+      font-weight: bold;
       white-space: nowrap;
-      transition: all 0.2s;
     }
 
     nav a:hover {
       color: var(--blue);
       border-color: #a7d7f7;
       background: #edf8ff;
-      transform: translateY(-1px);
     }
 
-    main { padding: 28px 0 50px; }
+    main {
+      padding: 24px 0 42px;
+    }
 
     .flow {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 26px;
+      gap: 9px;
+      margin-bottom: 22px;
     }
 
     .flow span {
-      padding: 9px 13px;
+      padding: 8px 11px;
       color: #385470;
       background: white;
       border: 1px solid var(--line);
       border-radius: 999px;
-      box-shadow: var(--shadow);
-      font-size: 0.79rem;
-      font-weight: 700;
-      letter-spacing: 0.3px;
+      box-shadow: 0 3px 9px rgba(26, 74, 119, 0.05);
+      font-size: 0.78rem;
+      font-weight: bold;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap: 22px;
+      gap: 18px;
     }
 
     .card {
-      padding: 22px;
-      background: rgba(255, 255, 255, 0.98);
+      padding: 19px;
+      background: rgba(255, 255, 255, 0.96);
       border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: var(--shadow-lg);
-      transition: transform 0.2s;
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 16px 36px rgba(19, 42, 67, 0.15);
+      border-radius: 16px;
+      box-shadow: 0 9px 24px rgba(26, 74, 119, 0.08);
     }
 
     .span-4 { grid-column: span 4; }
@@ -195,264 +187,315 @@
 
     .small {
       color: var(--muted);
-      font-size: 0.91rem;
-      line-height: 1.6;
+      font-size: 0.90rem;
     }
 
     .badge {
       display: inline-block;
-      padding: 7px 14px;
-      background: #fff3cd;
-      border: 1px solid #ffc107;
-      border-radius: 8px;
-      font-size: 0.81rem;
-      font-weight: 700;
-      color: #856404;
-      margin: 14px 0;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin: 18px 0;
+      padding: 4px 9px;
+      color: #7a5700;
+      background: #fff4c8;
+      border: 1px solid #f0da82;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: bold;
     }
 
     label {
       display: block;
-      font-weight: 600;
-      margin-bottom: 7px;
-      color: var(--navy);
-      font-size: 0.92rem;
+      margin-bottom: 6px;
+      color: #3d5872;
+      font-size: 0.86rem;
+      font-weight: bold;
     }
 
     input[type="text"],
+    input[type="number"],
     select {
       width: 100%;
-      padding: 10px 13px;
-      border: 1.5px solid var(--line);
-      border-radius: 9px;
-      font-size: 0.93rem;
-      background: #fff;
-      transition: border-color 0.2s;
+      padding: 11px;
+      color: var(--text);
+      background: white;
+      border: 1px solid #c9d9e9;
+      border-radius: 10px;
+      outline: none;
+      font-size: 0.94rem;
     }
 
     input[type="text"]:focus,
+    input[type="number"]:focus,
     select:focus {
-      outline: none;
       border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(20, 121, 209, 0.12);
     }
 
-    .checkbox-group {
+    input[type="checkbox"] {
+      margin-top: 3px;
+      accent-color: var(--purple);
+      transform: scale(1.1);
+    }
+
+    .form-grid,
+    .target-grid,
+    .escape-grid,
+    .metrics {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 10px;
-      margin: 14px 0;
     }
 
-    .checkbox-group label {
-      font-weight: 400;
-      color: var(--muted);
+    .form-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .target-grid,
+    .escape-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 10px;
+    }
+
+    .option {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 8px;
+      min-height: 73px;
+      padding: 11px;
+      color: #263d55;
+      background: #f8fbff;
+      border: 1px solid var(--line);
+      border-radius: 11px;
       cursor: pointer;
     }
 
-    .checkbox-group input[type="checkbox"] {
-      width: 17px;
-      height: 17px;
-      cursor: pointer;
+    .option:hover {
+      background: #eef8ff;
+      border-color: #a6d8fa;
+    }
+
+    .option strong {
+      display: block;
+      font-size: 0.91rem;
+    }
+
+    .option small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.78rem;
     }
 
     button {
-      padding: 11px 22px;
-      border: none;
-      border-radius: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      margin: 8px 10px 8px 0;
-      font-size: 0.92rem;
-      transition: all 0.2s;
-    }
-
-    button.primary {
-      background: linear-gradient(135deg, var(--blue), #0f62b0);
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px 14px;
       color: white;
-      box-shadow: 0 4px 14px rgba(20, 121, 209, 0.35);
+      background: linear-gradient(90deg, var(--blue), var(--purple));
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.94rem;
+      font-weight: bold;
     }
 
-    button.primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(20, 121, 209, 0.45);
+    button:hover {
+      filter: brightness(1.05);
     }
 
     button.secondary {
-      background: linear-gradient(135deg, var(--purple), #5a37a8);
-      color: white;
-      box-shadow: 0 4px 14px rgba(110, 69, 207, 0.35);
-    }
-
-    button.secondary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(110, 69, 207, 0.45);
+      background: linear-gradient(90deg, #168075, #258b70);
     }
 
     button.danger {
-      background: linear-gradient(135deg, var(--red), #a31f34);
-      color: white;
-      box-shadow: 0 4px 14px rgba(201, 47, 74, 0.35);
+      background: linear-gradient(90deg, #b73f49, #d45c68);
     }
 
-    button.danger:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(201, 47, 74, 0.45);
+    .small-button {
+      width: auto;
+      margin: 0;
+      padding: 9px 12px;
+      font-size: 0.84rem;
     }
 
     .result {
-      padding: 16px;
-      background: #f8f9fa;
+      margin-top: 13px;
+      padding: 13px;
+      color: #283f58;
+      background: #f8fbff;
       border: 1px solid var(--line);
       border-radius: 10px;
-      margin: 14px 0;
-      line-height: 1.7;
-    }
-
-    .result.yellow {
-      background: #fff3cd;
-      border-color: #ffc107;
     }
 
     .result.green {
-      background: #d4edda;
-      border-color: #c3e6cb;
+      background: #effbf5;
+      border-left: 5px solid var(--green);
     }
+
+    .result.yellow {
+      background: #fff9e7;
+      border-left: 5px solid #d59500;
+    }
+
+    .result.red {
+      background: #fff1f4;
+      border-left: 5px solid var(--red);
+    }
+
+    .metric {
+      padding: 11px;
+      text-align: center;
+      background: #f8fbff;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+    }
+
+    .metric b {
+      display: block;
+      color: var(--navy);
+      font-size: 1.18rem;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .metrics {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: 14px;
+    }
+
+    .clone-row,
+    .check {
+      margin-top: 9px;
+      padding: 10px;
+      color: #2c425c;
+      background: #f8fbff;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      font-size: 0.89rem;
+    }
+
+    .clone-row {
+      border-left: 5px solid var(--blue);
+    }
+
+    .clone-row.b { border-left-color: var(--purple); }
+    .clone-row.c { border-left-color: var(--orange); }
+    .clone-row.d { border-left-color: var(--green); }
 
     table {
       width: 100%;
+      margin-top: 12px;
       border-collapse: collapse;
-      font-size: 0.89rem;
-      margin: 12px 0;
+      font-size: 0.87rem;
     }
 
-    th, td {
-      padding: 10px 12px;
-      border: 1px solid var(--line);
+    th,
+    td {
+      padding: 10px;
       text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid #e6edf5;
     }
 
     th {
-      background: linear-gradient(180deg, #f1f5f9, #e2e8f0);
-      font-weight: 700;
-      color: var(--navy);
+      color: #1b5f9e;
+      background: #edf7ff;
     }
 
-    tr:nth-child(even) {
-      background: #f8fafc;
+    .pill {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: bold;
     }
 
-    tr:hover {
-      background: #edf5fc;
+    .pill.green {
+      color: #0e7b4c;
+      background: #e6f8ef;
+    }
+
+    .pill.yellow {
+      color: #8b6100;
+      background: #fff5cf;
+    }
+
+    .pill.red {
+      color: #b62640;
+      background: #ffe5eb;
     }
 
     .chart-wrap {
-      position: relative;
-      height: 300px;
+      height: 355px;
+      margin-top: 12px;
     }
 
     #tumor3d {
       width: 100%;
-      height: 360px;
-      background: linear-gradient(180deg, #0a1020, #1a2340);
-      border-radius: 12px;
-      margin: 14px 0;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+      height: 420px;
+      margin-top: 12px;
+      overflow: hidden;
+      background: #f8fbff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
     }
 
     .slider-row {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 14px;
-      margin: 14px 0;
-    }
-
-    .slider-row input[type="range"] {
-      flex: 1;
-      height: 6px;
-      border-radius: 999px;
-      background: #d1d9e6;
-      outline: none;
-    }
-
-    .slider-row input[type="range"]::-webkit-slider-thumb {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--blue);
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(20, 121, 209, 0.4);
-    }
-
-    .small-button {
-      padding: 8px 16px;
-      font-size: 0.86rem;
-    }
-
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 12px;
+      gap: 10px;
       margin-top: 14px;
     }
 
-    .metric {
-      padding: 12px;
-      background: linear-gradient(180deg, #f1f5f9, #e2e8f0);
-      border-radius: 10px;
-      text-align: center;
-      border: 1px solid var(--line);
+    input[type="range"] {
+      flex: 1;
+      min-width: 200px;
+      accent-color: var(--blue);
     }
 
-    .metric-label {
-      font-size: 0.76rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
+    .source-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
     }
 
-    .metric-value {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--navy);
-      margin-top: 6px;
-    }
-
-    .check {
-      padding: 10px 0;
-      border-bottom: 1px solid var(--line);
-      line-height: 1.6;
-    }
-
-    .check:last-child {
-      border-bottom: none;
+    .source-links a {
+      padding: 7px 9px;
+      color: #1766a8;
+      background: #eef8ff;
+      border: 1px solid #c7e4fb;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: bold;
     }
 
     footer {
-      padding: 28px 0;
-      background: rgba(255, 255, 255, 0.97);
-      border-top: 1px solid var(--line);
-      text-align: center;
+      padding: 22px 18px;
       color: var(--muted);
-      font-size: 0.86rem;
-      box-shadow: var(--shadow);
+      text-align: center;
+      background: white;
+      border-top: 1px solid var(--line);
+      font-size: 0.83rem;
     }
 
-    @media (max-width: 1000px) {
-      .grid { grid-template-columns: 1fr; }
-      .span-4, .span-5, .span-6, .span-7, .span-8, .span-12 { grid-column: span 1; }
-      .form-grid { grid-template-columns: 1fr; }
-      .checkbox-group { grid-template-columns: 1fr; }
+    @media (max-width: 950px) {
+      .span-4, .span-5, .span-6, .span-7, .span-8, .span-12 {
+        grid-column: span 12;
+      }
+
+      .form-grid,
+      .target-grid,
+      .escape-grid,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      #tumor3d {
+        height: 350px;
+      }
     }
   </style>
 </head>
@@ -461,11 +504,20 @@
   <header>
     <div class="wrap">
       <h1>NEOIMMUNE AI Lab</h1>
-      <p class="subtitle">Evolution-Aware, Safety-Validated, Closed-Loop Personalized Cancer Therapy</p>
-      <div class="tagline">PREDICT → CHALLENGE → VALIDATE → REVIEW → TREAT → MONITOR → ADAPT</div>
+
+      <p class="subtitle">
+        Evolution-Aware, Safety-Validated, Closed-Loop Personalized Cancer Therapy
+      </p>
+
+      <div class="tagline">
+        PREDICT → CHALLENGE → VALIDATE → REVIEW → TREAT → MONITOR → ADAPT
+      </div>
+
       <div class="notice">
-        <strong>⚠️ Research and educational simulation only:</strong>
-        This prototype uses fictional, cohort-inspired demo values. It is not patient data, diagnosis, treatment advice, molecular docking, validated neoantigen prediction, real RNA design, nanocarrier formulation, or a clinical treatment recommendation. Independent laboratory, clinical, ethical, and regulatory validation required.
+        <strong>Research and educational simulation only:</strong>
+        This prototype uses fictional, cohort-inspired demo values. It is not patient data,
+        diagnosis, treatment advice, molecular docking, validated neoantigen prediction,
+        real RNA design, nanocarrier formulation, or a clinical treatment recommendation.
       </div>
     </div>
   </header>
@@ -474,7 +526,7 @@
     <a href="#controls">Controls</a>
     <a href="#mapper">Tumor Mapper</a>
     <a href="#neoantigen">Neoantigen</a>
-    <a href="#rna">RNA + Carrier</a>
+    <a href="#rna">RNA + Nanocarrier</a>
     <a href="#redteam">Red Team</a>
     <a href="#evolution">Evolution</a>
     <a href="#tumor3dsection">3D View</a>
@@ -483,43 +535,43 @@
 
   <main class="wrap">
     <div class="flow">
-      <span>🧬 Cancer Context</span>
-      <span>🗺️ Tumor Mapper</span>
-      <span>👤 Digital Twin</span>
-      <span>🎯 Neoantigen Evaluation</span>
-      <span>🛡️ Safety Filter</span>
-      <span>🧪 RNA Cargo</span>
-      <span>🚚 Nanocarrier Delivery</span>
-      <span>🔴 Red Team</span>
-      <span>📈 Evolution</span>
-      <span>✅ Validation</span>
-      <span>🔄 Monitor + Adapt</span>
+      <span>Cancer Context</span>
+      <span>Tumor Mapper</span>
+      <span>Digital Twin</span>
+      <span>Neoantigen Evaluation</span>
+      <span>Safety Filter</span>
+      <span>RNA Cargo</span>
+      <span>Nanocarrier Delivery</span>
+      <span>Red Team</span>
+      <span>Evolution</span>
+      <span>Validation</span>
+      <span>Monitor + Adapt</span>
     </div>
 
     <div class="grid">
-      <!-- 1. Controls -->
+
       <section class="card span-12" id="controls">
-        <h2 class="blue">🎮 1. Interactive Simulation Controls</h2>
-        <span class="badge">⚠️ SIMULATED DEMO MODE — NOT PATIENT DATA</span>
-        <p class="small">Select a cancer context, fictional target candidates, an RNA mechanism, a nanocarrier concept, and modeled immune-escape conditions. Then run the simulation.</p>
+        <h2 class="blue">1. Interactive Simulation Controls</h2>
+        <span class="badge">SIMULATED DEMO MODE — NOT PATIENT DATA</span>
+
+        <p class="small">
+          Select a cancer context, fictional target candidates, an RNA mechanism, a nanocarrier concept,
+          and modeled immune-escape conditions. Then run the simulation.
+        </p>
 
         <div class="form-grid">
           <div>
-            <label for="cancerSearch">🔍 Search cancer type</label>
+            <label for="cancerSearch">Search cancer type</label>
             <input id="cancerSearch" type="text" placeholder="Melanoma, lung, breast, bladder..." />
           </div>
+
           <div>
-            <label for="cancerSelect">🧬 Cancer context</label>
-            <select id="cancerSelect">
-              <option value="Melanoma (SKCM)">Melanoma (SKCM)</option>
-              <option value="Lung (LUAD)">Lung (LUAD)</option>
-              <option value="Breast (BRCA)">Breast (BRCA)</option>
-              <option value="Bladder (BLCA)">Bladder (BLCA)</option>
-              <option value="Colorectal (COAD)">Colorectal (COAD)</option>
-            </select>
+            <label for="cancerSelect">Cancer context</label>
+            <select id="cancerSelect"></select>
           </div>
+
           <div>
-            <label for="rnaSelect">🧪 RNA research concept</label>
+            <label for="rnaSelect">RNA research concept</label>
             <select id="rnaSelect">
               <option value="mRNA vaccine concept">mRNA vaccine concept</option>
               <option value="siRNA concept">siRNA concept</option>
@@ -527,8 +579,9 @@
               <option value="No RNA cargo selected">No RNA cargo selected</option>
             </select>
           </div>
+
           <div>
-            <label for="carrierSelect">🚚 Nanocarrier concept</label>
+            <label for="carrierSelect">Nanocarrier concept</label>
             <select id="carrierSelect">
               <option value="Lipid nanoparticle concept">Lipid nanoparticle concept</option>
               <option value="Polymeric nanocarrier concept">Polymeric nanocarrier concept</option>
@@ -538,50 +591,117 @@
           </div>
         </div>
 
-        <h3>🎯 Select fictional candidate targets</h3>
-        <div class="checkbox-group">
-          <label><input type="checkbox" class="targetCheck" value="N1" checked /> N1 — High specificity, moderate expression</label>
-          <label><input type="checkbox" class="targetCheck" value="N2" /> N2 — Moderate specificity, high expression</label>
-          <label><input type="checkbox" class="targetCheck" value="N3" /> N3 — Broad clone coverage, lower safety</label>
-          <label><input type="checkbox" class="targetCheck" value="N4" /> N4 — High safety, moderate coverage</label>
-          <label><input type="checkbox" class="targetCheck" value="N5" /> N5 — Low specificity, high uncertainty</label>
+        <div id="cancerInfo" class="result green"></div>
+
+        <div class="source-links">
+          <a href="https://portal.gdc.cancer.gov/" target="_blank">NCI GDC</a>
+          <a href="https://www.cbioportal.org/" target="_blank">cBioPortal</a>
+          <a href="https://gtexportal.org/home/" target="_blank">GTEx</a>
+          <a href="https://www.proteinatlas.org/" target="_blank">Human Protein Atlas</a>
+          <a href="https://www.iedb.org/" target="_blank">IEDB</a>
+          <a href="https://clinicaltrials.gov/" target="_blank">ClinicalTrials.gov</a>
         </div>
 
-        <h3>🔴 Therapeutic Red Team — modeled escape scenarios</h3>
-        <div class="checkbox-group">
-          <label><input type="checkbox" id="targetLoss" /> 🎯 Target loss</label>
-          <label><input type="checkbox" id="resistantExpansion" checked /> 📈 Resistant-clone expansion</label>
-          <label><input type="checkbox" id="hlaLoss" /> 🧬 Reduced HLA presentation</label>
-          <label><input type="checkbox" id="processingDefect" /> ⚙️ Antigen-processing defect</label>
-          <label><input type="checkbox" id="immuneSuppression" /> 🛡️ Immune suppression</label>
-          <label><input type="checkbox" id="newMutation" /> 🧬 New mutation event</label>
-          <label><input type="checkbox" id="compensatoryPathway" /> 🔄 Compensatory pathway</label>
-          <label><input type="checkbox" id="highHeterogeneity" /> 🌐 High heterogeneity (add Clone D)</label>
+        <h3 class="purple">Select fictional candidate targets</h3>
+        <div id="targetOptions" class="target-grid"></div>
+
+        <h3 class="red">Therapeutic Red Team — modeled escape scenarios</h3>
+
+        <div class="escape-grid">
+          <label class="option">
+            <input type="checkbox" id="targetLoss" checked />
+            <span>
+              <strong>Target loss</strong>
+              <small>A selected target may become unavailable in one modeled clone.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="resistantExpansion" checked />
+            <span>
+              <strong>Resistant-clone expansion</strong>
+              <small>Poorly covered clones gain simulated relative survival.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="hlaLoss" />
+            <span>
+              <strong>Reduced HLA presentation</strong>
+              <small>Modeled immune recognition becomes weaker.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="processingDefect" />
+            <span>
+              <strong>Antigen-processing defect</strong>
+              <small>Modeled peptide processing/presentation is reduced.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="immuneSuppression" />
+            <span>
+              <strong>Immune suppression</strong>
+              <small>Simulated immune pressure is reduced.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="newMutation" />
+            <span>
+              <strong>New mutation event</strong>
+              <small>A simulated new resistant feature affects Clone C later.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="compensatoryPathway" />
+            <span>
+              <strong>Compensatory pathway</strong>
+              <small>Clone B gains a simulated alternative survival advantage.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="highHeterogeneity" />
+            <span>
+              <strong>High heterogeneity</strong>
+              <small>Add a small Clone D with incomplete target coverage.</small>
+            </span>
+          </label>
         </div>
 
-        <div style="margin-top: 20px;">
-          <button id="runButton" class="primary">▶️ Run NEOIMMUNE AI Simulation</button>
-          <button id="optimizeButton" class="secondary">💡 Suggest Simulated Re-analysis</button>
-          <button id="downloadButton" class="danger">💾 Download Simulation JSON</button>
-        </div>
+        <button id="runButton">Run NEOIMMUNE AI Simulation</button>
+        <button id="optimizeButton" class="secondary">Suggest Simulated Re-analysis</button>
+        <button id="downloadButton" class="danger">Download Simulation JSON</button>
       </section>
 
-      <!-- 2. Tumor Mapper -->
       <section class="card span-5" id="mapper">
-        <h2 class="blue">🗺️ 2. Tumor Mapper and Digital Twin</h2>
-        <p class="small">The digital twin is a simplified computational representation of the current simulated tumor context.</p>
+        <h2 class="blue">2. Tumor Mapper and Digital Twin</h2>
+
+        <p class="small">
+          The digital twin is a simplified computational representation of the current simulated tumor context.
+        </p>
+
         <div id="cloneList"></div>
+
         <div id="digitalTwinBox" class="result">
-          <strong class="purple">👤 Digital Twin status:</strong><br />
-          <span class="small">⏳ Waiting for simulation.</span>
+          <strong class="purple">Digital Twin status:</strong><br />
+          <span class="small">Waiting for simulation.</span>
         </div>
       </section>
 
-      <!-- 3. Neoantigen -->
       <section class="card span-7" id="neoantigen">
-        <h2 class="green">🎯 3. Dynamic Neoantigen Evaluator and Safety Filter</h2>
-        <p class="small">Fictional scoring combines mutation evidence, RNA evidence, HLA context, clone coverage, normal-tissue risk, and uncertainty. It is not a real neoantigen prediction engine.</p>
-        <div style="overflow-x: auto;">
+        <h2 class="green">3. Dynamic Neoantigen Evaluator and Safety Filter</h2>
+
+        <p class="small">
+          Fictional scoring combines mutation evidence, RNA evidence, HLA context, clone coverage,
+          normal-tissue risk, and uncertainty. It is not a real neoantigen prediction engine.
+        </p>
+
+        <div style="overflow-x:auto;">
           <table>
             <thead>
               <tr>
@@ -596,411 +716,1346 @@
             <tbody id="neoTable"></tbody>
           </table>
         </div>
+
+        <div class="result yellow">
+          <strong>Validation requirement:</strong>
+          A candidate needs confirmation of mutation, RNA expression, HLA-related presentation,
+          immune recognition, normal-cell safety, delivery feasibility, preclinical activity,
+          and appropriate clinical/ethical/regulatory review.
+        </div>
       </section>
 
-      <!-- 4. RNA + Nanocarrier -->
       <section class="card span-6" id="rna">
-        <h2 class="orange">🧪 4. RNA + Nanocarrier Simulation Logic</h2>
-        <p class="small">RNA is the conceptual biological cargo. A nanocarrier is the conceptual delivery vehicle. The website combines them into a transparent simulated pressure calculation.</p>
+        <h2 class="orange">4. RNA + Nanocarrier Simulation Logic</h2>
+
+        <p class="small">
+          RNA is the conceptual biological cargo. A nanocarrier is the conceptual delivery vehicle.
+          The website combines them into a transparent simulated pressure calculation.
+        </p>
+
         <div id="rnaResult" class="result"></div>
-        <div id="rnaMechanismBox" class="result yellow"></div>
+
+        <div id="rnaMechanismBox" class="result yellow">
+          Select RNA and nanocarrier settings, then run the simulation.
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Real-world delivery requirement</th>
+                <th>Website status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>RNA loading</td>
+                <td><span class="pill green">Conceptually represented</span></td>
+              </tr>
+              <tr>
+                <td>RNA protection and stability</td>
+                <td><span class="pill yellow">Requires laboratory testing</span></td>
+              </tr>
+              <tr>
+                <td>Target-cell uptake</td>
+                <td><span class="pill yellow">Requires laboratory testing</span></td>
+              </tr>
+              <tr>
+                <td>Endosomal escape</td>
+                <td><span class="pill yellow">Requires laboratory testing</span></td>
+              </tr>
+              <tr>
+                <td>Cargo release</td>
+                <td><span class="pill yellow">Requires laboratory testing</span></td>
+              </tr>
+              <tr>
+                <td>Biodistribution / tumor penetration</td>
+                <td><span class="pill red">Not established</span></td>
+              </tr>
+              <tr>
+                <td>Normal-cell exposure / toxicity</td>
+                <td><span class="pill red">Not established</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
-      <!-- 5. Red Team -->
       <section class="card span-6" id="redteam">
-        <h2 class="red">🔴 5. Therapeutic Red Team Result</h2>
-        <p class="small">The Red Team intentionally tests ways a strategy might fail in the simulated tumor ecosystem.</p>
+        <h2 class="red">5. Therapeutic Red Team Result</h2>
+
+        <p class="small">
+          The Red Team intentionally tests ways a strategy might fail in the simulated tumor ecosystem.
+        </p>
+
         <div id="redTeamResult" class="result yellow">
-          <strong>⚠️ MODELED RISK: NOT RUN</strong>
+          <strong>MODELED RISK: NOT RUN</strong><br />
+          <span class="small">Choose settings and run the simulation.</span>
         </div>
+
         <div id="optimizationResult" class="result">
-          <strong class="purple">💡 Re-analysis suggestion:</strong><br />
-          <span class="small">⏳ Run simulation first.</span>
+          <strong class="purple">Re-analysis suggestion:</strong><br />
+          <span class="small">Run simulation first.</span>
         </div>
       </section>
 
-      <!-- 6. Evolution -->
       <section class="card span-7" id="evolution">
-        <h2 class="orange">📈 6. Simulated Tumor Evolution Timeline</h2>
-        <p class="small">T0–T10 are simulated cycles only. They do not represent days, months, dosing schedules, or real clinical follow-up times.</p>
+        <h2 class="orange">6. Simulated Tumor Evolution Timeline</h2>
+
+        <p class="small">
+          T0–T10 are simulated cycles only. They do not represent days, months, dosing schedules,
+          or real clinical follow-up times.
+        </p>
+
         <div class="chart-wrap">
           <canvas id="evolutionChart"></canvas>
         </div>
       </section>
 
-      <!-- 7. Baseline vs Final -->
       <section class="card span-5">
-        <h2 class="blue">📊 7. Baseline vs Final State</h2>
-        <p class="small">Compare clone proportions before and after the selected model conditions.</p>
+        <h2 class="blue">7. Baseline vs Final State</h2>
+
+        <p class="small">
+          Compare clone proportions before and after the selected model conditions.
+        </p>
+
         <div class="chart-wrap">
           <canvas id="barChart"></canvas>
         </div>
       </section>
 
-      <!-- 8. 3D View -->
       <section class="card span-12" id="tumor3dsection">
-        <h2 class="purple">🔮 8. 3D Simulated Tumor Evolution View</h2>
-        <span class="badge">⚠️ ILLUSTRATIVE 3D VISUALIZATION — NOT PATIENT IMAGING</span>
-        <p class="small">Colored spheres represent simulated tumor clones. Purple particles represent illustrative RNA nanocarriers. Move through simulated time points with the slider, or press Play.</p>
+        <h2 class="purple">8. 3D Simulated Tumor Evolution View</h2>
+        <span class="badge">ILLUSTRATIVE 3D VISUALIZATION — NOT PATIENT IMAGING</span>
+
+        <p class="small">
+          Colored spheres represent simulated tumor clones. Purple particles represent illustrative RNA nanocarriers.
+          Move through simulated time points with the slider, or press Play.
+        </p>
+
         <div id="tumor3d"></div>
+
         <div class="slider-row">
-          <button class="small-button primary" id="playButton">▶️ Play</button>
-          <button class="small-button secondary" id="reset3dButton">🔄 Reset T0</button>
+          <button class="small-button" id="playButton">Play</button>
+          <button class="small-button secondary" id="reset3dButton">Reset T0</button>
+
           <input type="range" id="timeSlider" min="0" max="10" value="0" />
           <strong id="timeLabel">T0</strong>
         </div>
+
         <div id="threeStats" class="metrics"></div>
+
+        <div class="result yellow">
+          <strong>3D interpretation:</strong>
+          This is an illustrative visualization of clone proportions under selected assumptions.
+          It is not a tumor scan, pathology image, spatial sequencing reconstruction, molecular docking result,
+          real nanocarrier tracking result, or patient-specific prediction.
+        </div>
       </section>
 
-      <!-- 9. Closed Loop -->
       <section class="card span-6" id="loop">
-        <h2 class="purple">🔄 9. Closed-Loop Adaptation</h2>
+        <h2 class="purple">9. Closed-Loop Adaptation</h2>
+
         <div class="check"><strong>1. Predict:</strong> Map the simulated tumor and rank fictional target candidates.</div>
         <div class="check"><strong>2. Challenge:</strong> Use Red-Team escape events to stress-test the strategy.</div>
         <div class="check"><strong>3. Validate:</strong> In real research, test target biology, immune effects, normal-cell safety, RNA delivery, and preclinical evidence.</div>
         <div class="check"><strong>4. Monitor:</strong> A future research workflow might use clinically appropriate imaging, molecular testing, and ctDNA context.</div>
-        <div class="check"><strong>5. Adapt:</strong> Update the Digital Twin, re-check coverage, risk, and escape, and run the loop again.</div>
+        <div class="check"><strong>5. Adapt:</strong> Update the Digital Twin, re-check coverage/risk/escape, and run the loop again.</div>
       </section>
 
-      <!-- 10. Safety Gate -->
       <section class="card span-6">
-        <h2 class="green">✅ 10. Safety and Evidence Gate</h2>
+        <h2 class="green">10. Safety and Evidence Gate</h2>
+
         <div class="check">🔬 Confirm tumor mutation and RNA expression.</div>
         <div class="check">🧪 Investigate HLA presentation and immune recognition where relevant.</div>
         <div class="check">🛡️ Test normal-cell and normal-tissue safety.</div>
         <div class="check">🚚 Validate RNA loading, protection, uptake, release, and toxicity.</div>
         <div class="check">🐁 Obtain appropriate preclinical evidence.</div>
         <div class="check">👩‍⚕️ Require clinical, ethical, regulatory, and consent review.</div>
+
+        <div class="result red">
+          <strong>AI cannot pass this gate alone.</strong>
+          Simulation results are research hypotheses only and cannot establish safety or clinical efficacy.
+        </div>
       </section>
     </div>
   </main>
 
   <footer>
-    <strong>NEOIMMUNE AI Lab</strong> • Educational simulation prototype • Simulated data only • No patient data • No medical advice • Independent laboratory, clinical, ethical, and regulatory validation required.<br />
-    © 2026 NEOIMMUNE Research Team • For research and educational purposes only
+    <strong>NEOIMMUNE AI Lab</strong> • Educational simulation prototype • Simulated data only • No patient data •
+    No medical advice • Independent laboratory, clinical, ethical, and regulatory validation required.
   </footer>
 
   <script>
+    /* =========================================================
+       SIMULATED DATABASE
+       All values are fictional, cohort-inspired demo settings.
+       ========================================================= */
+
     const TARGETS = ["N1", "N2", "N3", "N4", "N5"];
+
     const TARGET_META = {
-      N1: { mutation: 0.85, rna: 0.72, hla: 0.76, immune: 0.66, uncertainty: 0.2, coverage: 47 },
-      N2: { mutation: 0.68, rna: 0.78, hla: 0.58, immune: 0.52, uncertainty: 0.28, coverage: 30 },
-      N3: { mutation: 0.55, rna: 0.62, hla: 0.48, immune: 0.44, uncertainty: 0.34, coverage: 49 },
-      N4: { mutation: 0.74, rna: 0.56, hla: 0.67, immune: 0.61, uncertainty: 0.24, coverage: 38 },
-      N5: { mutation: 0.35, rna: 0.42, hla: 0.36, immune: 0.31, uncertainty: 0.5, coverage: 28 }
+      N1: { mutation: 0.85, rna: 0.72, hla: 0.76, immune: 0.66, uncertainty: 0.20 },
+      N2: { mutation: 0.68, rna: 0.78, hla: 0.58, immune: 0.52, uncertainty: 0.28 },
+      N3: { mutation: 0.55, rna: 0.62, hla: 0.48, immune: 0.44, uncertainty: 0.34 },
+      N4: { mutation: 0.74, rna: 0.56, hla: 0.67, immune: 0.61, uncertainty: 0.24 },
+      N5: { mutation: 0.35, rna: 0.42, hla: 0.36, immune: 0.31, uncertainty: 0.50 }
     };
 
-    let currentCancer = null;
+    const CANCERS = [
+      {
+        id: "SKCM",
+        name: "Melanoma",
+        fullName: "Skin Cutaneous Melanoma",
+        genes: ["BRAF", "NRAS", "NF1", "TP53", "CDKN2A"],
+        clones: [
+          { id: "A", fraction: 0.50, mutations: ["BRAF V600E (simulated)"], targets: { N1: 0.85, N2: 0.10, N3: 0.60, N4: 0.05, N5: 0.20 } },
+          { id: "B", fraction: 0.30, mutations: ["NRAS Q61K (simulated)"], targets: { N1: 0.10, N2: 0.80, N3: 0.55, N4: 0.60, N5: 0.10 } },
+          { id: "C", fraction: 0.20, mutations: ["TP53 alteration (simulated)"], targets: { N1: 0.05, N2: 0.05, N3: 0.10, N4: 0.85, N5: 0.75 } }
+        ],
+        normal: { N1: 0.05, N2: 0.20, N3: 0.15, N4: 0.10, N5: 0.60 }
+      },
+      {
+        id: "LUAD",
+        name: "Lung Adenocarcinoma",
+        fullName: "Lung Adenocarcinoma",
+        genes: ["TP53", "KRAS", "EGFR", "STK11", "KEAP1"],
+        clones: [
+          { id: "A", fraction: 0.55, mutations: ["KRAS alteration (simulated)"], targets: { N1: 0.78, N2: 0.65, N3: 0.15, N4: 0.10, N5: 0.30 } },
+          { id: "B", fraction: 0.25, mutations: ["STK11 alteration (simulated)"], targets: { N1: 0.15, N2: 0.10, N3: 0.80, N4: 0.40, N5: 0.20 } },
+          { id: "C", fraction: 0.20, mutations: ["KEAP1 alteration (simulated)"], targets: { N1: 0.05, N2: 0.15, N3: 0.20, N4: 0.82, N5: 0.70 } }
+        ],
+        normal: { N1: 0.12, N2: 0.25, N3: 0.08, N4: 0.20, N5: 0.55 }
+      },
+      {
+        id: "BRCA",
+        name: "Breast Cancer",
+        fullName: "Breast Invasive Carcinoma",
+        genes: ["PIK3CA", "TP53", "GATA3", "CDH1", "MAP3K1"],
+        clones: [
+          { id: "A", fraction: 0.60, mutations: ["PIK3CA alteration (simulated)"], targets: { N1: 0.82, N2: 0.20, N3: 0.12, N4: 0.15, N5: 0.35 } },
+          { id: "B", fraction: 0.25, mutations: ["TP53 alteration (simulated)"], targets: { N1: 0.15, N2: 0.78, N3: 0.70, N4: 0.20, N5: 0.15 } },
+          { id: "C", fraction: 0.15, mutations: ["GATA3 alteration (simulated)"], targets: { N1: 0.10, N2: 0.08, N3: 0.15, N4: 0.85, N5: 0.60 } }
+        ],
+        normal: { N1: 0.16, N2: 0.18, N3: 0.30, N4: 0.14, N5: 0.62 }
+      },
+      {
+        id: "BLCA",
+        name: "Bladder Cancer",
+        fullName: "Bladder Urothelial Carcinoma",
+        genes: ["TP53", "FGFR3", "KDM6A", "PIK3CA", "RB1"],
+        clones: [
+          { id: "A", fraction: 0.45, mutations: ["FGFR3 alteration (simulated)"], targets: { N1: 0.82, N2: 0.20, N3: 0.50, N4: 0.08, N5: 0.30 } },
+          { id: "B", fraction: 0.35, mutations: ["TP53 alteration (simulated)"], targets: { N1: 0.15, N2: 0.78, N3: 0.62, N4: 0.45, N5: 0.10 } },
+          { id: "C", fraction: 0.20, mutations: ["RB1 alteration (simulated)"], targets: { N1: 0.05, N2: 0.05, N3: 0.12, N4: 0.88, N5: 0.72 } }
+        ],
+        normal: { N1: 0.08, N2: 0.20, N3: 0.18, N4: 0.11, N5: 0.58 }
+      },
+      {
+        id: "COAD",
+        name: "Colon Cancer",
+        fullName: "Colon Adenocarcinoma",
+        genes: ["APC", "TP53", "KRAS", "PIK3CA", "SMAD4"],
+        clones: [
+          { id: "A", fraction: 0.50, mutations: ["APC + KRAS alterations (simulated)"], targets: { N1: 0.80, N2: 0.15, N3: 0.65, N4: 0.10, N5: 0.25 } },
+          { id: "B", fraction: 0.30, mutations: ["TP53 alteration (simulated)"], targets: { N1: 0.10, N2: 0.82, N3: 0.40, N4: 0.55, N5: 0.15 } },
+          { id: "C", fraction: 0.20, mutations: ["SMAD4 alteration (simulated)"], targets: { N1: 0.08, N2: 0.05, N3: 0.15, N4: 0.84, N5: 0.70 } }
+        ],
+        normal: { N1: 0.10, N2: 0.22, N3: 0.14, N4: 0.13, N5: 0.65 }
+      },
+      {
+        id: "GBM",
+        name: "Glioblastoma",
+        fullName: "Glioblastoma Multiforme",
+        genes: ["EGFR", "PTEN", "TP53", "NF1", "PIK3R1"],
+        clones: [
+          { id: "A", fraction: 0.50, mutations: ["EGFR alteration (simulated)"], targets: { N1: 0.80, N2: 0.25, N3: 0.15, N4: 0.10, N5: 0.30 } },
+          { id: "B", fraction: 0.30, mutations: ["PTEN alteration (simulated)"], targets: { N1: 0.15, N2: 0.75, N3: 0.68, N4: 0.25, N5: 0.15 } },
+          { id: "C", fraction: 0.20, mutations: ["NF1 alteration (simulated)"], targets: { N1: 0.05, N2: 0.10, N3: 0.15, N4: 0.85, N5: 0.72 } }
+        ],
+        normal: { N1: 0.18, N2: 0.25, N3: 0.20, N4: 0.14, N5: 0.60 }
+      }
+    ];
+
+    const CLONE_COLORS = {
+      A: "#1479D1",
+      B: "#6E45CF",
+      C: "#D97706",
+      D: "#148A58"
+    };
+
+    let currentCancer = CANCERS[0];
     let simulation = null;
     let evolutionChart = null;
     let barChart = null;
-    let scene = null, camera = null, renderer = null, cloneMeshes = [];
-    let animationId = null;
+
+    let activeTime = 0;
+    let playing = false;
+    let playTimer = null;
+
+    let scene;
+    let camera;
+    let renderer;
+    let cellGroup;
+    let nanoparticleGroup;
+    let tumorShell;
+    let tumorWireframe;
+    let animationFrameId;
+
+    function cloneDeep(data) {
+      return JSON.parse(JSON.stringify(data));
+    }
 
     function getSelectedTargets() {
-      return [...document.querySelectorAll(".targetCheck:checked")].map(input => input.value);
+      return [...document.querySelectorAll(".targetCheck:checked")]
+        .map(input => input.value);
     }
 
     function getEscapeOptions() {
       return {
-        targetLoss: document.getElementById("targetLoss")?.checked || false,
-        resistantExpansion: document.getElementById("resistantExpansion")?.checked || false,
-        hlaLoss: document.getElementById("hlaLoss")?.checked || false,
-        processingDefect: document.getElementById("processingDefect")?.checked || false,
-        immuneSuppression: document.getElementById("immuneSuppression")?.checked || false,
-        newMutation: document.getElementById("newMutation")?.checked || false,
-        compensatoryPathway: document.getElementById("compensatoryPathway")?.checked || false,
-        highHeterogeneity: document.getElementById("highHeterogeneity")?.checked || false
+        targetLoss: document.getElementById("targetLoss").checked,
+        resistantExpansion: document.getElementById("resistantExpansion").checked,
+        hlaLoss: document.getElementById("hlaLoss").checked,
+        processingDefect: document.getElementById("processingDefect").checked,
+        immuneSuppression: document.getElementById("immuneSuppression").checked,
+        newMutation: document.getElementById("newMutation").checked,
+        compensatoryPathway: document.getElementById("compensatoryPathway").checked,
+        highHeterogeneity: document.getElementById("highHeterogeneity").checked
       };
     }
 
-    function calculateNeoantigenScores(targets) {
-      return targets.map(target => {
-        const meta = TARGET_META[target];
-        const score = (meta.mutation * 0.3 + meta.rna * 0.25 + meta.hla * 0.2 + meta.immune * 0.15 - meta.uncertainty * 0.1).toFixed(2);
-        const coverage = meta.coverage;
-        const tumorSignal = Math.round(meta.rna * 100);
-        const normalRisk = Math.round(meta.uncertainty * 100);
-        let safetyResult = "Further validation";
-        if (normalRisk > 40) safetyResult = "Safety review";
-        if (normalRisk > 60) safetyResult = "Reject / defer";
-        return { target, coverage, tumorSignal, normalRisk, score, safetyResult };
-      });
+    function normalizeClones(clones) {
+      const total = clones.reduce((sum, clone) => sum + clone.fraction, 0);
+
+      return clones.map(clone => ({
+        ...clone,
+        fraction: clone.fraction / total
+      }));
     }
 
-    function renderNeoTable(scores) {
-      const tbody = document.getElementById("neoTable");
-      tbody.innerHTML = scores.map(s => `
+    function addCloneDIfNeeded(clones, options) {
+      if (!options.highHeterogeneity) {
+        return clones;
+      }
+
+      const expanded = cloneDeep(clones).map(clone => ({
+        ...clone,
+        fraction: clone.fraction * 0.92
+      }));
+
+      expanded.push({
+        id: "D",
+        fraction: 0.08,
+        mutations: ["Minor resistant feature (simulated)"],
+        targets: { N1: 0.05, N2: 0.05, N3: 0.10, N4: 0.20, N5: 0.82 }
+      });
+
+      return normalizeClones(expanded);
+    }
+
+    function coverageForClone(clone, targets) {
+      if (!targets.length) {
+        return 0;
+      }
+
+      let missing = 1;
+
+      targets.forEach(target => {
+        missing *= 1 - (clone.targets[target] || 0);
+      });
+
+      return 1 - missing;
+    }
+
+    function totalCoverage(clones, targets) {
+      return clones.reduce(
+        (sum, clone) => sum + clone.fraction * coverageForClone(clone, targets),
+        0
+      );
+    }
+
+    function tumorSignal(cancer, target) {
+      return cancer.clones.reduce(
+        (sum, clone) => sum + clone.fraction * (clone.targets[target] || 0),
+        0
+      );
+    }
+
+    function safetyStatus(cancer, target) {
+      const tumor = tumorSignal(cancer, target);
+      const normal = cancer.normal[target] || 0;
+      const ratio = tumor / Math.max(normal, 0.01);
+
+      if (normal > 0.45) {
+        return "Reject";
+      }
+
+      if (ratio < 2) {
+        return "Uncertain";
+      }
+
+      return "Accept";
+    }
+
+    function calculateTargetScore(cancer, target) {
+      const meta = TARGET_META[target];
+      const coverage = totalCoverage(cancer.clones, [target]);
+      const normal = cancer.normal[target] || 0;
+
+      let score =
+        0.20 * meta.mutation +
+        0.15 * meta.rna +
+        0.20 * meta.hla +
+        0.20 * coverage +
+        0.15 * meta.immune -
+        0.20 * normal -
+        0.10 * meta.uncertainty;
+
+      return Math.max(0, Math.min(1, score));
+    }
+
+    /*
+      RNA = conceptual biological cargo effect.
+      Nanocarrier = conceptual delivery efficiency effect.
+      These are illustrative settings only, not doses or real delivery measurements.
+    */
+    function getRNAEffect(rnaType) {
+      const effects = {
+        "mRNA vaccine concept": 0.16,
+        "siRNA concept": 0.14,
+        "miRNA modulation concept": 0.08,
+        "No RNA cargo selected": 0.00
+      };
+
+      return effects[rnaType] || 0;
+    }
+
+    function getCarrierEfficiency(carrierType) {
+      const efficiencies = {
+        "Lipid nanoparticle concept": 0.65,
+        "Polymeric nanocarrier concept": 0.50,
+        "Targeted nanocarrier concept": 0.58,
+        "No carrier selected": 0.00
+      };
+
+      return efficiencies[carrierType] || 0;
+    }
+
+    function getImmuneAvailability(options) {
+      let immuneAvailability = 1.0;
+
+      if (options.hlaLoss) {
+        immuneAvailability -= 0.25;
+      }
+
+      if (options.processingDefect) {
+        immuneAvailability -= 0.15;
+      }
+
+      if (options.immuneSuppression) {
+        immuneAvailability -= 0.20;
+      }
+
+      return Math.max(0.10, immuneAvailability);
+    }
+
+    function calculateFitness(clone, targets, options, time, index, rnaType, carrierType) {
+      const coverage = coverageForClone(clone, targets);
+
+      const rnaEffect = getRNAEffect(rnaType);
+      const carrierEfficiency = getCarrierEfficiency(carrierType);
+      const immuneAvailability = getImmuneAvailability(options);
+
+      /*
+        This is an illustrative simulator equation:
+        effective pressure = coverage × RNA effect × delivery × immune availability
+      */
+      const effectivePressure =
+        coverage *
+        rnaEffect *
+        carrierEfficiency *
+        immuneAvailability;
+
+      let fitness = 1.0 - effectivePressure;
+
+      if (options.targetLoss && time >= 3 && index === 0) {
+        fitness += 0.22;
+      }
+
+      if (options.resistantExpansion && coverage < 0.35) {
+        fitness += 0.25;
+      }
+
+      if (options.hlaLoss) {
+        fitness += 0.10 * coverage;
+      }
+
+      if (options.processingDefect) {
+        fitness += 0.08 * coverage;
+      }
+
+      if (options.immuneSuppression) {
+        fitness += 0.10 * coverage;
+      }
+
+      if (options.newMutation && time >= 5 && clone.id === "C") {
+        fitness += 0.20;
+      }
+
+      if (options.compensatoryPathway && clone.id === "B") {
+        fitness += 0.14;
+      }
+
+      if (options.highHeterogeneity && clone.id === "D") {
+        fitness += 0.20;
+      }
+
+      return Math.max(0.05, fitness);
+    }
+
+    function runSimulation() {
+      stopPlaying();
+
+      const targets = getSelectedTargets();
+      const options = getEscapeOptions();
+      const rnaType = document.getElementById("rnaSelect").value;
+      const carrierType = document.getElementById("carrierSelect").value;
+
+      let clones = addCloneDIfNeeded(cloneDeep(currentCancer.clones), options);
+      const baseline = cloneDeep(clones);
+      const timeline = [];
+
+      for (let time = 0; time <= 10; time++) {
+        const row = { time: "T" + time };
+
+        ["A", "B", "C", "D"].forEach(id => {
+          const clone = clones.find(item => item.id === id);
+          row[id] = clone ? Number(clone.fraction.toFixed(4)) : 0;
+        });
+
+        timeline.push(row);
+
+        if (time === 10) {
+          break;
+        }
+
+        clones = clones.map((clone, index) => ({
+          ...clone,
+          fraction:
+            clone.fraction *
+            calculateFitness(clone, targets, options, time, index, rnaType, carrierType)
+        }));
+
+        clones = normalizeClones(clones);
+      }
+
+      const finalRow = timeline[timeline.length - 1];
+
+      const finalClones = ["A", "B", "C", "D"]
+        .filter(id => finalRow[id] > 0)
+        .map(id => ({ id, fraction: finalRow[id] }))
+        .sort((a, b) => b.fraction - a.fraction);
+
+      const coverage = totalCoverage(baseline, targets);
+      const dominant = finalClones[0];
+      const activeEscapeCount = Object.values(options).filter(Boolean).length;
+
+      let risk = "Low";
+
+      if (coverage < 0.90 || activeEscapeCount >= 2 || dominant.fraction > 0.50) {
+        risk = "Moderate";
+      }
+
+      if (coverage < 0.70 || dominant.fraction > 0.68 || targets.length === 0) {
+        risk = "High";
+      }
+
+      simulation = {
+        cancer: currentCancer,
+        targets,
+        options,
+        rnaType,
+        carrierType,
+        baseline,
+        timeline,
+        finalClones,
+        dominant,
+        coverage,
+        risk
+      };
+
+      activeTime = 0;
+      document.getElementById("timeSlider").value = 0;
+
+      renderAll();
+    }
+
+    function renderCancerSelect() {
+      const select = document.getElementById("cancerSelect");
+
+      select.innerHTML = CANCERS.map(cancer =>
+        `<option value="${cancer.id}">${cancer.name} (${cancer.id})</option>`
+      ).join("");
+
+      select.value = currentCancer.id;
+    }
+
+    function renderTargetOptions(selected = ["N1", "N3"]) {
+      const container = document.getElementById("targetOptions");
+
+      container.innerHTML = TARGETS.map(target => `
+        <label class="option">
+          <input
+            type="checkbox"
+            class="targetCheck"
+            value="${target}"
+            ${selected.includes(target) ? "checked" : ""}
+          />
+          <span>
+            <strong>${target}</strong>
+            <small>Fictional candidate used for clone-coverage and escape simulation.</small>
+          </span>
+        </label>
+      `).join("");
+    }
+
+    function renderCancerInfo() {
+      document.getElementById("cancerInfo").innerHTML = `
+        <strong>LOADED SIMULATED CANCER CONTEXT: ${currentCancer.name}</strong><br />
+        <span class="small">
+          Full name: ${currentCancer.fullName}<br />
+          Example cancer-associated genes: ${currentCancer.genes.join(", ")}<br />
+          Data mode: fictional, cohort-inspired simulation values only.
+        </span>
+      `;
+    }
+
+    function renderCloneList() {
+      const clones = simulation ? simulation.baseline : currentCancer.clones;
+
+      document.getElementById("cloneList").innerHTML = clones.map((clone, index) => `
+        <div class="clone-row ${index === 1 ? ""b" : index === 2 ? "c" : index === 3 ? "d" : ""}">
+          <strong>Clone ${clone.id} — ${Math.round(clone.fraction * 100)}%</strong><br />
+          <span class="small">
+            Fictional feature: ${clone.mutations.join(", ")}<br />
+            High modeled target availability:
+            ${
+              Object.entries(clone.targets)
+                .filter(([, value]) => value >= 0.50)
+                .map(([target]) => target)
+                .join(", ") || "None"
+            }
+          </span>
+        </div>
+      `).join("");
+
+      const targets = simulation ? simulation.targets.join(" + ") || "None" : "Not run";
+      const risk = simulation ? simulation.risk : "Not run";
+
+      document.getElementById("digitalTwinBox").innerHTML = `
+        <strong class="purple">Digital Twin status:</strong><br />
+        <span class="small">
+          Cancer: ${currentCancer.name}<br />
+          Simulated clone count: ${clones.length}<br />
+          Selected fictional targets: ${targets}<br />
+          Modeled risk: ${risk}<br />
+          Meaning: current computational demo representation only.
+        </span>
+      `;
+    }
+
+    function pill(status) {
+      if (status === "Accept") {
+        return `<span class="pill green">Further validation</span>`;
+      }
+
+      if (status === "Uncertain") {
+        return `<span class="pill yellow">Safety review</span>`;
+      }
+
+      return `<span class="pill red">Reject / defer</span>`;
+    }
+
+    function renderNeoTable() {
+      const rows = TARGETS.map(target => ({
+        target,
+        score: calculateTargetScore(currentCancer, target),
+        coverage: totalCoverage(currentCancer.clones, [target]),
+        tumor: tumorSignal(currentCancer, target),
+        normal: currentCancer.normal[target],
+        status: safetyStatus(currentCancer, target)
+      })).sort((a, b) => b.score - a.score);
+
+      document.getElementById("neoTable").innerHTML = rows.map(row => `
         <tr>
-          <td><strong>${s.target}</strong></td>
-          <td>${s.coverage}%</td>
-          <td>${s.tumorSignal}%</td>
-          <td>${s.normalRisk}%</td>
-          <td><strong>${s.score}</strong></td>
-          <td>${s.safetyResult}</td>
+          <td><strong>${row.target}</strong></td>
+          <td>${Math.round(row.coverage * 100)}%</td>
+          <td>${Math.round(row.tumor * 100)}%</td>
+          <td>${Math.round(row.normal * 100)}%</td>
+          <td><strong>${row.score.toFixed(2)}</strong></td>
+          <td>${pill(row.status)}</td>
         </tr>
       `).join("");
     }
 
-    function runSimulation() {
-      const targets = getSelectedTargets();
-      const options = getEscapeOptions();
-      const cancer = document.getElementById("cancerSelect").value;
+    function renderRNA() {
       const rna = document.getElementById("rnaSelect").value;
       const carrier = document.getElementById("carrierSelect").value;
+      const options = getEscapeOptions();
 
-      currentCancer = cancer;
+      const rnaEffect = getRNAEffect(rna);
+      const delivery = getCarrierEfficiency(carrier);
+      const immune = getImmuneAvailability(options);
+      const coverage = simulation ? simulation.coverage : 0;
+      const effectivePressure = coverage * rnaEffect * delivery * immune;
 
-      const escapeCount = Object.values(options).filter(v => v).length;
-      let risk = "Low";
-      if (escapeCount >= 2) risk = "Moderate";
-      if (escapeCount >= 4) risk = "High";
+      let explanation = "";
 
-      const clones = { A: 50, B: 30, C: 20 };
-      let finalClones = { A: 35, B: 25, C: 40 };
-      if (risk === "High") finalClones = { A: 20, B: 17, C: 63 };
-      else if (risk === "Moderate") finalClones = { A: 30, B: 25, C: 45 };
+      if (rna === "mRNA vaccine concept") {
+        explanation =
+          "Modeled mechanism: RNA represents a possible antigen-expression / immune-priming concept. The simulation applies pressure more strongly to target-covered clones.";
+      } else if (rna === "siRNA concept") {
+        explanation =
+          "Modeled mechanism: RNA represents possible gene-silencing pressure after assumed delivery into a target-covered clone.";
+      } else if (rna === "miRNA modulation concept") {
+        explanation =
+          "Modeled mechanism: RNA represents broader gene-network modulation, so the website uses a smaller simulated effect.";
+      } else {
+        explanation =
+          "No RNA biological effect is added to the current simulated evolution model.";
+      }
 
-      const totalCoverage = targets.reduce((sum, t) => sum + TARGET_META[t].coverage, 0);
-      const avgCoverage = Math.round(totalCoverage / targets.length) || 0;
+      document.getElementById("rnaResult").innerHTML = `
+        <strong class="orange">Selected RNA concept:</strong> ${rna}<br />
+        <strong class="orange">Selected nanocarrier concept:</strong> ${carrier}<br />
+        <span class="small">
+          RNA is modeled as the cargo mechanism; the nanocarrier is modeled as delivery efficiency.
+          This does not mean real formulation, dose, uptake, biodistribution, or safety has been established.
+        </span>
+      `;
 
-      simulation = {
-        cancer, rna, carrier, targets, options, risk, escapeCount,
-        clones, finalClones, coverage: avgCoverage,
-        neoScores: calculateNeoantigenScores(targets),
-        timestamp: new Date().toISOString()
+      document.getElementById("rnaMechanismBox").innerHTML = `
+        <strong>RNA + Nanocarrier Live Simulation Calculation</strong><br /><br />
+        <span class="small">
+          <strong>Selected target coverage:</strong> ${Math.round(coverage * 100)}%<br />
+          <strong>Simulated RNA effect:</strong> ${Math.round(rnaEffect * 100)}%<br />
+          <strong>Simulated carrier delivery efficiency:</strong> ${Math.round(delivery * 100)}%<br />
+          <strong>Simulated immune availability:</strong> ${Math.round(immune * 100)}%<br />
+          <strong>Effective simulated pressure:</strong> ${(effectivePressure * 100).toFixed(1)}%<br /><br />
+          ${explanation}<br /><br />
+          <strong>Equation:</strong>
+          Effective pressure = target coverage × RNA effect × delivery efficiency × immune availability.
+          <br /><br />
+          <strong>Important:</strong> These are illustrative website settings, not clinical doses,
+          experimentally measured delivery values, toxicity values, or treatment predictions.
+        </span>
+      `;
+    }
+
+    function prettyEscapeName(key) {
+      const names = {
+        targetLoss: "Target loss",
+        resistantExpansion: "Resistant-clone expansion",
+        hlaLoss: "Reduced HLA presentation",
+        processingDefect: "Antigen-processing defect",
+        immuneSuppression: "Immune suppression",
+        newMutation: "New mutation event",
+        compensatoryPathway: "Compensatory pathway",
+        highHeterogeneity: "High tumor heterogeneity"
       };
 
-      // Digital Twin
-      document.getElementById("digitalTwinBox").innerHTML = `
-        <strong class="purple">👤 Digital Twin status:</strong><br>
-        🧬 Cancer: <strong>${cancer}</strong><br>
-        📊 Simulated clone count: <strong>3</strong><br>
-        🎯 Selected targets: <strong>${targets.join(", ") || "none"}</strong><br>
-        ⚠️ Modeled risk: <strong class="${risk === 'High' ? 'red' : risk === 'Moderate' ? 'orange' : 'green'}">${risk}</strong>
-      `;
-
-      // Clone List
-      document.getElementById("cloneList").innerHTML = `
-        <div class="check"><strong>🔵 Clone A — ${clones.A}%</strong><br><span class="small">Fictional feature: BRAF V600E (simulated)<br>High target availability: N1, N3</span></div>
-        <div class="check"><strong>🟢 Clone B — ${clones.B}%</strong><br><span class="small">Fictional feature: NRAS Q61K (simulated)<br>High target availability: N2, N3, N4</span></div>
-        <div class="check"><strong>🟣 Clone C — ${clones.C}%</strong><br><span class="small">Fictional feature: TP53 alteration (simulated)<br>High target availability: N4, N5</span></div>
-      `;
-
-      // Neo Table
-      renderNeoTable(simulation.neoScores);
-
-      // RNA Result
-      const rnaEffect = rna !== "No RNA cargo selected" ? 16 : 0;
-      const carrierEff = carrier !== "No carrier selected" ? 65 : 0;
-      const pressure = (avgCoverage * rnaEffect * carrierEff / 10000).toFixed(1);
-      document.getElementById("rnaResult").innerHTML = `
-        <strong>🧪 Selected RNA concept:</strong> ${rna}<br>
-        <strong>🚚 Selected nanocarrier concept:</strong> ${carrier}<br>
-        <strong>🎯 Selected target coverage:</strong> ${avgCoverage}%<br>
-        <strong>⚡ Simulated RNA effect:</strong> ${rnaEffect}%<br>
-        <strong>🚀 Simulated carrier delivery efficiency:</strong> ${carrierEff}%<br>
-        <strong>💥 Effective simulated pressure:</strong> <strong>${pressure}%</strong>
-      `;
-      document.getElementById("rnaMechanismBox").innerHTML = `
-        <strong>📌 Modeled mechanism:</strong> RNA represents a possible antigen-expression / immune-priming concept. The simulation applies pressure more strongly to target-covered clones.<br>
-        <strong>⚠️ Important:</strong> These are illustrative website settings, not clinical doses, experimentally measured delivery values, toxicity values, or treatment predictions.
-      `;
-
-      // Red Team
-      const riskClass = risk === "High" ? "red" : risk === "Moderate" ? "orange" : "green";
-      document.getElementById("redTeamResult").innerHTML = `
-        <strong class="${riskClass}">⚠️ MODELED RISK: ${risk.toUpperCase()}</strong><br>
-        <span class="small">Baseline fictional target coverage is incomplete (${avgCoverage}%). ${escapeCount} modeled escape scenario(s) are active.</span>
-      `;
-
-      // Optimization
-      let dominantClone = "Clone A";
-      if (finalClones.C > finalClones.A && finalClones.C > finalClones.B) dominantClone = "Clone C";
-      else if (finalClones.B > finalClones.A && finalClones.B > finalClones.C) dominantClone = "Clone B";
-
-      document.getElementById("optimizationResult").innerHTML = `
-        <strong class="purple">💡 Re-analysis suggestion:</strong><br>
-        <span class="small">${dominantClone} became dominant in this scenario and has higher fictional availability of N4. A next research question is whether adding N4 changes modeled coverage and Red-Team vulnerability.<br><br><strong>🎯 Suggested demo combination: N1 + N3 + N4</strong><br>This is a rule-based educational suggestion, not a treatment recommendation.</span>
-      `;
-
-      // Charts
-      renderCharts(clones, finalClones);
-
-      // 3D Viewer
-      init3D(clones, finalClones);
+      return names[key] || key;
     }
 
-    function renderCharts(baseline, final) {
-      const ctxEvo = document.getElementById("evolutionChart").getContext("2d");
-      if (evolutionChart) evolutionChart.destroy();
-      evolutionChart = new Chart(ctxEvo, {
+    function renderRedTeam() {
+      if (!simulation) {
+        return;
+      }
+
+      const active = Object.entries(simulation.options)
+        .filter(([, value]) => value)
+        .map(([key]) => prettyEscapeName(key));
+
+      const box = document.getElementById("redTeamResult");
+      let className = "yellow";
+
+      if (simulation.risk === "Low") {
+        className = "green";
+      } else if (simulation.risk === "High") {
+        className = "red";
+      }
+
+      const reasons = [];
+
+      if (simulation.coverage < 0.90) {
+        reasons.push(`Baseline fictional target coverage is incomplete (${Math.round(simulation.coverage * 100)}%).`);
+      }
+
+      if (active.length) {
+        reasons.push(`${active.length} modeled escape scenario(s) are active.`);
+      }
+
+      reasons.push(`Clone ${simulation.dominant.id} is dominant at T10 (${Math.round(simulation.dominant.fraction * 100)}%).`);
+
+      box.className = "result " + className;
+      box.innerHTML = `
+        <strong>MODELED RISK: ${simulation.risk.toUpperCase()}</strong><br />
+        <span class="small">
+          ${reasons.join(" ")}<br /><br />
+          Active Red-Team events: ${active.length ? active.join(", ") : "None"}.
+          <br /><br />
+          This is a simulated vulnerability result, not evidence of real patient resistance.
+        </span>
+      `;
+
+      renderOptimization();
+    }
+
+    function renderOptimization() {
+      const box = document.getElementById("optimizationResult");
+
+      if (!simulation) {
+        return;
+      }
+
+      const dominantClone = simulation.baseline.find(
+        clone => clone.id === simulation.dominant.id
+      );
+
+      const candidate = dominantClone
+        ? Object.entries(dominantClone.targets)
+            .filter(([target, value]) => value > 0.50 && !simulation.targets.includes(target))
+            .sort((a, b) => b[1] - a[1])[0]
+        : null;
+
+      if (candidate) {
+        box.innerHTML = `
+          <strong class="purple">Simulated re-analysis suggestion:</strong><br />
+          <span class="small">
+            Clone ${simulation.dominant.id} became dominant in this scenario and has higher fictional
+            availability of ${candidate[0]}. A next research question is whether adding ${candidate[0]}
+            changes modeled coverage and Red-Team vulnerability.
+            <br /><br />
+            Suggested demo combination: <strong>${[...simulation.targets, candidate[0]].join(" + ")}</strong>.
+            <br /><br />
+            This is a rule-based educational suggestion, not a treatment recommendation.
+          </span>
+        `;
+      } else {
+        box.innerHTML = `
+          <strong class="purple">Simulated re-analysis suggestion:</strong><br />
+          <span class="small">
+            No additional fictional target is available for the dominant clone in this demo.
+            Re-check target loss, antigen presentation, immune suppression, nanocarrier delivery,
+            normal-tissue risk, and required experimental validation.
+          </span>
+        `;
+      }
+    }
+
+    function renderCharts() {
+      if (!simulation) {
+        return;
+      }
+
+      const lineData = simulation.timeline.map(row => ({
+        time: row.time,
+        A: Math.round(row.A * 100),
+        B: Math.round(row.B * 100),
+        C: Math.round(row.C * 100),
+        D: Math.round(row.D * 100)
+      }));
+
+      if (evolutionChart) {
+        evolutionChart.destroy();
+      }
+
+      evolutionChart = new Chart(document.getElementById("evolutionChart"), {
         type: "line",
         data: {
-          labels: ["T0", "T2", "T4", "T6", "T8", "T10"],
+          labels: lineData.map(row => row.time),
           datasets: [
-            { label: "Clone A", data: [baseline.A, baseline.A-5, baseline.A-10, baseline.A-15, baseline.A-20, final.A], borderColor: "#3b82f6", backgroundColor: "rgba(59,130,246,0.1)", fill: true, tension: 0.4 },
-            { label: "Clone B", data: [baseline.B, baseline.B-3, baseline.B-5, baseline.B-8, baseline.B-10, final.B], borderColor: "#14b8a6", backgroundColor: "rgba(20,184,166,0.1)", fill: true, tension: 0.4 },
-            { label: "Clone C", data: [baseline.C, baseline.C+5, baseline.C+10, baseline.C+15, baseline.C+20, final.C], borderColor: "#8b5cf6", backgroundColor: "rgba(139,92,246,0.1)", fill: true, tension: 0.4 }
+            {
+              label: "Clone A",
+              data: lineData.map(row => row.A),
+              borderColor: CLONE_COLORS.A,
+              backgroundColor: "#1479D122",
+              borderWidth: 3,
+              tension: 0.28
+            },
+            {
+              label: "Clone B",
+              data: lineData.map(row => row.B),
+              borderColor: CLONE_COLORS.B,
+              backgroundColor: "#6E45CF22",
+              borderWidth: 3,
+              tension: 0.28
+            },
+            {
+              label: "Clone C",
+              data: lineData.map(row => row.C),
+              borderColor: CLONE_COLORS.C,
+              backgroundColor: "#D9770622",
+              borderWidth: 3,
+              tension: 0.28
+            },
+            {
+              label: "Clone D",
+              data: lineData.map(row => row.D),
+              borderColor: CLONE_COLORS.D,
+              backgroundColor: "#148A5822",
+              borderWidth: 3,
+              tension: 0.28
+            }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: "top" },
-            tooltip: { mode: "index", intersect: false }
+            legend: {
+              labels: { color: "#334e68" }
+            },
+            tooltip: {
+              callbacks: {
+                label: context => `${context.dataset.label}: ${context.parsed.y}%`
+              }
+            }
           },
           scales: {
-            y: { beginAtZero: true, max: 100, title: { display: true, text: "Clone Proportion (%)" } },
-            x: { title: { display: true, text: "Simulated Time (T0-T10)" } }
+            x: {
+              ticks: { color: "#5b6b80" },
+              grid: { color: "#e7eef6" }
+            },
+            y: {
+              min: 0,
+              max: 100,
+              ticks: {
+                color: "#5b6b80",
+                callback: value => value + "%"
+              },
+              grid: { color: "#e7eef6" }
+            }
           }
         }
       });
 
-      const ctxBar = document.getElementById("barChart").getContext("2d");
-      if (barChart) barChart.destroy();
-      barChart = new Chart(ctxBar, {
+      const baseline = simulation.timeline[0];
+      const final = simulation.timeline[10];
+
+      if (barChart) {
+        barChart.destroy();
+      }
+
+      barChart = new Chart(document.getElementById("barChart"), {
         type: "bar",
         data: {
-          labels: ["Clone A", "Clone B", "Clone C"],
+          labels: ["Clone A", "Clone B", "Clone C", "Clone D"],
           datasets: [
-            { label: "Baseline", data: [baseline.A, baseline.B, baseline.C], backgroundColor: "#3b82f6" },
-            { label: "Final", data: [final.A, final.B, final.C], backgroundColor: "#8b5cf6" }
+            {
+              label: "Baseline",
+              data: [baseline.A * 100, baseline.B * 100, baseline.C * 100, baseline.D * 100],
+              backgroundColor: ["#1479D177", "#6E45CF77", "#D9770677", "#148A5877"]
+            },
+            {
+              label: "T10",
+              data: [final.A * 100, final.B * 100, final.C * 100, final.D * 100],
+              backgroundColor: [CLONE_COLORS.A, CLONE_COLORS.B, CLONE_COLORS.C, CLONE_COLORS.D]
+            }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: "top" }
+            legend: {
+              labels: { color: "#334e68" }
+            }
           },
           scales: {
-            y: { beginAtZero: true, max: 100, title: { display: true, text: "Proportion (%)" } }
+            x: {
+              ticks: { color: "#5b6b80" },
+              grid: { display: false }
+            },
+            y: {
+              min: 0,
+              max: 100,
+              ticks: {
+                color: "#5b6b80",
+                callback: value => value + "%"
+              },
+              grid: { color: "#e7eef6" }
+            }
           }
         }
       });
     }
 
-    function init3D(baseline, final) {
+    function initThree() {
       const container = document.getElementById("tumor3d");
-      container.innerHTML = "";
 
-      const width = container.clientWidth || 600;
-      const height = container.clientHeight || 360;
+      if (!window.THREE) {
+        container.innerHTML = `
+          <p style="padding:20px;color:#b62640;">
+            3D library failed to load. Check internet connection, then refresh the page.
+          </p>
+        `;
+        return;
+      }
+
+      const THREE = window.THREE;
+
+      const width = container.clientWidth;
+      const height = container.clientHeight;
 
       scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-      camera.position.set(0, 2, 6);
+      scene.background = new
+        THREE.Color("#f8fbff");
+
+      camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      camera.position.set(0, 0, 17);
 
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(width, height);
-      renderer.setClearColor(0x000000, 0);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      container.innerHTML = "";
       container.appendChild(renderer.domElement);
 
-      const light = new THREE.DirectionalLight(0xffffff, 1.2);
-      light.position.set(2, 3, 4);
+      scene.add(new THREE.AmbientLight(0xffffff, 1.25));
+
+      const light = new THREE.DirectionalLight(0xffffff, 1.10);
+      light.position.set(7, 8, 11);
       scene.add(light);
-      const ambient = new THREE.AmbientLight(0x404060, 0.6);
-      scene.add(ambient);
 
-      const clones = [
-        { proportion: baseline.A, color: 0x2878df, radius: 0.6 },
-        { proportion: baseline.B, color: 0x13a89e, radius: 0.5 },
-        { proportion: baseline.C, color: 0xa65adb, radius: 0.4 }
-      ];
+      tumorShell = new THREE.Mesh(
+        new THREE.SphereGeometry(5.9, 40, 40),
+        new THREE.MeshPhongMaterial({
+          color: 0x75b9ff,
+          transparent: true,
+          opacity: 0.09,
+          side: THREE.DoubleSide
+        })
+      );
 
-      cloneMeshes = [];
-      clones.forEach((c, i) => {
-        const geometry = new THREE.SphereGeometry(c.radius * (c.proportion / 50), 32, 32);
-        const material = new THREE.MeshPhongMaterial({ color: c.color, shininess: 80 });
-        const sphere = new THREE.Mesh(geometry, material);
-        sphere.position.x = (i - 1) * 1.8;
-        sphere.position.y = 0;
-        sphere.position.z = 0;
-        scene.add(sphere);
-        cloneMeshes.push(sphere);
-      });
+      tumorWireframe = new THREE.Mesh(
+        new THREE.SphereGeometry(5.93, 26, 26),
+        new THREE.MeshBasicMaterial({
+          color: 0x60a5e7,
+          wireframe: true,
+          transparent: true,
+          opacity: 0.16
+        })
+      );
 
-      let angle = 0;
+      cellGroup = new THREE.Group();
+      nanoparticleGroup = new THREE.Group();
+
+      scene.add(tumorShell);
+      scene.add(tumorWireframe);
+      scene.add(cellGroup);
+      scene.add(nanoparticleGroup);
+
       function animate() {
-        animationId = requestAnimationFrame(animate);
-        angle += 0.01;
-        cloneMeshes.forEach((m, i) => { m.rotation.y = angle + i; });
+        animationFrameId = requestAnimationFrame(animate);
+
+        tumorShell.rotation.y += 0.0015;
+        tumorWireframe.rotation.y += 0.0015;
+        cellGroup.rotation.y += 0.0007;
+
         renderer.render(scene, camera);
       }
+
       animate();
 
-      // Stats
-      document.getElementById("threeStats").innerHTML = `
-        <div class="metric"><div class="metric-label">🔵 Clone A</div><div class="metric-value">${baseline.A}%</div></div>
-        <div class="metric"><div class="metric-label">🟢 Clone B</div><div class="metric-value">${baseline.B}%</div></div>
-        <div class="metric"><div class="metric-label">🟣 Clone C</div><div class="metric-value">${baseline.C}%</div></div>
-      `;
-
-      // Slider
-      const slider = document.getElementById("timeSlider");
-      const timeLabel = document.getElementById("timeLabel");
-      slider.addEventListener("input", () => {
-        const t = parseInt(slider.value);
-        timeLabel.textContent = `T${t}`;
-        const progress = t / 10;
-        cloneMeshes.forEach((m, i) => {
-          const start = [baseline.A, baseline.B, baseline.C][i];
-          const end = [final.A, final.B, final.C][i];
-          const current = start + (end - start) * progress;
-          const scale = current / 50;
-          m.scale.set(scale, scale, scale);
-        });
-      });
-
-      // Play
-      let playing = false;
-      document.getElementById("playButton").addEventListener("click", () => {
-        playing = !playing;
-        if (playing) {
-          let t = 0;
-          const interval = setInterval(() => {
-            if (!playing) { clearInterval(interval); return; }
-            slider.value = t;
-            slider.dispatchEvent(new Event("input"));
-            t++;
-            if (t > 10) { t = 0; }
-          }, 500);
+      window.addEventListener("resize", () => {
+        if (!renderer) {
+          return;
         }
-      });
 
-      // Reset
-      document.getElementById("reset3dButton").addEventListener("click", () => {
-        slider.value = 0;
-        slider.dispatchEvent(new Event("input"));
+        const newWidth = container.clientWidth;
+        const newHeight = container.clientHeight;
+
+        camera.aspect = newWidth / newHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(newWidth, newHeight);
       });
     }
 
-    document.getElementById("runButton").addEventListener("click", runSimulation);
+    function clearGroup(group) {
+      while (group.children.length > 0) {
+        const object = group.children.pop();
 
-    document.getElementById("optimizeButton").addEventListener("click", () => {
-      if (!simulation) { alert("⚠️ Run simulation first."); return; }
-      alert("💡 Simulated re-analysis: test whether adding another target (e.g. N4) improves coverage of the dominant clone.
+        if (object.geometry) {
+          object.geometry.dispose();
+        }
 
-This is an educational suggestion, not a treatment recommendation.");
-    });
+        if (object.material) {
+          if (Array.isArray(object.material)) {
+            object.material.forEach(material => material.dispose());
+          } else {
+            object.material.dispose();
+          }
+        }
+      }
+    }
 
-    document.getElementById("downloadButton").addEventListener("click", () => {
-      if (!simulation) { alert("⚠️ Run simulation first."); return; }
-      const blob = new Blob([JSON.stringify(simulation, null, 2)], { type: "application/json" });
+    function randomPoint(radius) {
+      let x, y, z, distance;
+
+      do {
+        x = (Math.random() * 2 - 1) * radius;
+        y = (Math.random() * 2 - 1) * radius;
+        z = (Math.random() * 2 - 1) * radius;
+        distance = Math.sqrt(x * x + y * y + z * z);
+      } while (distance > radius);
+
+      return { x, y, z };
+    }
+
+    function render3D() {
+      if (!scene || !simulation || !window.THREE) {
+        return;
+      }
+
+      const THREE = window.THREE;
+      const point = simulation.timeline[activeTime];
+
+      clearGroup(cellGroup);
+      clearGroup(nanoparticleGroup);
+
+      const totalCells = 280;
+
+      ["A", "B", "C", "D"].forEach(id => {
+        const proportion = point[id] || 0;
+        const count = Math.round(totalCells * proportion);
+
+        if (!count) {
+          return;
+        }
+
+        const geometry = new THREE.SphereGeometry(0.12, 10, 10);
+        const material = new THREE.MeshPhongMaterial({
+          color: parseInt(CLONE_COLORS[id].replace("#", "0x")),
+          shininess: 65
+        });
+
+        for (let i = 0; i < count; i++) {
+          const cell = new THREE.Mesh(geometry, material);
+          const position = randomPoint(5.45);
+
+          cell.position.set(position.x, position.y, position.z);
+          cellGroup.add(cell);
+        }
+      });
+
+      const particleGeometry = new THREE.SphereGeometry(0.06, 8, 8);
+      const particleMaterial = new THREE.MeshPhongMaterial({
+        color: 0x9567ef,
+        emissive: 0x2f0f62,
+        shininess: 90
+      });
+
+      for (let i = 0; i < 48; i++) {
+        const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+
+        particle.position.set(
+          (Math.random() * 2 - 1) * 7.5,
+          (Math.random() * 2 - 1) * 5.5,
+          (Math.random() * 2 - 1) * 5.5
+        );
+
+        nanoparticleGroup.add(particle);
+      }
+
+      document.getElementById("timeLabel").textContent = "T" + activeTime;
+
+      document.getElementById("threeStats").innerHTML = ["A", "B", "C", "D"].map(id => `
+        <div class="metric">
+          <b style="color:${CLONE_COLORS[id]}">${Math.round((point[id] || 0) * 100)}%</b>
+          <span>Clone ${id} at T${activeTime}</span>
+        </div>
+      `).join("");
+    }
+
+    function renderAll() {
+      renderCancerInfo();
+      renderCloneList();
+      renderNeoTable();
+      renderRNA();
+      renderRedTeam();
+      renderCharts();
+      render3D();
+    }
+
+    function suggestOptimization() {
+      if (!simulation) {
+        return;
+      }
+
+      const dominantClone = simulation.baseline.find(
+        clone => clone.id === simulation.dominant.id
+      );
+
+      const suggestion = dominantClone
+        ? Object.entries(dominantClone.targets)
+            .filter(([target, value]) => value > 0.50 && !simulation.targets.includes(target))
+            .sort((a, b) => b[1] - a[1])[0]
+        : null;
+
+      if (!suggestion) {
+        renderOptimization();
+        return;
+      }
+
+      const checkbox = document.querySelector(`.targetCheck[value="${suggestion[0]}"]`);
+
+      if (checkbox) {
+        checkbox.checked = true;
+        runSimulation();
+      }
+    }
+
+    function downloadSimulation() {
+      if (!simulation) {
+        alert("Please run the simulation first.");
+        return;
+      }
+
+      const report = {
+        generatedAt: new Date().toISOString(),
+        disclaimer:
+          "Educational simulated scenario only. Not patient data, diagnosis, medical advice, real neoantigen prediction, molecular docking, RNA formulation, nanocarrier validation, or treatment recommendation.",
+        cancerContext: {
+          id: simulation.cancer.id,
+          name: simulation.cancer.fullName,
+          exampleGenes: simulation.cancer.genes
+        },
+        selectedFictionalTargets: simulation.targets,
+        selectedRNAConcept: simulation.rnaType,
+        selectedNanocarrierConcept: simulation.carrierType,
+        selectedEscapeScenarios: simulation.options,
+        baselineCoveragePercent: Number((simulation.coverage * 100).toFixed(1)),
+        modeledRisk: simulation.risk,
+        finalDominantClone: {
+          id: simulation.dominant.id,
+          fractionPercent: Number((simulation.dominant.fraction * 100).toFixed(1))
+        },
+        evolutionTimeline: simulation.timeline
+      };
+
+      const blob = new Blob([JSON.stringify(report, null, 2)], {
+        type: "application/json"
+      });
+
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `neoimmune-simulation-${Date.now()}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-    });
+      const link = document.createElement("a");
 
-    // Auto-run on load for demo
-    window.addEventListener("load", () => {
-      setTimeout(runSimulation, 500);
+      link.href = url;
+      link.download = `neoimmune-ai-${simulation.cancer.id}-simulation.json`;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    function stopPlaying() {
+      playing = false;
+
+      if (playTimer) {
+        clearInterval(playTimer);
+        playTimer = null;
+      }
+
+      const playButton = document.getElementById("playButton");
+
+      if (playButton) {
+        playButton.textContent = "Play";
+      }
+    }
+
+    function playEvolution() {
+      if (!simulation) {
+        return;
+      }
+
+      if (playing) {
+        stopPlaying();
+        return;
+      }
+
+      playing = true;
+      document.getElementById("playButton").textContent = "Pause";
+
+      playTimer = setInterval(() => {
+        activeTime += 1;
+
+        if (activeTime > 10) {
+          activeTime = 10;
+          stopPlaying();
+        }
+
+        document.getElementById("timeSlider").value = activeTime;
+        render3D();
+      }, 850);
+    }
+
+    function filterCancerSearch() {
+      const query = document.getElementById("cancerSearch").value.trim().toLowerCase();
+      const select = document.getElementById("cancerSelect");
+
+      const filtered = CANCERS.filter(cancer =>
+        cancer.name.toLowerCase().includes(query) ||
+        cancer.fullName.toLowerCase().includes(query) ||
+        cancer.id.toLowerCase().includes(query)
+      );
+
+      select.innerHTML = (filtered.length ? filtered : CANCERS)
+        .map(cancer => `<option value="${cancer.id}">${cancer.name} (${cancer.id})</option>`)
+        .join("");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderCancerSelect();
+      renderTargetOptions(["N1", "N3"]);
+      initThree();
+      runSimulation();
+
+      document.getElementById("cancerSearch").addEventListener("input", filterCancerSearch);
+
+      document.getElementById("cancerSelect").addEventListener("change", event => {
+        currentCancer = CANCERS.find(cancer => cancer.id === event.target.value) || CANCERS[0];
+        renderTargetOptions(["N1", "N3"]);
+        runSimulation();
+      });
+
+      document.getElementById("runButton").addEventListener("click", runSimulation);
+
+      document.getElementById("optimizeButton").addEventListener("click", suggestOptimization);
+
+      document.getElementById("downloadButton").addEventListener("click", downloadSimulation);
+
+      document.getElementById("playButton").addEventListener("click", playEvolution);
+
+      document.getElementById("reset3dButton").addEventListener("click", () => {
+        stopPlaying();
+        activeTime = 0;
+        document.getElementById("timeSlider").value = 0;
+        render3D();
+      });
+
+      document.getElementById("timeSlider").addEventListener("input", event => {
+        stopPlaying();
+        activeTime = Number(event.target.value);
+        render3D();
+      });
+
+      document.getElementById("rnaSelect").addEventListener("change", runSimulation);
+      document.getElementById("carrierSelect").addEventListener("change", runSimulation);
     });
   </script>
 </body>
 </html>
+        
