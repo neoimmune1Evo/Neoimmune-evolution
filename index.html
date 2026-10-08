@@ -2,36 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>NEOIMMUNE AI Lab – Evolution-Aware, Safety-Validated, Closed-Loop Personalized Cancer Therapy</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="NEOIMMUNE AI Lab: Educational simulation of evolution-aware, safety-validated, closed-loop personalized cancer therapy research. Fictional, cohort-inspired values only." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>NEOIMMUNE AI Lab | Closed-Loop Tumor Evolution Simulator</title>
 
-  <!-- Optional: Google Font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@vladkrutenyuk/three-umd/dist/three.umd.min.js"></script>
 
   <style>
     :root {
-      --bg: #f7faff;
-      --surface: #ffffff;
-      --surface-soft: #eef5ff;
-      --text: #10233f;
-      --muted: #63748b;
-      --line: #dbe6f2;
-      --blue: #1264d8;
-      --blue-dark: #083d91;
-      --teal: #079b91;
-      --red: #d9363e;
-      --yellow: #d99000;
-      --green: #168348;
-      --shadow: 0 8px 26px rgba(20, 58, 100, 0.08);
+      --navy: #132a43;
+      --blue: #1479d1;
+      --purple: #6e45cf;
+      --green: #148a58;
+      --orange: #c96a05;
+      --red: #c92f4a;
+      --gold: #8d6500;
+      --text: #17263b;
+      --muted: #5b6b80;
+      --line: #d8e4f0;
+      --white: #ffffff;
+      --bg: #f5f9fd;
     }
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
     html {
@@ -39,674 +34,736 @@
     }
 
     body {
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
       color: var(--text);
       line-height: 1.5;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(20, 121, 209, 0.13), transparent 25%),
+        radial-gradient(circle at 88% 5%, rgba(110, 69, 207, 0.10), transparent 25%),
+        linear-gradient(135deg, #fcfeff, #edf5fc 55%, #f8f4ff);
     }
 
-    a {
-      color: var(--blue);
-      text-decoration: none;
+    header {
+      padding: 32px 0;
+      background: rgba(255, 255, 255, 0.95);
+      border-bottom: 1px solid var(--line);
     }
 
-    a:hover {
-      text-decoration: underline;
+    .wrap {
+      width: min(1340px, calc(100% - 32px));
+      margin: auto;
     }
 
-    /* Sticky header */
-    .app-header {
+    h1,
+    h2,
+    h3 {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 6px;
+      color: var(--navy);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      letter-spacing: 0.3px;
+    }
+
+    h2 {
+      margin-bottom: 8px;
+      font-size: 1.25rem;
+    }
+
+    h3 {
+      margin: 18px 0 8px;
+      font-size: 1rem;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.04rem;
+    }
+
+    .tagline {
+      margin-top: 16px;
+      padding: 12px 15px;
+      color: #293e5b;
+      background: linear-gradient(90deg, #edf8ff, #f2edff);
+      border: 1px solid #d8cdfa;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+
+    .notice {
+      margin-top: 16px;
+      padding: 14px 15px;
+      color: #6a4c00;
+      background: #fff8da;
+      border-left: 5px solid #d79d00;
+      border-radius: 9px;
+      font-size: 0.91rem;
+    }
+
+    nav {
       position: sticky;
       top: 0;
-      z-index: 100;
-      background: rgba(255, 255, 255, 0.94);
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 18px;
       border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.97);
     }
 
-    .app-header-inner {
-      max-width: 1180px;
-      margin: auto;
-      min-height: 68px;
-      padding: 12px 18px;
+    nav a {
+      padding: 8px 10px;
+      color: #385470;
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 0.81rem;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    nav a:hover {
+      color: var(--blue);
+      border-color: #a7d7f7;
+      background: #edf8ff;
+    }
+
+    main {
+      padding: 24px 0 42px;
+    }
+
+    .flow {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 9px;
+      margin-bottom: 22px;
+    }
+
+    .flow span {
+      padding: 8px 11px;
+      color: #385470;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: 0 3px 9px rgba(26, 74, 119, 0.05);
+      font-size: 0.78rem;
+      font-weight: bold;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
       gap: 18px;
     }
 
-    .brand {
-      color: var(--blue-dark);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-
-    .brand small {
-      display: block;
-      color: var(--muted);
-      font-weight: 500;
-      font-size: 0.72rem;
-      margin-top: 2px;
-    }
-
-    .app-nav {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .app-nav button {
-      border: 0;
-      background: transparent;
-      color: var(--muted);
-      padding: 8px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .app-nav button:hover,
-    .app-nav button.active {
-      color: var(--blue);
-      background: var(--surface-soft);
-    }
-
-    .notice-bar {
-      margin: 18px 0;
-      padding: 10px 14px;
-      background: #fff8e6;
-      border: 1px solid #f1d995;
-      color: #694f00;
-      border-radius: 10px;
-      font-size: 0.82rem;
-    }
-
-    .app-shell {
-      max-width: 1180px;
-      margin: auto;
-      padding: 0 18px 90px;
-    }
-
-    .view {
-      display: none;
-    }
-
-    .view.active {
-      display: block;
-    }
-
-    .hero-card {
-      background: linear-gradient(135deg, #ffffff, #edf5ff);
+    .card {
+      padding: 19px;
+      background: rgba(255, 255, 255, 0.96);
       border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 40px 28px;
-      box-shadow: var(--shadow);
-      text-align: center;
+      border-radius: 16px;
+      box-shadow: 0 9px 24px rgba(26, 74, 119, 0.08);
     }
 
-    .hero-card h1 {
-      color: var(--blue-dark);
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      margin-bottom: 8px;
-    }
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
 
-    .hero-card p {
-      max-width: 720px;
-      margin: 8px auto;
+    .blue { color: var(--blue); }
+    .purple { color: var(--purple); }
+    .green { color: var(--green); }
+    .orange { color: var(--orange); }
+    .red { color: var(--red); }
+    .gold { color: var(--gold); }
+
+    .small {
       color: var(--muted);
+      font-size: 0.90rem;
     }
 
-    .pipeline {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin: 24px auto;
-      color: var(--blue);
-      font-size: 0.85rem;
-      font-weight: 800;
-    }
-
-    .pipeline span {
-      background: #fff;
-      border: 1px solid #cfe0f5;
+    .badge {
+      display: inline-block;
+      padding: 4px 9px;
+      color: #7a5700;
+      background: #fff4c8;
+      border: 1px solid #f0da82;
       border-radius: 999px;
-      padding: 7px 11px;
+      font-size: 0.74rem;
+      font-weight: bold;
     }
 
-    .card-grid {
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #3d5872;
+      font-size: 0.86rem;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 11px;
+      color: var(--text);
+      background: white;
+      border: 1px solid #c9d9e9;
+      border-radius: 10px;
+      outline: none;
+      font-size: 0.94rem;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(20, 121, 209, 0.12);
+    }
+
+    input[type="checkbox"] {
+      margin-top: 3px;
+      accent-color: var(--purple);
+      transform: scale(1.1);
+    }
+
+    .form-grid,
+    .target-grid,
+    .escape-grid,
+    .metrics {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 14px;
+      gap: 10px;
     }
 
-    .app-card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 18px;
-      box-shadow: var(--shadow);
+    .form-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .app-card h2,
-    .app-card h3 {
-      margin-top: 0;
-      color: var(--blue-dark);
+    .target-grid,
+    .escape-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 10px;
     }
 
-    .stepper {
+    .option {
       display: flex;
+      align-items: flex-start;
       gap: 8px;
-      margin: 20px 0;
-      overflow-x: auto;
+      min-height: 73px;
+      padding: 11px;
+      color: #263d55;
+      background: #f8fbff;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      cursor: pointer;
     }
 
-    .step {
-      min-width: 120px;
-      padding: 10px;
+    .option:hover {
+      background: #eef8ff;
+      border-color: #a6d8fa;
+    }
+
+    .option strong {
+      display: block;
+      font-size: 0.91rem;
+    }
+
+    .option small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px 14px;
+      color: white;
+      background: linear-gradient(90deg, var(--blue), var(--purple));
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.94rem;
+      font-weight: bold;
+    }
+
+    button:hover {
+      filter: brightness(1.05);
+    }
+
+    button.secondary {
+      background: linear-gradient(90deg, #168075, #258b70);
+    }
+
+    button.danger {
+      background: linear-gradient(90deg, #b73f49, #d45c68);
+    }
+
+    .small-button {
+      width: auto;
+      margin: 0;
+      padding: 9px 12px;
+      font-size: 0.84rem;
+    }
+
+    .result {
+      margin-top: 13px;
+      padding: 13px;
+      color: #283f58;
+      background: #f8fbff;
       border: 1px solid var(--line);
       border-radius: 10px;
-      color: var(--muted);
-      text-align: center;
-      font-size: 0.82rem;
     }
 
-    .step.active {
-      color: var(--blue);
-      border-color: var(--blue);
-      background: var(--surface-soft);
-      font-weight: 700;
+    .result.green {
+      background: #effbf5;
+      border-left: 5px solid var(--green);
     }
 
-    .btn-primary,
-    .btn-secondary,
-    .btn-danger {
-      border: 0;
-      border-radius: 9px;
-      padding: 10px 14px;
-      cursor: pointer;
-      font-weight: 700;
+    .result.yellow {
+      background: #fff9e7;
+      border-left: 5px solid #d59500;
     }
 
-    .btn-primary {
-      color: #fff;
-      background: var(--blue);
-    }
-
-    .btn-primary:hover {
-      background: var(--blue-dark);
-    }
-
-    .btn-secondary {
-      color: var(--blue);
-      background: var(--surface-soft);
-      border: 1px solid #cfe0f5;
-    }
-
-    .btn-danger {
-      color: #fff;
-      background: var(--red);
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
-      margin-top: 16px;
-    }
-
-    .metric-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-      margin: 18px 0;
+    .result.red {
+      background: #fff1f4;
+      border-left: 5px solid var(--red);
     }
 
     .metric {
-      background: var(--surface);
+      padding: 11px;
+      text-align: center;
+      background: #f8fbff;
       border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 15px;
+      border-radius: 11px;
     }
 
-    .metric-label {
+    .metric b {
+      display: block;
+      color: var(--navy);
+      font-size: 1.18rem;
+    }
+
+    .metric span {
       color: var(--muted);
-      font-size: 0.76rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+      font-size: 0.75rem;
     }
 
-    .metric-value {
-      margin-top: 5px;
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: var(--blue-dark);
+    .metrics {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: 14px;
     }
 
-    .risk {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
+    .clone-row,
+    .check {
+      margin-top: 9px;
+      padding: 10px;
+      color: #2c425c;
+      background: #f8fbff;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      font-size: 0.89rem;
+    }
+
+    .clone-row {
+      border-left: 5px solid var(--blue);
+    }
+
+    .clone-row.b { border-left-color: var(--purple); }
+    .clone-row.c { border-left-color: var(--orange); }
+    .clone-row.d { border-left-color: var(--green); }
+
+    table {
+      width: 100%;
+      margin-top: 12px;
+      border-collapse: collapse;
+      font-size: 0.87rem;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid #e6edf5;
+    }
+
+    th {
+      color: #1b5f9e;
+      background: #edf7ff;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 8px;
       border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 800;
+      font-size: 0.74rem;
+      font-weight: bold;
     }
 
-    .risk-high {
-      color: #8c141b;
-      background: #ffe3e5;
+    .pill.green {
+      color: #0e7b4c;
+      background: #e6f8ef;
     }
 
-    .risk-medium {
-      color: #765000;
-      background: #fff1c7;
+    .pill.yellow {
+      color: #8b6100;
+      background: #fff5cf;
     }
 
-    .risk-low {
-      color: #075d32;
-      background: #dff7e9;
+    .pill.red {
+      color: #b62640;
+      background: #ffe5eb;
     }
 
-    .clone-bar {
-      height: 12px;
+    .chart-wrap {
+      height: 355px;
+      margin-top: 12px;
+    }
+
+    #tumor3d {
+      width: 100%;
+      height: 420px;
+      margin-top: 12px;
       overflow: hidden;
+      background: #f8fbff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .slider-row {
       display: flex;
-      border-radius: 99px;
-      background: #e7edf5;
-      margin: 10px 0;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
     }
 
-    .clone-bar span:nth-child(1) { background: #2878df; }
-    .clone-bar span:nth-child(2) { background: #13a89e; }
-    .clone-bar span:nth-child(3) { background: #a65adb; }
-    .clone-bar span:nth-child(4) { background: #f0a52f; }
+    input[type="range"] {
+      flex: 1;
+      min-width: 200px;
+      accent-color: var(--blue);
+    }
 
-    .muted {
+    .source-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .source-links a {
+      padding: 7px 9px;
+      color: #1766a8;
+      background: #eef8ff;
+      border: 1px solid #c7e4fb;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: bold;
+    }
+
+    footer {
+      padding: 22px 18px;
       color: var(--muted);
-      font-size: 0.92rem;
+      text-align: center;
+      background: white;
+      border-top: 1px solid var(--line);
+      font-size: 0.83rem;
     }
 
-    .hidden {
-      display: none !important;
-    }
-
-    @media (max-width: 700px) {
-      .app-header-inner {
-        align-items: flex-start;
-        flex-direction: column;
+    @media (max-width: 950px) {
+      .span-4, .span-5, .span-6, .span-7, .span-8, .span-12 {
+        grid-column: span 12;
       }
 
-      .app-nav {
-        width: 100%;
-        overflow-x: auto;
-        flex-wrap: nowrap;
+      .form-grid,
+      .target-grid,
+      .escape-grid,
+      .metrics {
+        grid-template-columns: 1fr;
       }
 
-      .hero-card {
-        padding: 28px 18px;
+      #tumor3d {
+        height: 350px;
       }
     }
   </style>
 </head>
-<body>
 
-  <!-- App header -->
-  <header class="app-header">
-    <div class="app-header-inner">
-      <div class="brand">
-        NEOIMMUNE AI Lab
-        <small>Evolution-aware research simulation</small>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>NEOIMMUNE AI Lab</h1>
+
+      <p class="subtitle">
+        Evolution-Aware, Safety-Validated, Closed-Loop Personalized Cancer Therapy
+      </p>
+
+      <div class="tagline">
+        PREDICT â†’ CHALLENGE â†’ VALIDATE â†’ REVIEW â†’ TREAT â†’ MONITOR â†’ ADAPT
       </div>
 
-      <nav class="app-nav" aria-label="Main navigation">
-        <button class="active" data-view="homeView">Home</button>
-        <button data-view="setupView">New Simulation</button>
-        <button data-view="resultsView">Results</button>
-        <button data-view="historyView">Saved Runs</button>
-        <button data-view="learnView">Learn</button>
-      </nav>
+      <div class="notice">
+        <strong>Research and educational simulation only:</strong>
+        This prototype uses fictional, cohort-inspired demo values. It is not patient data,
+        diagnosis, treatment advice, molecular docking, validated neoantigen prediction,
+        real RNA design, nanocarrier formulation, or a clinical treatment recommendation.
+      </div>
     </div>
   </header>
 
-  <!-- Main app shell -->
-  <main class="app-shell">
+  <nav>
+    <a href="#controls">Controls</a>
+    <a href="#mapper">Tumor Mapper</a>
+    <a href="#neoantigen">Neoantigen</a>
+    <a href="#rna">RNA + Nanocarrier</a>
+    <a href="#redteam">Red Team</a>
+    <a href="#evolution">Evolution</a>
+    <a href="#tumor3dsection">3D View</a>
+    <a href="#loop">Closed Loop</a>
+  </nav>
 
-    <div class="notice-bar">
-      Educational simulation only • Fictional cohort-inspired values • No patient data • Not diagnosis or treatment advice
+  <main class="wrap">
+    <div class="flow">
+      <span>Cancer Context</span>
+      <span>Tumor Mapper</span>
+      <span>Digital Twin</span>
+      <span>Neoantigen Evaluation</span>
+      <span>Safety Filter</span>
+      <span>RNA Cargo</span>
+      <span>Nanocarrier Delivery</span>
+      <span>Red Team</span>
+      <span>Evolution</span>
+      <span>Validation</span>
+      <span>Monitor + Adapt</span>
     </div>
 
-    <!-- HOME VIEW -->
-    <section id="homeView" class="view active">
-      <div class="hero-card">
-        <h1>NEOIMMUNE AI Lab</h1>
-        <p>Evolution-aware, safety-validated, closed-loop personalized cancer-therapy research.</p>
+    <div class="grid">
 
-        <div class="pipeline">
-          <span>Predict</span>
-          <span>Challenge</span>
-          <span>Validate</span>
-          <span>Review</span>
-          <span>Design</span>
-          <span>Monitor</span>
-          <span>Adapt</span>
-        </div>
+      <section class="card span-12" id="controls">
+        <h2 class="blue">1. Interactive Simulation Controls</h2>
+        <span class="badge">SIMULATED DEMO MODE â€” NOT PATIENT DATA</span>
 
-        <p>
-          Map tumor clones, stress-test fictional strategies, and observe how simulated tumor evolution changes the result.
+        <p class="small">
+          Select a cancer context, fictional target candidates, an RNA mechanism, a nanocarrier concept,
+          and modeled immune-escape conditions. Then run the simulation.
         </p>
 
-        <div class="button-row" style="justify-content:center">
-          <button class="btn-primary" data-go="setupView">Start New Simulation</button>
-          <button class="btn-secondary" data-go="learnView">How It Works</button>
-        </div>
-      </div>
-
-      <div class="card-grid" style="margin-top:20px">
-        <article class="app-card">
-          <h3>Clone-aware</h3>
-          <p>Represents a simulated tumor as multiple evolving clones instead of one uniform mass.</p>
-        </article>
-
-        <article class="app-card">
-          <h3>Red Team tested</h3>
-          <p>Challenges a strategy with modeled target loss, escape, and resistant-clone expansion.</p>
-        </article>
-
-        <article class="app-card">
-          <h3>Evidence-gated</h3>
-          <p>Separates computational hypotheses from laboratory, clinical, ethical, and regulatory evidence.</p>
-        </article>
-      </div>
-    </section>
-
-    <!-- SETUP VIEW (your existing simulation controls go here) -->
-    <section id="setupView" class="view">
-      <div class="app-card">
-        <h2>New Simulation</h2>
-        <p class="muted">Configure your simulated scenario. All values are fictional and for education only.</p>
-
-        <div class="stepper">
-          <div class="step active">1. Context</div>
-          <div class="step">2. Targets</div>
-          <div class="step">3. Delivery</div>
-          <div class="step">4. Red Team</div>
-          <div class="step">5. Run</div>
-        </div>
-
-        <!-- EXISTING SIMULATION CONTROLS -->
-        <!-- Replace the content below with your current simulation form fields -->
-        <div id="existingSimulationControls">
-          <h3>1. Cancer Context</h3>
-          <p class="muted">Select a simulated cancer type.</p>
-          <div class="button-row">
-            <button class="btn-secondary">Melanoma (SKCM)</button>
-            <button class="btn-secondary">Lung (LUAD)</button>
-            <button class="btn-secondary">Breast (BRCA)</button>
+        <div class="form-grid">
+          <div>
+            <label for="cancerSearch">Search cancer type</label>
+            <input id="cancerSearch" type="text" placeholder="Melanoma, lung, breast, bladder..." />
           </div>
 
-          <h3 style="margin-top:18px">2. Target Selection</h3>
-          <p class="muted">Choose fictional neoantigen candidates.</p>
-          <div class="button-row">
-            <label><input type="checkbox" /> N1</label>
-            <label><input type="checkbox" /> N2</label>
-            <label><input type="checkbox" /> N3</label>
-            <label><input type="checkbox" /> N4</label>
+          <div>
+            <label for="cancerSelect">Cancer context</label>
+            <select id="cancerSelect"></select>
           </div>
 
-          <h3 style="margin-top:18px">3. RNA + Nanocarrier Concept</h3>
-          <p class="muted">Select conceptual delivery settings.</p>
-          <div class="button-row">
-            <button class="btn-secondary">mRNA vaccine concept</button>
-            <button class="btn-secondary">Lipid nanoparticle concept</button>
+          <div>
+            <label for="rnaSelect">RNA research concept</label>
+            <select id="rnaSelect">
+              <option value="mRNA vaccine concept">mRNA vaccine concept</option>
+              <option value="siRNA concept">siRNA concept</option>
+              <option value="miRNA modulation concept">miRNA modulation concept</option>
+              <option value="No RNA cargo selected">No RNA cargo selected</option>
+            </select>
           </div>
 
-          <h3 style="margin-top:18px">4. Red Team Scenarios</h3>
-          <p class="muted">Enable modeled escape conditions.</p>
-          <div class="button-row">
-            <label><input type="checkbox" /> Target loss</label>
-            <label><input type="checkbox" /> Resistant-clone expansion</label>
-            <label><input type="checkbox" /> Reduced HLA presentation</label>
-            <label><input type="checkbox" /> New mutation event</label>
+          <div>
+            <label for="carrierSelect">Nanocarrier concept</label>
+            <select id="carrierSelect">
+              <option value="Lipid nanoparticle concept">Lipid nanoparticle concept</option>
+              <option value="Polymeric nanocarrier concept">Polymeric nanocarrier concept</option>
+              <option value="Targeted nanocarrier concept">Targeted nanocarrier concept</option>
+              <option value="No carrier selected">No carrier selected</option>
+            </select>
           </div>
         </div>
 
-        <div class="button-row">
-          <button id="runSimulationV2" class="btn-primary">Run Simulation</button>
-          <button id="resetSimulationV2" class="btn-secondary">Reset</button>
-        </div>
-      </div>
-    </section>
+        <div id="cancerInfo" class="result green"></div>
 
-    <!-- RESULTS VIEW -->
-    <section id="resultsView" class="view">
-      <div class="app-card">
-        <h2>Simulation Results</h2>
-        <p class="muted">
-          Results are simulated outputs and research hypotheses only.
+        <div class="source-links">
+          <a href="https://portal.gdc.cancer.gov/" target="_blank">NCI GDC</a>
+          <a href="https://www.cbioportal.org/" target="_blank">cBioPortal</a>
+          <a href="https://gtexportal.org/home/" target="_blank">GTEx</a>
+          <a href="https://www.proteinatlas.org/" target="_blank">Human Protein Atlas</a>
+          <a href="https://www.iedb.org/" target="_blank">IEDB</a>
+          <a href="https://clinicaltrials.gov/" target="_blank">ClinicalTrials.gov</a>
+        </div>
+
+        <h3 class="purple">Select fictional candidate targets</h3>
+        <div id="targetOptions" class="target-grid"></div>
+
+        <h3 class="red">Therapeutic Red Team â€” modeled escape scenarios</h3>
+
+        <div class="escape-grid">
+          <label class="option">
+            <input type="checkbox" id="targetLoss" checked />
+            <span>
+              <strong>Target loss</strong>
+              <small>A selected target may become unavailable in one modeled clone.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="resistantExpansion" checked />
+            <span>
+              <strong>Resistant-clone expansion</strong>
+              <small>Poorly covered clones gain simulated relative survival.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="hlaLoss" />
+            <span>
+              <strong>Reduced HLA presentation</strong>
+              <small>Modeled immune recognition becomes weaker.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="processingDefect" />
+            <span>
+              <strong>Antigen-processing defect</strong>
+              <small>Modeled peptide processing/presentation is reduced.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="immuneSuppression" />
+            <span>
+              <strong>Immune suppression</strong>
+              <small>Simulated immune pressure is reduced.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="newMutation" />
+            <span>
+              <strong>New mutation event</strong>
+              <small>A simulated new resistant feature affects Clone C later.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="compensatoryPathway" />
+            <span>
+              <strong>Compensatory pathway</strong>
+              <small>Clone B gains a simulated alternative survival advantage.</small>
+            </span>
+          </label>
+
+          <label class="option">
+            <input type="checkbox" id="highHeterogeneity" />
+            <span>
+              <strong>High heterogeneity</strong>
+              <small>Add a small Clone D with incomplete target coverage.</small>
+            </span>
+          </label>
+        </div>
+
+        <button id="runButton">Run NEOIMMUNE AI Simulation</button>
+        <button id="optimizeButton" class="secondary">Suggest Simulated Re-analysis</button>
+        <button id="downloadButton" class="danger">Download Simulation JSON</button>
+      </section>
+
+      <section class="card span-5" id="mapper">
+        <h2 class="blue">2. Tumor Mapper and Digital Twin</h2>
+
+        <p class="small">
+          The digital twin is a simplified computational representation of the current simulated tumor context.
         </p>
 
-        <div class="metric-grid">
-          <div class="metric">
-            <div class="metric-label">Tumor coverage</div>
-            <div id="metricCoverage" class="metric-value">—</div>
-          </div>
+        <div id="cloneList"></div>
 
-          <div class="metric">
-            <div class="metric-label">Dominant clone</div>
-            <div id="metricDominantClone" class="metric-value">—</div>
-          </div>
-
-          <div class="metric">
-            <div class="metric-label">Modeled risk</div>
-            <div id="metricRisk" class="metric-value">—</div>
-          </div>
-
-          <div class="metric">
-            <div class="metric-label">Escape events</div>
-            <div id="metricEscapeEvents" class="metric-value">—</div>
-          </div>
+        <div id="digitalTwinBox" class="result">
+          <strong class="purple">Digital Twin status:</strong><br />
+          <span class="small">Waiting for simulation.</span>
         </div>
+      </section>
 
-        <div id="resultSummary" class="app-card">
-          Run a simulation to view the summary.
-        </div>
+      <section class="card span-7" id="neoantigen">
+        <h2 class="green">3. Dynamic Neoantigen Evaluator and Safety Filter</h2>
 
-        <div class="button-row">
-          <button id="saveRunV2" class="btn-primary">Save This Run</button>
-          <button id="exportRunV2" class="btn-secondary">Export JSON</button>
-          <button id="reanalyzeV2" class="btn-secondary">Simulated Re-analysis</button>
-        </div>
-      </div>
-
-      <div class="card-grid" style="margin-top:16px">
-        <div class="app-card">
-          <h3>Clone Evolution</h3>
-          <div id="cloneEvolutionChart"></div>
-        </div>
-
-        <div class="app-card">
-          <h3>Target Coverage</h3>
-          <div id="targetCoverageChart"></div>
-        </div>
-
-        <div class="app-card">
-          <h3>Red Team Result</h3>
-          <div id="redTeamResult"></div>
-        </div>
-
-        <div class="app-card">
-          <h3>3D Tumor Lab</h3>
-          <div id="threeDPreview">
-            Open the 3D view after running the simulation.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- HISTORY VIEW -->
-    <section id="historyView" class="view">
-      <div class="app-card">
-        <h2>Saved Simulations</h2>
-        <div id="historyList">No saved simulations yet.</div>
-      </div>
-    </section>
-
-    <!-- LEARN VIEW -->
-    <section id="learnView" class="view">
-      <div class="app-card">
-        <h2>How the Framework Works</h2>
-        <div class="pipeline">
-          <span>Map</span>
-          <span>Rank</span>
-          <span>Filter</span>
-          <span>Design</span>
-          <span>Challenge</span>
-          <span>Validate</span>
-          <span>Monitor</span>
-          <span>Adapt</span>
-        </div>
-
-        <p>
-          The framework maps simulated tumor heterogeneity, ranks fictional target candidates, filters normal-tissue risk, designs multi-target strategies, challenges them with Red Team scenarios, and updates the Digital Twin.
+        <p class="small">
+          Fictional scoring combines mutation evidence, RNA evidence, HLA context, clone coverage,
+          normal-tissue risk, and uncertainty. It is not a real neoantigen prediction engine.
         </p>
 
-        <h3>Evidence gate</h3>
-        <ul>
-          <li>Mutation and RNA confirmation.</li>
-          <li>HLA presentation and immune-recognition studies.</li>
-          <li>Normal-tissue safety testing.</li>
-          <li>RNA and nanocarrier delivery studies.</li>
-          <li>Preclinical evidence.</li>
-          <li>Clinical, ethical, regulatory, and consent review.</li>
-        </ul>
-
-        <div class="notice-bar">
-          AI cannot pass this gate alone. The website produces educational simulation outputs, not clinical recommendations.
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Clone coverage</th>
+                <th>Tumor signal</th>
+                <th>Normal risk</th>
+                <th>Score</th>
+                <th>Safety result</th>
+              </tr>
+            </thead>
+            <tbody id="neoTable"></tbody>
+          </table>
         </div>
-      </div>
-    </section>
 
-  </main>
+        <div class="result yellow">
+          <strong>Validation requirement:</strong>
+          A candidate needs confirmation of mutation, RNA expression, HLA-related presentation,
+          immune recognition, normal-cell safety, delivery feasibility, preclinical activity,
+          and appropriate clinical/ethical/regulatory review.
+        </div>
+      </section>
 
-  <!-- App logic -->
-  <script>
-    (() => {
-      const STORAGE_KEY = "neoimmune_simulation_history_v2";
-      let latestRun = null;
+      <section class="card span-6" id="rna">
+        <h2 class="orange">4. RNA + Nanocarrier Simulation Logic</h2>
 
-      const $ = selector => document.querySelector(selector);
-      const $$ = selector => [...document.querySelectorAll(selector)];
+        <p class="small">
+          RNA is the conceptual biological cargo. A nanocarrier is the conceptual delivery vehicle.
+          The website combines them into a transparent simulated pressure calculation.
+        </p>
 
-      function showView(viewId) {
-        $$(".view").forEach(view => {
-          view.classList.toggle("active", view.id === viewId);
-        });
+        <div id="rnaResult" class="result"></div>
 
-        $$(".app-nav button").forEach(button => {
-          button.classList.toggle(
-            "active",
-            button.dataset.view === viewId
-          );
-        });
+        <div id="rnaMechanismBox" class="result yellow">
+          Select RNA and nanocarrier settings, then run the simulation.
+        </div>
 
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Real-world delivery requirement</th>
+                <th>Website status</th>
+              </tr>
+            </thead>
 
-      $$(".app-nav button").forEach(button => {
-        button.addEventListener("click", () => {
-          showView(button.dataset.view);
-        });
-      });
-
-      $$("[data-go]").forEach(button => {
-        button.addEventListener("click", () => {
-          showView(button.dataset.go);
-        });
-      });
-
-      // Fallback simulation state – replace with your real engine output
-      function readExistingSimulationState() {
-        return {
-          id: crypto.randomUUID(),
-          date: new Date().toISOString(),
-          cancer: "Melanoma (SKCM)",
-          targets: ["N1", "N3"],
-          coverage: 68,
-          dominantClone: "Clone C",
-          risk: "High",
-          escapeEvents: 2,
-          clones: { A: 50, B: 30, C: 20 },
-          finalClones: { A: 20, B: 17, C: 63 },
-          note: "Fictional educational simulation output."
-        };
-      }
-
-      function renderMetrics(run) {
-        $("#metricCoverage").textContent = `${run.coverage}%`;
-        $("#metricDominantClone").textContent = run.dominantClone;
-        $("#metricRisk").textContent = run.risk;
-        $("#metricEscapeEvents").textContent = run.escapeEvents;
-
-        const riskClass =
-          run.risk === "High" ? "risk-high" :
-          run.risk === "Moderate" ? "risk-medium" :
-          "risk-low";
-
-        $("#resultSummary").innerHTML = `
-          <span class="risk ${riskClass}">MODELED RISK: ${run.risk.toUpperCase()}</span>
-          <p style="margin-top:12px">
-            ${run.dominantClone} becomes dominant under the selected simulated conditions.
-            Current target coverage is incomplete and requires re-analysis.
-          </p>
-          <p class="muted">
-            This is a fictional simulation result, not evidence of real patient resistance.
-          </p>
-        `;
-
-        $("#redTeamResult").innerHTML = `
-          <span class="risk ${riskClass}">
-            ${run.risk.toUpperCase()} MODELED RISK
-          </span>
-          <p style="margin-top:12px">
-            Active simulated escape events: ${run.escapeEvents}
-          </p>
-          <p class="muted">
-            Suggested educational next step: re-check coverage and test an alternative multi-target strategy.
-          </p>
-        `;
-
-        $("#cloneEvolutionChart").innerHTML = `
-          <div class="muted">Baseline</div>
-          <div class="clone-bar">
-            <span style="width:${run.clones.A}%"></span>
-            <span style="width:${run.clones.B}%"></span>
-            <span style="width:${run.clones.C}%"></span>
-          </div>
-          <div class="muted">Final simulated state</div>
-          <div class="clone-bar">
-            <span style="width:${run.finalClones.A}%"></span>
-            <span style="width:${run.finalClones.B}%"></span>
-            <span style="width:${run.finalClones.C}%"></span>
-          </div>
-          <p class="muted">Blue: A • Teal: B • Purple: C</p>
-        `;
-
-        $("#targetCoverageChart").innerHTML = `
-          <p>N1 <strong>47%</strong></p>
-          <p>N3 <strong>49%</strong></p>
-          <p>N4 <strong>38%</strong></p>
-          <p class="muted">
-            Values are fictional target-coverage values for demonstration.
-          </p>
-        `;
-
-        $("#threeDPreview").innerHTML = `
-          <p>Simulation ready for 3D visualization.</p>
-          <button class="btn-secondary" id="open3DV2">Open 3D Tumor Lab</button>
-        `;
-
-        $("#open3DV2")?.addEventListener("click", () => {
-          alert("Connect this button to your existing Three.js viewer.");
-       
+            <tbody>
+              <tr>
+                <td>RNA loading</td>
+                <td><span class="pill green">Conceptually represented</span></td>
+              </tr>
+              <tr>
+                <td>RNA protection and stability</td>
+                <td><span class="pill yellow">Requires laboratory testing</span></td>
+              </tr>
+              <tr>
+                <td>Target-cell uptake</td>
+                <td><span class="pill yellow">Requires laboratory testing</span></td>
+              </tr>
+              <tr>
+                <td>Endosomal escape</td>
+                <td><span class="pill yellow">Requires laboratory testing</span></td>
+              </tr>
+              <tr>
+                <t
